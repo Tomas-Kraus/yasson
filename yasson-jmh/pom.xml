@@ -15,6 +15,7 @@
     <properties>
         <jmh.version>1.21</jmh.version>
         <yasson.version>1.0.6-SNAPSHOT</yasson.version>
+        <jakarta.json.version>1.1.6</jakarta.json.version>
     </properties>
 
 
@@ -33,6 +34,14 @@
             <groupId>org.eclipse</groupId>
             <artifactId>yasson</artifactId>
             <version>${yasson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.json</artifactId>
+            <version>${jakarta.json.version}</version>
+            <classifier>module</classifier>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 
