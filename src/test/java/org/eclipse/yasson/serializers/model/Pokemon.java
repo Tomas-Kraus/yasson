@@ -23,7 +23,7 @@ public final class Pokemon {
 	public String type;
 	public int cp;
 
-	public Pokemon() {
+    public Pokemon() {
 		this.name = null;
 		this.type = null;
 		this.cp = -1;
@@ -52,6 +52,16 @@ public final class Pokemon {
     @Override
     public int hashCode() {
         return Objects.hash(cp, name, type);
+    }
+
+    public String toJson() {
+        StringBuilder sb = new StringBuilder();
+        sb.append('{');
+        sb.append('"').append("name").append('"').append(':').append('"').append(name).append('"').append(',');
+        sb.append('"').append("type").append('"').append(':').append('"').append(type).append('"').append(',');
+        sb.append('"').append("cp").append('"').append(':').append(cp);
+        sb.append('}');
+        return sb.toString();
     }
 
 }

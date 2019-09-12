@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.yasson.internal.model;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,6 +39,8 @@ public class ClassModel {
     private final ClassModel parentClassModel;
 
     private final Constructor<?> defaultConstructor;
+
+    private final MethodHandle defaultConstructorHandle;
 
     /**
      * A map of all class properties, including properties from superclasses. Used to access by name.
@@ -78,6 +81,8 @@ public class ClassModel {
         this.parentClassModel = parentClassModel;
         this.propertyNamingStrategy = propertyNamingStrategy;
         this.defaultConstructor = ReflectionUtils.getDefaultConstructor(clazz, false);
+        this.defaultConstructorHandle = defaultConstructor != null
+                ? ReflectionUtils.getConstructorHandle(defaultConstructor) : null;
         setProperties(new ArrayList<>());
     }
 
@@ -185,4 +190,13 @@ public class ClassModel {
     public Constructor<?> getDefaultConstructor() {
         return defaultConstructor;
     }
+
+    /**
+     * Default no argument constructor method handle used to create class instance for deserialization.
+     * @return default constructor
+     */
+    public MethodHandle getDefaultConstructorHandle() {
+        return defaultConstructorHandle;
+    }
+
 }
