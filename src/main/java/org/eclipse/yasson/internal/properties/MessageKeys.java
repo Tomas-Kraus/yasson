@@ -61,6 +61,14 @@ public enum MessageKeys {
      */
     NO_DEFAULT_CONSTRUCTOR("noDefaultConstructor"),
     /**
+     * Access to default constructor denied.
+     */
+    DEFAULT_CONSTRUCTOR_ILLEGAL_ACCESS("illegalAccessToDefaultConstructor"),
+    /**
+     * Constructor execution failed.
+     */
+    DEFAULT_CONSTRUCTOR_EXEC_FAILED("execFailedInDefaultConstructor"),
+    /**
      * There has been an error while invoking getter.
      */
     INVOKING_GETTER("invokingGetter"),

@@ -10,8 +10,7 @@
  * Contributors:
  * Tomas Kraus
  ******************************************************************************/
-
-package org.eclipse.yasson.serializers.model;
+package org.eclipse.yasson.jmh.model;
 
 import java.util.Objects;
 

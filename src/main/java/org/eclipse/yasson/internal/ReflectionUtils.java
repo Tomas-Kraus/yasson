@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.yasson.internal;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.InvocationTargetException;
@@ -29,6 +31,7 @@ import java.util.logging.Logger;
 
 import javax.json.bind.JsonbException;
 
+import org.eclipse.yasson.internal.model.ClassModel;
 import org.eclipse.yasson.internal.properties.MessageKeys;
 import org.eclipse.yasson.internal.properties.Messages;
 import org.eclipse.yasson.internal.serializer.AbstractItem;
@@ -222,6 +225,27 @@ public class ReflectionUtils {
     }
 
     /**
+     * Create instance with constructor method handle if available. Use reflection as fallback..
+     *
+     * @param cm target Java class model
+     * @param <T> type of instance
+     * @return instance
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T createNoArgConstructorInstance(ClassModel cm) {
+        if (cm.getDefaultConstructorHandle() != null) {
+            try {
+                return (T) cm.getDefaultConstructorHandle().invoke();
+            } catch (Throwable e) {
+                throw new JsonbException(Messages.getMessage(
+                        MessageKeys.DEFAULT_CONSTRUCTOR_EXEC_FAILED, cm.getType()));
+            }
+        } else {
+            return (T) createNoArgConstructorInstance(cm.getDefaultConstructor());
+        }
+    }
+
+    /**
      * Get default no argument constructor of the class.
      *
      * @param clazz    Class to get constructor from
@@ -244,6 +268,48 @@ public class ReflectionUtils {
                     throw new JsonbException(Messages.getMessage(MessageKeys.NO_DEFAULT_CONSTRUCTOR, clazz), e);
                 }
                 return null;
+            }
+        });
+    }
+
+    /**
+     * Get method handle for provided constructor.
+     *
+     * @param constructor constructor to retrieve method handle from
+     * @return the constructor method handle or {@code null} if constructor can't be accessed
+     */
+    public static MethodHandle getConstructorHandle(Constructor<?> constructor) {
+        Objects.requireNonNull(constructor);
+        return AccessController.doPrivileged((PrivilegedAction<MethodHandle>) () -> {
+            try {
+                return MethodHandles.lookup().unreflectConstructor(constructor);
+            } catch (IllegalAccessException e) {
+//                throw new JsonbException(Messages.getMessage(
+//                        MessageKeys.DEFAULT_CONSTRUCTOR_ILLEGAL_ACCESS, constructor.getDeclaringClass()), e);
+                return null;
+            }
+        });
+    }
+
+    /**
+     * Get default no argument constructor method handle for provided {@code Class}.
+     * @param clazz {@code Class} to get constructor from
+     * @param required if {@code true}, throws an exception if the default constructor is missing.
+     *                 If {@code false}, returns {@code null} in that case
+     * @return the constructor method handle or {@code null}. Depending on required.
+     */
+    public static MethodHandle getDefaultConstructorHandle(Class<?> clazz, boolean required) {
+        Objects.requireNonNull(clazz);
+        return AccessController.doPrivileged((PrivilegedAction<MethodHandle>) () -> {
+            try {
+                return MethodHandles.publicLookup().unreflectConstructor(clazz.getDeclaredConstructor());
+            } catch (NoSuchMethodException e) {
+                if (required) {
+                    throw new JsonbException(Messages.getMessage(MessageKeys.NO_DEFAULT_CONSTRUCTOR, clazz), e);
+                }
+                return null;
+            } catch (IllegalAccessException e) {
+                throw new JsonbException(Messages.getMessage(MessageKeys.DEFAULT_CONSTRUCTOR_ILLEGAL_ACCESS, clazz), e);
             }
         });
     }

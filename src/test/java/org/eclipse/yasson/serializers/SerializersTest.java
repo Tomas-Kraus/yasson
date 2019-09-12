@@ -11,14 +11,15 @@
  * Roman Grigoriadi
  * Sebastien Rius
  ******************************************************************************/
-
 package org.eclipse.yasson.serializers;
 
-import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.eclipse.yasson.Jsonbs.*;
-
 import static java.util.Collections.singletonMap;
+import static org.eclipse.yasson.Jsonbs.defaultJsonb;
+import static org.eclipse.yasson.Jsonbs.nullableJsonb;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.StringReader;
 import java.lang.reflect.Type;
@@ -66,6 +67,7 @@ import org.eclipse.yasson.serializers.model.SimpleAnnotatedSerializedArrayContai
 import org.eclipse.yasson.serializers.model.SimpleContainer;
 import org.eclipse.yasson.serializers.model.StringWrapper;
 import org.eclipse.yasson.serializers.model.SupertypeSerializerPojo;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Roman Grigoriadi
@@ -415,6 +417,36 @@ public class SerializersTest {
     }
 
     @Test
+    public void testStringObjectDeserializer() {
+        String json = "{" +
+            "    \"first\": \"first data\"," +
+            "    \"second\": 2," +
+            "    \"third\": true," +
+            "    \"fourth\": false," +
+            "    \"fifth\": null," +
+            "    \"sixth\": \"first data\"," +
+            "    \"seventh\": 2," +
+            "    \"eighth\": true," +
+            "    \"ninth\": false," +
+            "    \"tenth\": null," +
+            "    \"eleventh\": \"first data\"," +
+            "    \"twelfth\": 2," +
+            "    \"thirteenth\": true," +
+            "    \"fourteenth\": false," +
+            "    \"fifteenth\": null," +
+            "    \"sixteenth\": \"first data\"," +
+            "    \"seventeenth\": 2," +
+            "    \"eighteenth\": true," +
+            "    \"nineteenth\": false," +
+            "    \"twentieth\": null" +
+            "}";
+        //Jsonb jsonb = JsonbBuilder.create();
+        Jsonb jsonb = JsonbBuilder.create(new JsonbConfig().setProperty("experimental.deserializer", true));
+        Object pojo = jsonb.fromJson(json, Object.class);
+        System.out.println("Returned: " + (pojo != null ? pojo.getClass().getName() : "null"));
+    }
+
+    @Test
     public void testGenericPropertyPojoSerializer() {
         GenericPropertyPojo<Number> numberPojo = new GenericPropertyPojo<>();
         numberPojo.setProperty(10L);
@@ -516,4 +548,5 @@ public class SerializersTest {
         crateInner.crateInnerBigDec = BigDecimal.TEN;
         return crateInner;
     }
+
 }
