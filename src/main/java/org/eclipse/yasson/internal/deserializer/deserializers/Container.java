@@ -14,6 +14,8 @@ package org.eclipse.yasson.internal.deserializer.deserializers;
 
 import java.lang.reflect.Type;
 
+import org.eclipse.yasson.internal.deserializer.ParserContext;
+
 /**
  * Container deserializer.
  * <p>
@@ -26,10 +28,30 @@ import java.lang.reflect.Type;
  * @param <V> the type of container value
  * @param <T> the type of returned value
  */
-public abstract class Container<K, V, T> extends Deserializer<T> {
+public abstract class Container<K, V, T> {
 
     /** Key of current JSON object value being parsed. Makes no sense for <i>JSON array</i> deserialization. */
     private K key;
+
+    /** Deserialization context. */
+    ParserContext uCtx;
+
+    /**
+     * Notification about beginning of container deserialization.
+     *
+     * @param uCtx deserialization context
+     */
+    public void start(ParserContext uCtx) {
+        this.uCtx = uCtx;
+    }
+
+    /**
+     * Notification about end of container deserialization.
+     * Finalize building of value to be returned.
+     *
+     * @return value to be returned
+     */
+    public abstract T build();
 
     /**
      * Set key of next JSON object value to be added to the container.

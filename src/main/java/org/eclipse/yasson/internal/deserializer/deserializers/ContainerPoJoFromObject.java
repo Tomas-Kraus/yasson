@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.yasson.internal.ReflectionUtils;
-import org.eclipse.yasson.internal.deserializer.ParserContext;
 import org.eclipse.yasson.internal.model.ClassModel;
 import org.eclipse.yasson.internal.model.CreatorModel;
 import org.eclipse.yasson.internal.model.JsonbCreator;
@@ -142,7 +141,7 @@ public abstract class ContainerPoJoFromObject<T> extends Container<String, Objec
          * @return target Java {@code List} value
          */
         @Override
-        public T deserialize(ParserContext uCtx) {
+        public T build() {
             return instance;
         }
 
@@ -212,7 +211,7 @@ public abstract class ContainerPoJoFromObject<T> extends Container<String, Objec
          */
         @Override
         @SuppressWarnings("unchecked")
-        public T deserialize(ParserContext uCtx) {
+        public T build() {
             final CreatorModel[] params = creator.getParams();
             final int parLength = params.length;
             Object[] paramValues = new Object[parLength];

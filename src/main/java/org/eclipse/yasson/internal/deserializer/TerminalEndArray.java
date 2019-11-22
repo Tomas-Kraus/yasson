@@ -15,12 +15,11 @@ package org.eclipse.yasson.internal.deserializer;
 import java.lang.reflect.Type;
 
 import org.eclipse.yasson.internal.deserializer.deserializers.Container;
-import org.eclipse.yasson.internal.deserializer.deserializers.Deserializer;
 
 /**
  * {@code END_ARRAY} terminal symbol.
  */
-final class TerminalEndArray extends SymbolTerminal {
+final class TerminalEndArray extends TerminalContainer {
 
     /** Instance of {@code END_ARRAY} terminal symbol class. */
     private static final TerminalEndArray INSTANCE = new TerminalEndArray();
@@ -41,13 +40,13 @@ final class TerminalEndArray extends SymbolTerminal {
      * @param uCtx deserialization context
      * @param type target Java type for deserialization
      * @param parent parent stack item reference
-     * @param deserializer primitive type deserializer
+     * @param deserializer complex type deserializer
      */
     @Override
     @SuppressWarnings("unchecked")
-    void read(ParserContext uCtx, Type type, StackNode parent, Deserializer<?> deserializer) {
+    void read(ParserContext uCtx, Type type, StackNode parent, Container<?, ?, ?> deserializer) {
         if (parent != null && parent.getContainer() != null) {
-            ((Container<Object, Object, Object>) parent.getContainer()).addValue(deserializer.deserialize(uCtx));
+            ((Container<Object, Object, Object>) parent.getContainer()).addValue(deserializer.build());
         }
     }
 

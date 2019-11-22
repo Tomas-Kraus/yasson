@@ -15,12 +15,11 @@ package org.eclipse.yasson.internal.deserializer;
 import java.lang.reflect.Type;
 
 import org.eclipse.yasson.internal.deserializer.deserializers.Container;
-import org.eclipse.yasson.internal.deserializer.deserializers.Deserializer;
 
 /**
  * {@code KEY_NAME} terminal symbol.
  */
-final class TerminalKeyName extends SymbolTerminal {
+final class TerminalKeyName {
 
     /** Instance of {@code KEY_NAME} terminal symbol class. */
     private static final TerminalKeyName INSTANCE = new TerminalKeyName();
@@ -42,9 +41,8 @@ final class TerminalKeyName extends SymbolTerminal {
      * @param parent parent stack item reference
      * @param deserializer primitive type deserializer
      */
-    @Override
     @SuppressWarnings("unchecked")
-    void read(ParserContext uCtx, Type type, StackNode parent, Deserializer<?> deserializer) {
+    void read(ParserContext uCtx, Type type, StackNode parent) {
         ((Container<Object, Object, Object>) parent.getContainer()).setKey(uCtx.getParser().getString());
     }
 

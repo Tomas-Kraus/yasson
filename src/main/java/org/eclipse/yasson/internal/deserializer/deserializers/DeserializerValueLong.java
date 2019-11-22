@@ -9,12 +9,36 @@ public final class DeserializerValueLong extends Deserializer<Long> {
 
     static final Deserializer<Long> INSTANCE = new DeserializerValueLong();
 
+    private static final Long VALUE_TRUE = Long.valueOf(1L);
+    
+    private static final Long VALUE_FALSE = Long.valueOf(0L);
+
     private DeserializerValueLong() {
     }
 
     @Override
-    public Long deserialize(ParserContext uCtx) {
+    public Long stringValue(ParserContext uCtx) {
         return Long.parseLong(uCtx.getParser().getString());
+    }
+
+    @Override
+    public Long numberValue(ParserContext uCtx) {
+        return Long.parseLong(uCtx.getParser().getString());
+    }
+
+    @Override
+    public Long trueValue(ParserContext uCtx) {
+        return VALUE_TRUE;
+    }
+
+    @Override
+    public Long falseValue(ParserContext uCtx) {
+        return VALUE_FALSE;
+    }
+
+    @Override
+    public Long nullValue(ParserContext uCtx) {
+        return null;
     }
 
 }

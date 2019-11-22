@@ -18,7 +18,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
-import org.eclipse.yasson.internal.deserializer.ParserContext;
 import org.eclipse.yasson.internal.model.ClassModel;
 
 /**
@@ -105,7 +104,7 @@ abstract class ContainerArrayFromArray<V, T> extends Container<Void, V, T> {
          * @return target Java array value
          */
         @Override
-        public V[] deserialize(ParserContext uCtx) {
+        public V[] build() {
             @SuppressWarnings("unchecked")
             final V[] array = (V[]) Array.newInstance(valueType, getList().size());
             for (int i = 0; i < getList().size(); i++) {
@@ -158,7 +157,7 @@ abstract class ContainerArrayFromArray<V, T> extends Container<Void, V, T> {
          * @return target Java byte array value
          */
         @Override
-        public byte[] deserialize(ParserContext uCtx) {
+        public byte[] build() {
             final byte[] array = new byte[getList().size()];
             for (int i = 0; i < getList().size(); i++) {
                 array[i] = getList().get(i);
@@ -210,7 +209,7 @@ abstract class ContainerArrayFromArray<V, T> extends Container<Void, V, T> {
          * @return target Java Byte array value
          */
         @Override
-        public Byte[] deserialize(ParserContext uCtx) {
+        public Byte[] build() {
             return getList().toArray(new Byte[getList().size()]);
         }
 
@@ -258,7 +257,7 @@ abstract class ContainerArrayFromArray<V, T> extends Container<Void, V, T> {
          * @return target Java short array value
          */
         @Override
-        public short[] deserialize(ParserContext uCtx) {
+        public short[] build() {
             final short[] array = new short[getList().size()];
             for (int i = 0; i < getList().size(); i++) {
                 array[i] = getList().get(i);
@@ -310,7 +309,7 @@ abstract class ContainerArrayFromArray<V, T> extends Container<Void, V, T> {
          * @return target Java Short array value
          */
         @Override
-        public Short[] deserialize(ParserContext uCtx) {
+        public Short[] build() {
             return getList().toArray(new Short[getList().size()]);
         }
 
@@ -358,7 +357,7 @@ abstract class ContainerArrayFromArray<V, T> extends Container<Void, V, T> {
          * @return target Java int array value
          */
         @Override
-        public int[] deserialize(ParserContext uCtx) {
+        public int[] build() {
             final int[] array = new int[getList().size()];
             for (int i = 0; i < getList().size(); i++) {
                 array[i] = getList().get(i);
@@ -410,7 +409,7 @@ abstract class ContainerArrayFromArray<V, T> extends Container<Void, V, T> {
          * @return target Java Integer array value
          */
         @Override
-        public Integer[] deserialize(ParserContext uCtx) {
+        public Integer[] build() {
             return getList().toArray(new Integer[getList().size()]);
         }
 
@@ -458,7 +457,7 @@ abstract class ContainerArrayFromArray<V, T> extends Container<Void, V, T> {
          * @return target Java long array value
          */
         @Override
-        public long[] deserialize(ParserContext uCtx) {
+        public long[] build() {
             final long[] array = new long[getList().size()];
             for (int i = 0; i < getList().size(); i++) {
                 array[i] = getList().get(i);
@@ -510,7 +509,7 @@ abstract class ContainerArrayFromArray<V, T> extends Container<Void, V, T> {
          * @return target Java Long array value
          */
         @Override
-        public Long[] deserialize(ParserContext uCtx) {
+        public Long[] build() {
             return getList().toArray(new Long[getList().size()]);
         }
 
@@ -558,7 +557,7 @@ abstract class ContainerArrayFromArray<V, T> extends Container<Void, V, T> {
          * @return target Java float array value
          */
         @Override
-        public float[] deserialize(ParserContext uCtx) {
+        public float[] build() {
             final float[] array = new float[getList().size()];
             for (int i = 0; i < getList().size(); i++) {
                 array[i] = getList().get(i);
@@ -610,7 +609,7 @@ abstract class ContainerArrayFromArray<V, T> extends Container<Void, V, T> {
          * @return target Java Float array value
          */
         @Override
-        public Float[] deserialize(ParserContext uCtx) {
+        public Float[] build() {
             return getList().toArray(new Float[getList().size()]);
         }
 
@@ -658,7 +657,7 @@ abstract class ContainerArrayFromArray<V, T> extends Container<Void, V, T> {
          * @return target Java double array value
          */
         @Override
-        public double[] deserialize(ParserContext uCtx) {
+        public double[] build() {
             final double[] array = new double[getList().size()];
             for (int i = 0; i < getList().size(); i++) {
                 array[i] = getList().get(i);
@@ -710,7 +709,7 @@ abstract class ContainerArrayFromArray<V, T> extends Container<Void, V, T> {
          * @return target Java Double array value
          */
         @Override
-        public Double[] deserialize(ParserContext uCtx) {
+        public Double[] build() {
             return getList().toArray(new Double[getList().size()]);
         }
 
@@ -758,7 +757,7 @@ abstract class ContainerArrayFromArray<V, T> extends Container<Void, V, T> {
          * @return target Java BigInteger array value
          */
         @Override
-        public BigInteger[] deserialize(ParserContext uCtx) {
+        public BigInteger[] build() {
             return getList().toArray(new BigInteger[getList().size()]);
         }
 
@@ -806,7 +805,7 @@ abstract class ContainerArrayFromArray<V, T> extends Container<Void, V, T> {
          * @return target Java BigDecimal array value
          */
         @Override
-        public BigDecimal[] deserialize(ParserContext uCtx) {
+        public BigDecimal[] build() {
             return getList().toArray(new BigDecimal[getList().size()]);
         }
 

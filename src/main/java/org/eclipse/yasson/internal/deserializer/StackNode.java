@@ -94,7 +94,7 @@ abstract class StackNode {
      *
      * @return {@link Container} type converter for JSON structure
      */
-    Container<?, ?, ?> getContainer() {
+    Container<? extends Object, ? extends Object, ? extends Object> getContainer() {
        return container;
     }
 

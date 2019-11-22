@@ -18,7 +18,7 @@ public class ContainerSimple extends Container<Void, Object, Object> {
     }
 
     @Override
-    public Object deserialize(ParserContext uCtx) {
+    public Object build() {
         return value;
     }
 

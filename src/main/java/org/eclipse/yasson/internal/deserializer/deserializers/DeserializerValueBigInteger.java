@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2019 Oracle and/or its affiliates. All rights reserved.
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
+ * which accompanies this distribution.
+ * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
+ * and the Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * Contributors:
+ * Tomas Kraus
+ ******************************************************************************/
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
 import java.math.BigInteger;
@@ -11,12 +23,36 @@ public final class DeserializerValueBigInteger extends Deserializer<BigInteger> 
 
     static final Deserializer<BigInteger> INSTANCE = new DeserializerValueBigInteger();
 
+    private static final BigInteger VALUE_TRUE = BigInteger.valueOf(1);
+    
+    private static final BigInteger VALUE_FALSE = BigInteger.valueOf(0);
+
     private DeserializerValueBigInteger() {
     }
 
     @Override
-    public BigInteger deserialize(ParserContext uCtx) {
+    public BigInteger stringValue(ParserContext uCtx) {
         return new BigInteger(uCtx.getParser().getString());
+    }
+
+    @Override
+    public BigInteger numberValue(ParserContext uCtx) {
+        return new BigInteger(uCtx.getParser().getString());
+    }
+
+    @Override
+    public BigInteger trueValue(ParserContext uCtx) {
+        return VALUE_TRUE;
+    }
+
+    @Override
+    public BigInteger falseValue(ParserContext uCtx) {
+        return VALUE_FALSE;
+    }
+
+    @Override
+    public BigInteger nullValue(ParserContext uCtx) {
+        return null;
     }
 
 }

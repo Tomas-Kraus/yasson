@@ -14,12 +14,12 @@ package org.eclipse.yasson.internal.deserializer;
 
 import java.lang.reflect.Type;
 
-import org.eclipse.yasson.internal.deserializer.deserializers.Deserializer;
+import org.eclipse.yasson.internal.deserializer.deserializers.Container;
 
 /**
- * Represents grammar terminal symbol and it's processing.
+ * Represents grammar terminal symbol of complex JSON value ({@code array} or {@code object}) and it's processing.
  */
-abstract class SymbolTerminal {
+abstract class TerminalContainer {
 
     /**
      * Reads and converts current JSON token to corresponding Java value depending on target Java type and deserializer.
@@ -27,8 +27,8 @@ abstract class SymbolTerminal {
      * @param uCtx deserialization context
      * @param type target Java type for deserialization
      * @param parent parent stack item reference
-     * @param deserializer primitive type deserializer
+     * @param deserializer complex type deserializer
      */
-    abstract void read(ParserContext uCtx, Type type, StackNode parent, Deserializer<?> deserializer);
+    abstract void read(ParserContext uCtx, Type type, StackNode parent, Container<?, ?, ?> deserializer);
 
 }

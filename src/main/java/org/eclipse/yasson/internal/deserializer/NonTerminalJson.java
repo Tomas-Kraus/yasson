@@ -14,8 +14,8 @@ package org.eclipse.yasson.internal.deserializer;
 
 import java.math.BigDecimal;
 
+import org.eclipse.yasson.internal.deserializer.deserializers.Container;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerSimple;
-import org.eclipse.yasson.internal.deserializer.deserializers.Deserializers;
 
 /**
  * JSON-B parser initial non terminal symbol {@code JSON}.
@@ -73,12 +73,13 @@ final class NonTerminalJson extends SymbolNonTerminal {
      */
     @Override
     void expandStartObject(ParserContext uCtx, StackNode parent) {
+        final Container<?, ?, ?> container = ResolveType.deserializerForObject(uCtx, parent.getType());
         uCtx.getStack().push(
                 new StackNodeNonTerminalReduced(
                         NonTerminalJsonObject.getInstance(), parent,
                         uCtx.getJsonbContext().getConfigProperties().getDefaultMapImplType(),
-                        ResolveType.deserializerForObject(uCtx, parent.getType())));
-        TerminalStartObject.getInstance().read(uCtx, null, parent, null);
+                        container));
+        TerminalStartObject.getInstance().read(uCtx, null, parent, container);
         uCtx.nextToken();
     }
 
@@ -92,12 +93,13 @@ final class NonTerminalJson extends SymbolNonTerminal {
      */
     @Override
     void expandStartArray(ParserContext uCtx, StackNode parent) {
+        final Container<?, ?, ?> container = ResolveType.deserializerForArray(uCtx, parent.getType());
         uCtx.getStack().push(
                 new StackNodeNonTerminalReduced(
                         NonTerminalJsonArray.getInstance(), parent,
                         parent.getType(),
-                        ResolveType.deserializerForArray(uCtx, parent.getType())));
-        TerminalStartArray.getInstance().read(uCtx, null, parent, null);
+                        container));
+        TerminalStartArray.getInstance().read(uCtx, null, parent, container);
         uCtx.nextToken();
     }
 
@@ -114,7 +116,8 @@ final class NonTerminalJson extends SymbolNonTerminal {
         // JSON (parent) is last stack symbol before getting empty, it shall hold output data.
         parent.setContainer(new ContainerSimple());
         TerminalValueString.getInstance().read(
-                uCtx, String.class, parent, uCtx.getDeserializers().deserializer(parent.getType()));
+                uCtx, String.class, parent,
+                uCtx.getDeserializers().deserializer(parent.getType()));
         uCtx.nextToken();
     }
 
@@ -131,7 +134,8 @@ final class NonTerminalJson extends SymbolNonTerminal {
         // JSON (parent) is last stack symbol before getting empty, it shall hold output data.
         parent.setContainer(new ContainerSimple());
         TerminalValueNumber.getInstance().read(
-                uCtx, BigDecimal.class, parent, uCtx.getDeserializers().deserializer(parent.getType()));
+                uCtx, BigDecimal.class, parent,
+                uCtx.getDeserializers().deserializer(parent.getType()));
         uCtx.nextToken();
     }
 
@@ -148,7 +152,8 @@ final class NonTerminalJson extends SymbolNonTerminal {
         // JSON (parent) is last stack symbol before getting empty, it shall hold output data.
         parent.setContainer(new ContainerSimple());
         TerminalValueTrue.getInstance().read(
-                uCtx, Boolean.class, parent, Deserializers.trueDeserializer(parent.getType()));
+                uCtx, Boolean.class, parent
+                , uCtx.getDeserializers().deserializer(parent.getType()));
         uCtx.nextToken();
     }
 
@@ -165,7 +170,8 @@ final class NonTerminalJson extends SymbolNonTerminal {
         // JSON (parent) is last stack symbol before getting empty, it shall hold output data.
         parent.setContainer(new ContainerSimple());
         TerminalValueFalse.getInstance().read(
-                uCtx, Boolean.class, parent, Deserializers.falseDeserializer(parent.getType()));
+                uCtx, Boolean.class, parent,
+                uCtx.getDeserializers().deserializer(parent.getType()));
         uCtx.nextToken();
     }
 
@@ -182,7 +188,8 @@ final class NonTerminalJson extends SymbolNonTerminal {
         // JSON (parent) is last stack symbol before getting empty, it shall hold output data.
         parent.setContainer(new ContainerSimple());
         TerminalValueNull.getInstance().read(
-                uCtx, null, parent, Deserializers.nullDeserializer(parent.getType()));
+                uCtx, null, parent,
+                uCtx.getDeserializers().deserializer(parent.getType()));
         uCtx.nextToken();
     }
 

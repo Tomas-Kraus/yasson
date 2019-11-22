@@ -20,7 +20,7 @@ import org.eclipse.yasson.internal.deserializer.deserializers.Deserializer;
 /**
  * {@code VALUE_NUMBER} terminal symbol.
  */
-final class TerminalValueNumber extends SymbolTerminal {
+final class TerminalValueNumber extends TerminalValue {
 
     /** Instance of {@code VALUE_NUMBER} terminal symbol class. */
     private static final TerminalValueNumber INSTANCE = new TerminalValueNumber();
@@ -45,7 +45,7 @@ final class TerminalValueNumber extends SymbolTerminal {
     @Override
     @SuppressWarnings("unchecked")
     void read(ParserContext uCtx, Type type, StackNode parent, Deserializer<?> deserializer) {
-        ((Container<Object, Object, Object>) parent.getContainer()).addValue(deserializer.deserialize(uCtx));
+        ((Container<Object, Object, Object>) parent.getContainer()).addValue(deserializer.numberValue(uCtx));
     }
 
 }

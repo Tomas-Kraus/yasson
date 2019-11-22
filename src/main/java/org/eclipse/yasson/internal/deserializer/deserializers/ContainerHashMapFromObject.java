@@ -3,7 +3,6 @@ package org.eclipse.yasson.internal.deserializer.deserializers;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.yasson.internal.deserializer.ParserContext;
 import org.eclipse.yasson.internal.model.ClassModel;
 
 /**
@@ -56,7 +55,7 @@ class ContainerHashMapFromObject extends Container<String, Object, Map<String, O
      * @return target Java {@code List} value
      */
     @Override
-    public final Map<String, Object> deserialize(ParserContext uCtx) {
+    public final Map<String, Object> build() {
         return map;
     }
 

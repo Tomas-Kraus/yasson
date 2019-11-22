@@ -14,6 +14,7 @@ package org.eclipse.yasson.internal.deserializer;
 
 import javax.json.stream.JsonParser;
 
+import org.eclipse.yasson.internal.deserializer.deserializers.Container;
 import org.eclipse.yasson.internal.deserializer.deserializers.Deserializers;
 
 /**
@@ -74,46 +75,54 @@ final class NonTerminalJsonObject extends SymbolNonTerminal {
      */
     @Override
     void expandKeyName(ParserContext uCtx, StackNode parent) {
-        TerminalKeyName.getInstance().read(uCtx, null, parent, null);
+        TerminalKeyName.getInstance().read(uCtx, null, parent);
         uCtx.nextToken();
         switch (uCtx.getToken()) {
             case START_OBJECT:
+                final Container<?, ?, ?> objectContainer = ResolveType.deserializerForObject(uCtx, parent.getType());
                 uCtx.getStack().push(
                         new StackNodeNonTerminalReduced(
                                 NonTerminalJsonObject.getInstance(), parent,
                                 parent.getContainer().valueType(),
-                                ResolveType.deserializerForObject(uCtx, parent.getContainer().valueType())));
-                TerminalStartObject.getInstance().read(uCtx, null, parent, null);
+                                objectContainer));
+                TerminalStartObject.getInstance().read(uCtx, null, parent, objectContainer);
                 break;
             case START_ARRAY:
+                final Container<?, ?, ?> arrayContainer = ResolveType.deserializerForArray(uCtx, parent.getType());
                 uCtx.getStack().push(
                         new StackNodeNonTerminalReduced(
                                 NonTerminalJsonArray.getInstance(), parent,
                                 parent.getContainer().valueType(),
-                                ResolveType.deserializerForArray(uCtx, parent.getContainer().valueType())));
-                TerminalStartArray.getInstance().read(uCtx, null, parent, null);
+                                arrayContainer));
+                TerminalStartArray.getInstance().read(uCtx, null, parent, arrayContainer);
                 break;
             case VALUE_STRING:
                 TerminalValueString.getInstance().read(
-                        uCtx, parent.getContainer().valueType(), parent, uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
+                        uCtx, parent.getContainer().valueType(), parent,
+                        uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
                 break;
             case VALUE_NUMBER:
                 TerminalValueNumber.getInstance().read(
-                        uCtx, parent.getContainer().valueType(), parent, uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
+                        uCtx, parent.getContainer().valueType(), parent,
+                        uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
                 break;
             case VALUE_TRUE:
                 TerminalValueTrue.getInstance().read(
-                        uCtx, parent.getContainer().valueType(), parent, Deserializers.trueDeserializer(parent.getContainer().valueType()));
+                        uCtx, parent.getContainer().valueType(), parent,
+                        uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
                 break;
             case VALUE_FALSE:
                 TerminalValueFalse.getInstance().read(
-                        uCtx, parent.getContainer().valueType(), parent, Deserializers.falseDeserializer(parent.getContainer().valueType()));
+                        uCtx, parent.getContainer().valueType(), parent,
+                        uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
                 break;
             case VALUE_NULL:
                 TerminalValueNull.getInstance().read(
-                        uCtx, parent.getContainer().valueType(), parent, Deserializers.nullDeserializer(parent.getContainer().valueType()));
+                        uCtx, parent.getContainer().valueType(), parent,
+                        uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
                 break;
-            default: throw new IllegalStateException("Illegal JSON token " + uCtx.getToken().name() + " after KEY_NAME in JSON object");
+            default: throw new IllegalStateException("Illegal JSON token "
+                + uCtx.getToken().name() + " after KEY_NAME in JSON object");
         }
         uCtx.nextToken();
     }
@@ -128,11 +137,8 @@ final class NonTerminalJsonObject extends SymbolNonTerminal {
      */
     @Override
     void expandEndObject(ParserContext uCtx, StackNode parent) {
-        if (parent != null && parent.getParent() != null) {
             TerminalEndObject.getInstance().read(
-                    uCtx, null, parent != null ? parent.getParent() : null,
-                    parent != null ? parent.getContainer() : null);
-        }
+                    uCtx, null, parent, parent.getContainer());
         uCtx.nextToken();
     }
 

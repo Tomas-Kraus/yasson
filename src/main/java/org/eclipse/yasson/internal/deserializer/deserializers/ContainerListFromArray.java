@@ -46,7 +46,7 @@ abstract class ContainerListFromArray<V> extends ContainerCollectionFromArray<V>
      * @return target Java {@code List} value
      */
     @Override
-    public Collection<V> deserialize(ParserContext uCtx) {
+    public Collection<V> build() {
         return list;
     }
 

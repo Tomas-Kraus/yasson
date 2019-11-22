@@ -37,36 +37,6 @@ public final class Deserializers {
         DESERIALIZERS.put(Object.class, DeserializerValueObject.INSTANCE);
     }
 
-    /**
-     * Get deserializer of JSON {@code true} value.
-     *
-     * @param type type of value to be returned
-     * @return deserializer of JSON {@code true} value
-     */
-    public static Deserializer<?> trueDeserializer(Type type) {
-        return DeserializerFromTrue.BUILDERS.get(type);
-    }
-
-    /**
-     * Get deserializer of JSON {@code false} value.
-     *
-     * @param type type of value to be returned
-     * @return deserializer of JSON {@code false} value
-     */
-    public static Deserializer<?> falseDeserializer(Type type) {
-        return DeserializerFromFalse.BUILDERS.get(type);
-    }
-
-    /**
-     * Get deserializer of JSON {@code null} value.
-     *
-     * @param type type of value to be returned
-     * @return deserializer of JSON {@code null} value
-     */
-    public static Deserializer<?> nullDeserializer(Type type) {
-        return DeserializerFromNull.INSTANCE;
-    }
-
     private final Map<Type, Deserializer<?>> deserializers;
 
     /**

@@ -14,12 +14,12 @@ package org.eclipse.yasson.internal.deserializer;
 
 import java.lang.reflect.Type;
 
-import org.eclipse.yasson.internal.deserializer.deserializers.Deserializer;
+import org.eclipse.yasson.internal.deserializer.deserializers.Container;
 
 /**
  * {@code START_OBJECT} terminal symbol.
  */
-final class TerminalStartObject extends SymbolTerminal {
+final class TerminalStartObject extends TerminalContainer {
 
     /** Instance of {@code START_OBJECT} terminal symbol class. */
     private static final TerminalStartObject INSTANCE = new TerminalStartObject();
@@ -39,10 +39,11 @@ final class TerminalStartObject extends SymbolTerminal {
      * @param uCtx deserialization context
      * @param type target Java type for deserialization
      * @param parent parent stack item reference
-     * @param deserializer primitive type deserializer
+     * @param deserializer complex type deserializer
      */
     @Override
-    void read(ParserContext uCtx, Type type, StackNode parent, Deserializer<?> deserializer) {
+    void read(ParserContext uCtx, Type type, StackNode parent, Container<?, ?, ?> deserializer) {
+        deserializer.start(uCtx);
     }
 
 }

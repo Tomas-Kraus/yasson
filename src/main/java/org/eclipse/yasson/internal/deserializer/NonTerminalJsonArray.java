@@ -14,6 +14,7 @@ package org.eclipse.yasson.internal.deserializer;
 
 import javax.json.stream.JsonParser;
 
+import org.eclipse.yasson.internal.deserializer.deserializers.Container;
 import org.eclipse.yasson.internal.deserializer.deserializers.Deserializers;
 
 /**
@@ -53,12 +54,13 @@ final class NonTerminalJsonArray extends SymbolNonTerminal {
      */
     @Override
     void expandStartObject(ParserContext uCtx, StackNode parent) {
+        final Container<?, ?, ?> container = ResolveType.deserializerForObject(uCtx, parent.getType());
         uCtx.getStack().push(
                 new StackNodeNonTerminalReduced(
                         NonTerminalJsonObject.getInstance(), parent,
                         parent.getContainer().valueType(),
-                        ResolveType.deserializerForObject(uCtx, parent.getContainer().valueType())));
-        TerminalStartObject.getInstance().read(uCtx, null, parent, null);
+                        container));
+        TerminalStartObject.getInstance().read(uCtx, null, parent, container);
         uCtx.nextToken();
     }
 
@@ -72,12 +74,13 @@ final class NonTerminalJsonArray extends SymbolNonTerminal {
      */
     @Override
     void expandStartArray(ParserContext uCtx, StackNode parent) {
+        final Container<?, ?, ?> container = ResolveType.deserializerForArray(uCtx, parent.getType());
         uCtx.getStack().push(
                 new StackNodeNonTerminalReduced(
                         NonTerminalJsonArray.getInstance(), parent,
                         parent.getContainer().valueType(),
-                        ResolveType.deserializerForArray(uCtx, parent.getContainer().valueType())));
-        TerminalStartArray.getInstance().read(uCtx, null, parent, null);
+                        container));
+        TerminalStartArray.getInstance().read(uCtx, null, parent, container);
         uCtx.nextToken();
     }
 
@@ -92,7 +95,8 @@ final class NonTerminalJsonArray extends SymbolNonTerminal {
     @Override
     void expandValueString(ParserContext uCtx, StackNode parent) {
         TerminalValueString.getInstance().read(
-                uCtx, parent.getContainer().valueType(), parent, uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
+                uCtx, parent.getContainer().valueType(), parent,
+                uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
         uCtx.nextToken();
     }
 
@@ -107,7 +111,8 @@ final class NonTerminalJsonArray extends SymbolNonTerminal {
     @Override
     void expandValueNumber(ParserContext uCtx, StackNode parent) {
         TerminalValueNumber.getInstance().read(
-                uCtx, parent.getContainer().valueType(), parent, uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
+                uCtx, parent.getContainer().valueType(), parent,
+                uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
         uCtx.nextToken();
     }
 
@@ -122,7 +127,8 @@ final class NonTerminalJsonArray extends SymbolNonTerminal {
     @Override
     void expandValueTrue(ParserContext uCtx, StackNode parent) {
         TerminalValueTrue.getInstance().read(
-                uCtx, parent.getContainer().valueType(), parent, Deserializers.trueDeserializer(parent.getContainer().valueType()));
+                uCtx, parent.getContainer().valueType(), parent,
+                uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
         uCtx.nextToken();
     }
 
@@ -137,7 +143,8 @@ final class NonTerminalJsonArray extends SymbolNonTerminal {
     @Override
     void expandValueFalse(ParserContext uCtx, StackNode parent) {
         TerminalValueFalse.getInstance().read(
-                uCtx, parent.getContainer().valueType(), parent, Deserializers.falseDeserializer(parent.getContainer().valueType()));
+                uCtx, parent.getContainer().valueType(), parent,
+                uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
         uCtx.nextToken();
     }
 
@@ -152,7 +159,8 @@ final class NonTerminalJsonArray extends SymbolNonTerminal {
     @Override
     void expandValueNull(ParserContext uCtx, StackNode parent) {
         TerminalValueNull.getInstance().read(
-                uCtx, parent.getContainer().valueType(), parent, Deserializers.nullDeserializer(parent.getContainer().valueType()));
+                uCtx, parent.getContainer().valueType(), parent,
+                uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
         uCtx.nextToken();
     }
 
@@ -166,11 +174,8 @@ final class NonTerminalJsonArray extends SymbolNonTerminal {
      */
     @Override
     void expandEndArray(ParserContext uCtx, StackNode parent) {
-        if (parent != null && parent.getParent() != null) {
-            TerminalEndArray.getInstance().read(
-                    uCtx, null, parent != null ? parent.getParent() : null,
-                    parent != null ? parent.getContainer() : null);
-        }
+        TerminalEndArray.getInstance().read(
+                uCtx, null, parent, parent.getContainer());
         uCtx.nextToken();
     }
 

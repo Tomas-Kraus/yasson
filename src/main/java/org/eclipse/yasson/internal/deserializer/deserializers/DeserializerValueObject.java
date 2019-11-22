@@ -2,8 +2,6 @@ package org.eclipse.yasson.internal.deserializer.deserializers;
 
 import java.math.BigDecimal;
 
-import javax.json.stream.JsonParser;
-
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
@@ -17,10 +15,28 @@ public final class DeserializerValueObject extends Deserializer<Object> {
     }
 
     @Override
-    public Object deserialize(ParserContext uCtx) {
-        return uCtx.getToken() == JsonParser.Event.VALUE_NUMBER
-                ? new BigDecimal(uCtx.getParser().getString())
-                : uCtx.getParser().getString();
+    public Object stringValue(ParserContext uCtx) {
+        return uCtx.getParser().getString();
+    }
+
+    @Override
+    public Object numberValue(ParserContext uCtx) {
+        return new BigDecimal(uCtx.getParser().getString());
+    }
+
+    @Override
+    public Object trueValue(ParserContext uCtx) {
+        return Boolean.TRUE;
+    }
+
+    @Override
+    public Object falseValue(ParserContext uCtx) {
+        return Boolean.FALSE;
+    }
+
+    @Override
+    public Object nullValue(ParserContext uCtx) {
+        return null;
     }
 
 }
