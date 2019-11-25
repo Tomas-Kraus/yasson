@@ -16,9 +16,11 @@ public final class Deserializers {
     private static final Map<Type, Deserializer<?>> DESERIALIZERS = new HashMap<>(19);
 
     static {
+        DESERIALIZERS.put(String.class, DeserializerValueString.INSTANCE);
+        DESERIALIZERS.put(Character.class, DeserializerValueChar.INSTANCE);
+        DESERIALIZERS.put(char.class, DeserializerValueChar.INSTANCE);
         DESERIALIZERS.put(boolean.class, DeserializerValueBoolean.INSTANCE);
         DESERIALIZERS.put(Boolean.class, DeserializerValueBoolean.INSTANCE);
-        DESERIALIZERS.put(String.class, DeserializerValueString.INSTANCE);
         DESERIALIZERS.put(byte.class, DeserializerValueByte.INSTANCE);
         DESERIALIZERS.put(Byte.class, DeserializerValueByte.INSTANCE);
         DESERIALIZERS.put(short.class, DeserializerValueShort.INSTANCE);
