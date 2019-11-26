@@ -12,12 +12,15 @@
  ******************************************************************************/
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
+
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
- * Deserialize JSON {@code string} or {@code number} as {@link Short} value.
+ * Deserialize JSON simple value as {@link Short}.
  */
-public final class DeserializerValueShort extends Deserializer<Short> {
+public final class DeserializerValueShort extends DeserializerValueNumbers<Short> {
 
     static final Deserializer<Short> INSTANCE = new DeserializerValueShort();
 
@@ -29,8 +32,20 @@ public final class DeserializerValueShort extends Deserializer<Short> {
     }
 
     @Override
-    public Short stringValue(ParserContext uCtx) {
-        return Short.parseShort(uCtx.getParser().getString());
+    public Class<Short> valueType() {
+        return Short.class;
+    }
+
+    @Override
+    public Short stringValueFormated(String jsonString, DecimalFormat format) throws ParseException {
+        format.setParseIntegerOnly(true);
+        format.setParseBigDecimal(false);
+        return format.parse(jsonString).shortValue();
+    }
+
+    @Override
+    public Short stringValue(String jsonString) {
+        return Short.parseShort(jsonString);
     }
 
     @Override
@@ -46,11 +61,6 @@ public final class DeserializerValueShort extends Deserializer<Short> {
     @Override
     public Short falseValue(ParserContext uCtx) {
         return VALUE_FALSE;
-    }
-
-    @Override
-    public Short nullValue(ParserContext uCtx) {
-        return null;
     }
 
 }

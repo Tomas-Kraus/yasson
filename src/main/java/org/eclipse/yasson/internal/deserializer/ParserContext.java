@@ -12,11 +12,15 @@
  ******************************************************************************/
 package org.eclipse.yasson.internal.deserializer;
 
+import java.math.BigDecimal;
+
 import javax.json.stream.JsonParser;
 
 import org.eclipse.yasson.internal.JsonbContext;
 import org.eclipse.yasson.internal.deserializer.deserializers.Containers;
 import org.eclipse.yasson.internal.deserializer.deserializers.Deserializers;
+import org.eclipse.yasson.internal.model.ClassModel;
+import org.eclipse.yasson.internal.serializer.JsonbNumberFormatter;
 
 /**
  * JSON-B deserialization context.
@@ -84,8 +88,26 @@ public final class ParserContext {
         return token;
     }
 
-    JsonbContext getJsonbContext() {
+    /**
+     * Get current JSON-B context holding central components and configuration.
+     *
+     * @return current JSON-B context
+     */
+    public JsonbContext getJsonbContext() {
         return jsonbContext;
+    }
+
+    /**
+     * Get number formatter for deserialization for provided class if exists.
+     *
+     * @param clazz class to search for
+     * @return number formatter for deserialization for provided class or {@code null} if no such formatter exists
+     */
+    public JsonbNumberFormatter getDeserializeNumberFormatter(Class<?> clazz) {
+        final ClassModel cm = jsonbContext.getMappingContext().getClassModel(BigDecimal.class);
+        return cm != null && cm.getClassCustomization() != null
+                ? cm.getClassCustomization().getDeserializeNumberFormatter()
+                : null;
     }
 
     ParserStack getStack() {

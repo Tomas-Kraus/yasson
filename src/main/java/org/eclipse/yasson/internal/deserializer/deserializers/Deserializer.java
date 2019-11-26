@@ -15,7 +15,7 @@ package org.eclipse.yasson.internal.deserializer.deserializers;
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
- * JSON structure deserializer.
+ * JSON simpe value deserializer.
  * <p>
  * Deserializers are of two basic types:<ul>
  * <li>primitive type deserializer</li>

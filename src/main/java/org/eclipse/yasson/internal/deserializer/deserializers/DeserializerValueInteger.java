@@ -12,12 +12,15 @@
  ******************************************************************************/
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
+
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
- * Deserialize JSON {@code string} or {@code number} as {@link Integer} value.
+ * Deserialize JSON simple value as {@link Integer}.
  */
-public final class DeserializerValueInteger extends Deserializer<Integer> {
+public final class DeserializerValueInteger extends DeserializerValueNumbers<Integer> {
 
     static final Deserializer<Integer> INSTANCE = new DeserializerValueInteger();
 
@@ -29,8 +32,20 @@ public final class DeserializerValueInteger extends Deserializer<Integer> {
     }
 
     @Override
-    public Integer stringValue(ParserContext uCtx) {
-        return Integer.parseInt(uCtx.getParser().getString());
+    public Class<Integer> valueType() {
+        return Integer.class;
+    }
+
+    @Override
+    public Integer stringValueFormated(String jsonString, DecimalFormat format) throws ParseException {
+        format.setParseIntegerOnly(true);
+        format.setParseBigDecimal(false);
+        return format.parse(jsonString).intValue();
+    }
+
+    @Override
+    public Integer stringValue(String jsonString) {
+        return Integer.parseInt(jsonString);
     }
 
     @Override
@@ -46,11 +61,6 @@ public final class DeserializerValueInteger extends Deserializer<Integer> {
     @Override
     public Integer falseValue(ParserContext uCtx) {
         return VALUE_FALSE;
-    }
-
-    @Override
-    public Integer nullValue(ParserContext uCtx) {
-        return null;
     }
 
 }

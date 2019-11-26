@@ -12,12 +12,15 @@
  ******************************************************************************/
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
+
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
  * Deserialize JSON {@code string} or {@code number} as {@link Double} value.
  */
-public final class DeserializerValueDouble extends Deserializer<Double> {
+public final class DeserializerValueDouble extends DeserializerValueNumbers<Double> {
 
     static final Deserializer<Double> INSTANCE = new DeserializerValueDouble();
 
@@ -29,8 +32,20 @@ public final class DeserializerValueDouble extends Deserializer<Double> {
     }
 
     @Override
-    public Double stringValue(ParserContext uCtx) {
-        return Double.parseDouble(uCtx.getParser().getString());
+    public Class<Double> valueType() {
+        return Double.class;
+    }
+
+    @Override
+    public Double stringValueFormated(String jsonString, DecimalFormat format) throws ParseException {
+        format.setParseIntegerOnly(false);
+        format.setParseBigDecimal(false);
+        return format.parse(jsonString).doubleValue();
+    }
+
+    @Override
+    public Double stringValue(String jsonString) {
+        return Double.parseDouble(jsonString);
     }
 
     @Override
@@ -46,11 +61,6 @@ public final class DeserializerValueDouble extends Deserializer<Double> {
     @Override
     public Double falseValue(ParserContext uCtx) {
         return VALUE_FALSE;
-    }
-
-    @Override
-    public Double nullValue(ParserContext uCtx) {
-        return null;
     }
 
 }
