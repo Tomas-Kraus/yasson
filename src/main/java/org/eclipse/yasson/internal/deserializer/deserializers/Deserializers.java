@@ -3,10 +3,15 @@ package org.eclipse.yasson.internal.deserializer.deserializers;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.util.*;
 
 import org.eclipse.yasson.internal.JsonbContext;
+
+import javax.json.JsonArray;
+import javax.json.JsonNumber;
+import javax.json.JsonString;
+import javax.json.JsonValue;
 
 /**
  * Primitive types deserializers selection utilities.
@@ -37,6 +42,15 @@ public final class Deserializers {
         DESERIALIZERS.put(BigDecimal.class, DeserializerValueBigDecimal.INSTANCE);
         DESERIALIZERS.put(Number.class, DeserializerValueBigDecimal.INSTANCE);
         DESERIALIZERS.put(Object.class, DeserializerValueObject.INSTANCE);
+        DESERIALIZERS.put(JsonValue.class, DeserializerValueJsonValue.INSTANCE);
+        DESERIALIZERS.put(JsonString.class, DeserializerValueJsonStringType.INSTANCE);
+        DESERIALIZERS.put(JsonArray.class, DeserializerValueJsonArray.INSTANCE);
+        DESERIALIZERS.put(JsonNumber.class, DeserializerValueJsonNumber.INSTANCE);
+        DESERIALIZERS.put(Timestamp.class, DeserializerValueSqlTimestamp.INSTANCE);
+        DESERIALIZERS.put(OptionalDouble.class, DeserializerValueOptionalDoubleType.INSTANCE);
+        DESERIALIZERS.put(OptionalInt.class, DeserializerValueOptionalIntType.INSTANCE);
+        DESERIALIZERS.put(OptionalLong.class, DeserializerValueOptionalLongType.INSTANCE);
+        DESERIALIZERS.put(Optional.class, DeserializerValueOptionalObject.INSTANCE);
     }
 
     private final Map<Type, Deserializer<?>> deserializers;
