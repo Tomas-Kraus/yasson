@@ -12,12 +12,15 @@
  ******************************************************************************/
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
+
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
  * Deserialize JSON {@code string} or {@code number} as {@link Float} value.
  */
-public final class DeserializerValueFloat extends Deserializer<Float> {
+public final class DeserializerValueFloat extends DeserializerValueNumbers<Float> {
 
     static final Deserializer<Float> INSTANCE = new DeserializerValueFloat();
 
@@ -29,8 +32,20 @@ public final class DeserializerValueFloat extends Deserializer<Float> {
     }
 
     @Override
-    public Float stringValue(ParserContext uCtx) {
-        return Float.parseFloat(uCtx.getParser().getString());
+    public Class<Float> valueType() {
+        return Float.class;
+    }
+
+    @Override
+    public Float stringValueFormated(String jsonString, DecimalFormat format) throws ParseException {
+        format.setParseIntegerOnly(false);
+        format.setParseBigDecimal(false);
+        return format.parse(jsonString).floatValue();
+    }
+
+    @Override
+    public Float stringValue(String jsonString) {
+        return Float.parseFloat(jsonString);
     }
 
     @Override
@@ -46,11 +61,6 @@ public final class DeserializerValueFloat extends Deserializer<Float> {
     @Override
     public Float falseValue(ParserContext uCtx) {
         return VALUE_FALSE;
-    }
-
-    @Override
-    public Float nullValue(ParserContext uCtx) {
-        return null;
     }
 
 }

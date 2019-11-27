@@ -12,14 +12,17 @@
  ******************************************************************************/
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.DecimalFormat;
+import java.text.ParseException;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
  * Deserialize JSON {@code string} or {@code number} as {@link BigInteger} value.
  */
-public final class DeserializerValueBigInteger extends Deserializer<BigInteger> {
+public final class DeserializerValueBigInteger extends DeserializerValueNumbers<BigInteger> {
 
     static final Deserializer<BigInteger> INSTANCE = new DeserializerValueBigInteger();
 
@@ -31,8 +34,20 @@ public final class DeserializerValueBigInteger extends Deserializer<BigInteger> 
     }
 
     @Override
-    public BigInteger stringValue(ParserContext uCtx) {
-        return new BigInteger(uCtx.getParser().getString());
+    public Class<BigInteger> valueType() {
+        return BigInteger.class;
+    }
+
+    @Override
+    public BigInteger stringValueFormated(String jsonString, DecimalFormat format) throws ParseException {
+        format.setParseIntegerOnly(true);
+        format.setParseBigDecimal(true);
+        return ((BigDecimal) format.parse(jsonString)).toBigIntegerExact();
+    }
+
+    @Override
+    public BigInteger stringValue(String jsonString) {
+        return new BigInteger(jsonString);
     }
 
     @Override
@@ -48,11 +63,6 @@ public final class DeserializerValueBigInteger extends Deserializer<BigInteger> 
     @Override
     public BigInteger falseValue(ParserContext uCtx) {
         return VALUE_FALSE;
-    }
-
-    @Override
-    public BigInteger nullValue(ParserContext uCtx) {
-        return null;
     }
 
 }
