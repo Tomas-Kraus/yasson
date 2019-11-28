@@ -18,7 +18,7 @@ import javax.json.JsonArray;
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
- * Deserialize JSON value as {@link JsonArray}.
+ * Deserialize JSON array as {@link JsonArray}.
  */
 public final class DeserializerValueJsonArray extends Deserializer<JsonArray> {
 
@@ -34,6 +34,16 @@ public final class DeserializerValueJsonArray extends Deserializer<JsonArray> {
 
     @Override
     public JsonArray numberValue(ParserContext uCtx) {
+        return uCtx.getParser().getArray();
+    }
+
+    @Override
+    public JsonArray trueValue(ParserContext uCtx) {
+        return uCtx.getParser().getArray();
+    }
+
+    @Override
+    public JsonArray falseValue(ParserContext uCtx) {
         return uCtx.getParser().getArray();
     }
 
