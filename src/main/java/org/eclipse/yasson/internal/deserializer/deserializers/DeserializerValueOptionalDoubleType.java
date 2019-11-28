@@ -18,7 +18,7 @@ import java.util.OptionalDouble;
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
- * Deserialize JSON array as {@link OptionalDouble}.
+ * Deserialize JSON value as {@link OptionalDouble}.
  */
 public final class DeserializerValueOptionalDoubleType extends Deserializer<OptionalDouble> {
 

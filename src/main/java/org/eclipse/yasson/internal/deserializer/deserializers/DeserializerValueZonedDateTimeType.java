@@ -18,7 +18,7 @@ import java.time.ZonedDateTime;
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
- * Deserialize JSON array as {@link ZonedDateTime}.
+ * Deserialize JSON value as {@link ZonedDateTime}.
  */
 public final class DeserializerValueZonedDateTimeType extends Deserializer<ZonedDateTime> {
 

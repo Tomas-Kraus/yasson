@@ -18,7 +18,7 @@ import java.util.OptionalInt;
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
- * Deserialize JSON array as {@link OptionalInt}.
+ * Deserialize JSON value as {@link OptionalInt}.
  */
 public class DeserializerValueOptionalIntType extends Deserializer<OptionalInt> {
 

@@ -18,7 +18,7 @@ import java.util.Optional;
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
- * Deserialize JSON Object.
+ * Deserialize JSON value.
  */
 public final class DeserializerValueOptionalObject extends Deserializer<Optional<?>> {
 

@@ -18,7 +18,7 @@ import java.time.ZoneOffset;
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
- * Deserialize JSON array as {@link ZoneOffset}.
+ * Deserialize JSON value as {@link ZoneOffset}.
  */
 public final class DeserializerValueZoneOffsetType extends Deserializer<ZoneOffset> {
 

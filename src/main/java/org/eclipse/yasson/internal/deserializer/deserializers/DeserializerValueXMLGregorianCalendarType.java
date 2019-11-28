@@ -18,7 +18,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
- * Deserialize JSON array as {@link XMLGregorianCalendar}.
+ * Deserialize JSON value as {@link XMLGregorianCalendar}.
  */
 public final class DeserializerValueXMLGregorianCalendarType extends Deserializer<XMLGregorianCalendar> {
 

@@ -18,7 +18,7 @@ import java.util.OptionalLong;
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
- * Deserialize JSON array as {@link OptionalLong}.
+ * Deserialize JSON value as {@link OptionalLong}.
  */
 public class DeserializerValueOptionalLongType extends Deserializer<OptionalLong> {
 

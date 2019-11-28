@@ -19,7 +19,7 @@ import javax.json.JsonString;
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
- * Deserialize JSON array as {@link JsonString}.
+ * Deserialize JSON value as {@link JsonString}.
  */
 public final class DeserializerValueJsonStringType extends Deserializer<JsonString> {
 

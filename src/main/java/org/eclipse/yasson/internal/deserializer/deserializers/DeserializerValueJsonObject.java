@@ -18,7 +18,7 @@ import javax.json.JsonObject;
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
- * Deserialize JSON array as {@link JsonObject}.
+ * Deserialize JSON value as {@link JsonObject}.
  */
 public final class DeserializerValueJsonObject extends Deserializer<JsonObject> {
 

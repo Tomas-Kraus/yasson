@@ -18,7 +18,7 @@ import java.time.ZoneId;
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
- * Deserialize JSON array as {@link ZoneId}.
+ * Deserialize JSON string or number as {@link ZoneId}.
  */
 public final class DeserializerValueZoneIdType extends Deserializer<ZoneId> {
 
