@@ -37,18 +37,4 @@ public final class DeserializerValueJsonArray extends Deserializer<JsonArray> {
         return uCtx.getParser().getArray();
     }
 
-    @Override
-    public JsonArray trueValue(ParserContext uCtx) {
-        return uCtx.getParser().getArray();
-    }
-
-    @Override
-    public JsonArray falseValue(ParserContext uCtx) {
-        return uCtx.getParser().getArray();
-    }
-
-    @Override
-    public JsonArray nullValue(ParserContext uCtx) {
-        return null;
-    }
 }

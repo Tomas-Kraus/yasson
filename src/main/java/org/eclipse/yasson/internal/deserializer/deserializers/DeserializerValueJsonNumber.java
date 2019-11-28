@@ -8,6 +8,7 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
+ * Tomas Kraus
  * Thibault Vallin
  ******************************************************************************/
 
@@ -18,19 +19,56 @@ import javax.json.JsonNumber;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
+
 /**
+<<<<<<< HEAD
  * Deserialize JSON string or number as {@link JsonNumber}.
+=======
+ * Deserialize JSON value as {@link JsonNumber}.
+>>>>>>> new_deserializer_JsonNumber
  */
-public final class DeserializerValueJsonNumber extends Deserializer<JsonNumber> {
+public final class DeserializerValueJsonNumber extends DeserializerValueNumbers<JsonNumber> {
 
-    static final Deserializer<JsonNumber> INSTANCE = new DeserializerValueJsonNumber();
+    static final Deserializer<Integer> INSTANCE = new DeserializerValueInteger();
 
-    private DeserializerValueJsonNumber(){
+    /**
+     * Get deserialized value type.
+     *
+     * @return deserialized value type
+     */
+    public Class<JsonNumber> valueType(){
+        return JsonNumber.class;
     }
 
+    /**
+     * Deserialize JSON string value as {@link JsonNumber} child instance.
+     * This method is called only when deserialization number format is set for target class.
+     *
+     * @param jsonString JSON string to be deserialized
+     * @param format Json number formatter
+     * @return {@link JsonNumber} child class instance containing JSON string value
+     * @throws ParseException when decimal number formatter parsing fails
+     */
     @Override
-    public JsonNumber stringValue(ParserContext uCtx) {
-        return Json.createValue(Integer.parseInt(uCtx.getParser().getString()));
+    public JsonNumber stringValueFormated(String jsonString, DecimalFormat format) throws ParseException {
+        format.setParseIntegerOnly(true);
+        format.setParseBigDecimal(false);
+        return Json.createValue(format.parse(jsonString).intValue());
+    }
+
+    /**
+     * Deserialize JSON string value as {@link Number} child instance.
+     * This method is called by default (when deserialization number format is not set for target class).
+     *
+     * @param jsonString JSON string to be deserialized
+     * @return {@link JsonNumber} child class instance containing JSON string value
+     * @throws NumberFormatException when number parsing fails
+     */
+    @Override
+    public JsonNumber stringValue(String jsonString) {
+        return Json.createValue(Integer.parseInt(jsonString));
     }
 
     @Override
