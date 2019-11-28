@@ -14,20 +14,16 @@
 
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
+
 import javax.json.Json;
 import javax.json.JsonNumber;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
-import java.text.DecimalFormat;
-import java.text.ParseException;
-
 /**
-<<<<<<< HEAD
  * Deserialize JSON string or number as {@link JsonNumber}.
-=======
- * Deserialize JSON value as {@link JsonNumber}.
->>>>>>> new_deserializer_JsonNumber
  */
 public final class DeserializerValueJsonNumber extends DeserializerValueNumbers<JsonNumber> {
 
