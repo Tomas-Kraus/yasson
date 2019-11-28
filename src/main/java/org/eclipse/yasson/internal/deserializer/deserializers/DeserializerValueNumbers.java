@@ -28,7 +28,7 @@ import org.eclipse.yasson.internal.serializer.JsonbNumberFormatter;
  *
  * @param <N> the type of returned Number value
  */
-public abstract class DeserializerValueNumbers<N extends Number> extends Deserializer<N> {
+public abstract class DeserializerValueNumbers<N> extends Deserializer<N> {
 
     @Override
     public final N stringValue(ParserContext uCtx) {
