@@ -49,6 +49,6 @@ public class DeserializerValueOptionalIntType extends Deserializer<OptionalInt> 
 
     @Override
     public OptionalInt nullValue(ParserContext uCtx) {
-        return null;
+        return OptionalInt.empty();
     }
 }

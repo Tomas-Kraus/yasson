@@ -39,7 +39,7 @@ final class TerminalStartArray {
      * @param deserializer complex type deserializer
      */
     static void read(ParserContext uCtx, Type type, StackNode parent, ContainerArray<?, ?> deserializer) {
-        deserializer.start(uCtx);
+        deserializer.start(uCtx, type, parent != null ? parent.getContainer() : null);
     }
 
 }

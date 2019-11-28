@@ -119,7 +119,7 @@ public abstract class ContainerPoJoFromObject<T> extends ContainerObject<String,
         @Override
         public void setKey(String key) {
             propertyModel = getCm().findPropertyModelByJsonReadName(key);
-            setValueType(propertyModel.getPropertyDeserializationType());
+            setValueType(ReflectionUtils.resolveType(this, propertyModel.getPropertyDeserializationType()));
             super.setKey(propertyModel.getPropertyName());
         }
 

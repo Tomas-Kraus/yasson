@@ -169,6 +169,16 @@ public final class ResolveType {
         return null;
     }
 
+    static ParameterizedType findParameterizedSuperclass(Type type) {
+        if (type == null || type instanceof ParameterizedType) {
+            return (ParameterizedType) type;
+        }
+        if (type instanceof Class) {
+            return findParameterizedSuperclass(((Class<?>) type).getGenericSuperclass());
+        }
+        throw new JsonbException("Can't resolve ParameterizedType superclass for: " + type);
+    }
+
     static Class<?> resolveSimpleType(Type type) {
         if (type instanceof Class) {
             return (Class<?>) type;

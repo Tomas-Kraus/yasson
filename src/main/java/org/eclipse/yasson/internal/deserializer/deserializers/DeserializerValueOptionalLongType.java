@@ -49,6 +49,6 @@ public class DeserializerValueOptionalLongType extends Deserializer<OptionalLong
 
     @Override
     public OptionalLong nullValue(ParserContext uCtx) {
-        return null;
+        return OptionalLong.empty();
     }
 }

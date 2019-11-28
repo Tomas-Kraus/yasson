@@ -74,7 +74,7 @@ final class NonTerminalJson extends SymbolNonTerminal {
     void expandStartObject(ParserContext uCtx, StackNode parent) {
         final StackNode stackNode = new StackNodeNonTerminalReduced(
                 NonTerminalJsonObject.getInstance(), parent,
-                uCtx.getJsonbContext().getConfigProperties().getDefaultMapImplType(),
+                parent.getType(),
                 // Calling this before new StackNodeNonTerminalReduced causes tests failure
                 ResolveType.deserializerForObject(uCtx, parent.getType()));
         uCtx.getStack().push(stackNode);

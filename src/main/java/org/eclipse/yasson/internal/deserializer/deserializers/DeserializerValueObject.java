@@ -46,9 +46,4 @@ public final class DeserializerValueObject extends Deserializer<Object> {
         return Boolean.FALSE;
     }
 
-    @Override
-    public Object nullValue(ParserContext uCtx) {
-        return null;
-    }
-
 }

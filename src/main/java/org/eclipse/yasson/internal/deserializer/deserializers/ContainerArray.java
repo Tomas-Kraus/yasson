@@ -14,6 +14,7 @@ package org.eclipse.yasson.internal.deserializer.deserializers;
 
 import java.lang.reflect.Type;
 
+import org.eclipse.yasson.internal.RuntimeTypeInfo;
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
@@ -27,18 +28,26 @@ import org.eclipse.yasson.internal.deserializer.ParserContext;
  * @param <V> the type of container value
  * @param <T> the type of returned value
  */
-public abstract class ContainerArray<V, T> {
+public abstract class ContainerArray<V, T> implements RuntimeTypeInfo {
 
     /** Deserialization context. */
     private ParserContext uCtx;
+    /** Container type. */
+    private Type type;
+    /** Parent container or {@code null} if no parent exists. */
+    private ContainerArray<?, ?> parent;
 
     /**
      * Notification about beginning of container deserialization.
      *
      * @param uCtx deserialization context
+     * @param type container type
+     * @param parent parent container or {@code null} if no parent exists
      */
-    public void start(ParserContext uCtx) {
+    public void start(ParserContext uCtx, Type type, ContainerArray<?, ?> parent) {
         this.uCtx = uCtx;
+        this.type = type;
+        this.parent = parent;
     }
 
     /**
@@ -74,6 +83,26 @@ public abstract class ContainerArray<V, T> {
      */
     ParserContext getContext() {
         return uCtx;
+    }
+
+    /**
+     * Get container type.
+     *
+     * @return container type
+     */
+    @Override
+    public Type getRuntimeType() {
+        return type;
+    }
+
+    /**
+     * Get parent container if exists.
+     *
+     * @return parent container or {@code null} if no parent container exists
+     */
+    @Override
+    public ContainerArray<?, ?> getWrapper() {
+        return parent;
     }
 
     /**

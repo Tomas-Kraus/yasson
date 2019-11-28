@@ -82,8 +82,4 @@ public final class DeserializerValueJsonNumber extends DeserializerValueNumbers<
         return Json.createValue(Integer.parseInt(uCtx.getParser().getString()));
     }
 
-    @Override
-    public JsonNumber nullValue(ParserContext uCtx) {
-        return null;
-    }
 }

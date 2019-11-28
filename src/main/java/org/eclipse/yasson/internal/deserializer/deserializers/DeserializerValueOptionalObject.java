@@ -49,6 +49,6 @@ public final class DeserializerValueOptionalObject extends Deserializer<Optional
 
     @Override
     public Optional<?> nullValue(ParserContext uCtx) {
-        return null;
+        return Optional.empty();
     }
 }

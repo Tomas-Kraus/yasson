@@ -48,8 +48,4 @@ public final class DeserializerValueJsonStringType extends Deserializer<JsonStri
         return Json.createValue(uCtx.getParser().getString());
     }
 
-    @Override
-    public JsonString nullValue(ParserContext uCtx) {
-        return null;
-    }
 }

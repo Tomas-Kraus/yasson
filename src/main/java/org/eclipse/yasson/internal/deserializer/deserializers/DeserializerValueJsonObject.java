@@ -47,8 +47,4 @@ public final class DeserializerValueJsonObject extends Deserializer<JsonObject> 
         return uCtx.getParser().getObject();
     }
 
-    @Override
-    public JsonObject nullValue(ParserContext uCtx) {
-        return null;
-    }
 }

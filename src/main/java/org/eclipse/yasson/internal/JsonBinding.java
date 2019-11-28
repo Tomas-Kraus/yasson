@@ -48,6 +48,7 @@ public class JsonBinding implements YassonJsonb {
 
     JsonBinding(JsonBindingBuilder builder) {
         this.jsonbContext = new JsonbContext(builder.getConfig(), builder.getProvider().orElseGet(JsonProvider::provider));
+        //this.isExperimentalDeserializer = true;
         this.isExperimentalDeserializer = isExperimentalDeserializer(jsonbContext);
     }
 
