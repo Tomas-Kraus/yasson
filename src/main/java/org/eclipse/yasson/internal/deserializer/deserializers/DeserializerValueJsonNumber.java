@@ -27,7 +27,7 @@ import org.eclipse.yasson.internal.deserializer.ParserContext;
  */
 public final class DeserializerValueJsonNumber extends DeserializerValueNumbers<JsonNumber> {
 
-    static final Deserializer<Integer> INSTANCE = new DeserializerValueInteger();
+    static final Deserializer<JsonNumber> INSTANCE = new DeserializerValueJsonNumber();
 
     /**
      * Get deserialized value type.
