@@ -28,7 +28,7 @@ public final class DeserializerValueInteger extends DeserializerValueNumbers<Int
     
     private static final Integer VALUE_FALSE = Integer.valueOf(0);
 
-    DeserializerValueInteger() {
+    private DeserializerValueInteger() {
     }
 
     @Override
