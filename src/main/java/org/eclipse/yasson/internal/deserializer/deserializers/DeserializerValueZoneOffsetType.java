@@ -13,42 +13,42 @@
 
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
-import java.util.OptionalInt;
+import java.time.ZoneOffset;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
- * Deserialize JSON array as {@link OptionalInt}.
+ * Deserialize JSON array as {@link ZoneOffset}.
  */
-public class DeserializerValueOptionalIntType extends Deserializer<OptionalInt> {
+public final class DeserializerValueZoneOffsetType extends Deserializer<ZoneOffset> {
 
-    static final Deserializer<OptionalInt> INSTANCE = new DeserializerValueOptionalIntType();
+    static final Deserializer<ZoneOffset> INSTANCE = new DeserializerValueZoneOffsetType();
 
-    private DeserializerValueOptionalIntType(){
+    private DeserializerValueZoneOffsetType(){
     }
 
     @Override
-    public OptionalInt stringValue(ParserContext uCtx) {
-        return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
+    public ZoneOffset stringValue(ParserContext uCtx) {
+        return ZoneOffset.of(uCtx.getParser().getString());
     }
 
     @Override
-    public OptionalInt numberValue(ParserContext uCtx) {
-        return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
+    public ZoneOffset numberValue(ParserContext uCtx) {
+        return ZoneOffset.of(uCtx.getParser().getString());
     }
 
     @Override
-    public OptionalInt trueValue(ParserContext uCtx) {
-        return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
+    public ZoneOffset trueValue(ParserContext uCtx) {
+        return ZoneOffset.of(uCtx.getParser().getString());
     }
 
     @Override
-    public OptionalInt falseValue(ParserContext uCtx) {
-        return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
+    public ZoneOffset falseValue(ParserContext uCtx) {
+        return ZoneOffset.of(uCtx.getParser().getString());
     }
 
     @Override
-    public OptionalInt nullValue(ParserContext uCtx) {
+    public ZoneOffset nullValue(ParserContext uCtx) {
         return null;
     }
 }

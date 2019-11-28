@@ -13,42 +13,42 @@
 
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
-import java.util.OptionalInt;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
- * Deserialize JSON array as {@link OptionalInt}.
+ * Deserialize JSON array as {@link XMLGregorianCalendar}.
  */
-public class DeserializerValueOptionalIntType extends Deserializer<OptionalInt> {
+public final class DeserializerValueXMLGregorianCalendarType extends Deserializer<XMLGregorianCalendar> {
 
-    static final Deserializer<OptionalInt> INSTANCE = new DeserializerValueOptionalIntType();
+    static final Deserializer<XMLGregorianCalendar> INSTANCE = new DeserializerValueXMLGregorianCalendarType();
 
-    private DeserializerValueOptionalIntType(){
+    private DeserializerValueXMLGregorianCalendarType(){
     }
 
     @Override
-    public OptionalInt stringValue(ParserContext uCtx) {
-        return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
+    public XMLGregorianCalendar stringValue(ParserContext uCtx) {
+        return null;
     }
 
     @Override
-    public OptionalInt numberValue(ParserContext uCtx) {
-        return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
+    public XMLGregorianCalendar numberValue(ParserContext uCtx) {
+        return null;
     }
 
     @Override
-    public OptionalInt trueValue(ParserContext uCtx) {
-        return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
+    public XMLGregorianCalendar trueValue(ParserContext uCtx) {
+        return null;
     }
 
     @Override
-    public OptionalInt falseValue(ParserContext uCtx) {
-        return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
+    public XMLGregorianCalendar falseValue(ParserContext uCtx) {
+        return null;
     }
 
     @Override
-    public OptionalInt nullValue(ParserContext uCtx) {
+    public XMLGregorianCalendar nullValue(ParserContext uCtx) {
         return null;
     }
 }

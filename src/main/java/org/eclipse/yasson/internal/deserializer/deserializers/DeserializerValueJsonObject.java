@@ -13,42 +13,42 @@
 
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
-import java.util.OptionalInt;
+import javax.json.JsonObject;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
- * Deserialize JSON array as {@link OptionalInt}.
+ * Deserialize JSON array as {@link JsonObject}.
  */
-public class DeserializerValueOptionalIntType extends Deserializer<OptionalInt> {
+public final class DeserializerValueJsonObject extends Deserializer<JsonObject> {
 
-    static final Deserializer<OptionalInt> INSTANCE = new DeserializerValueOptionalIntType();
+    static final Deserializer<JsonObject> INSTANCE = new DeserializerValueJsonObject();
 
-    private DeserializerValueOptionalIntType(){
+    private DeserializerValueJsonObject(){
     }
 
     @Override
-    public OptionalInt stringValue(ParserContext uCtx) {
-        return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
+    public JsonObject stringValue(ParserContext uCtx) {
+        return uCtx.getParser().getObject();
     }
 
     @Override
-    public OptionalInt numberValue(ParserContext uCtx) {
-        return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
+    public JsonObject numberValue(ParserContext uCtx) {
+        return uCtx.getParser().getObject();
     }
 
     @Override
-    public OptionalInt trueValue(ParserContext uCtx) {
-        return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
+    public JsonObject trueValue(ParserContext uCtx) {
+        return uCtx.getParser().getObject();
     }
 
     @Override
-    public OptionalInt falseValue(ParserContext uCtx) {
-        return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
+    public JsonObject falseValue(ParserContext uCtx) {
+        return uCtx.getParser().getObject();
     }
 
     @Override
-    public OptionalInt nullValue(ParserContext uCtx) {
+    public JsonObject nullValue(ParserContext uCtx) {
         return null;
     }
 }

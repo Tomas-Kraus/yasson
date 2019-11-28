@@ -23,7 +23,7 @@ import org.eclipse.yasson.internal.model.customization.Customization;
 /**
  * Deserializer for {@link ZoneOffset} type.
  */
-public class ZoneOffsetTypeDeserializer extends AbstractValueTypeDeserializer<ZoneOffset> {
+public class  ZoneOffsetTypeDeserializer extends AbstractValueTypeDeserializer<ZoneOffset> {
 
     /**
      * Creates a new instance.

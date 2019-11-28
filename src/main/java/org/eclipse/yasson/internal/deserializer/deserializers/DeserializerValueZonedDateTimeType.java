@@ -13,42 +13,42 @@
 
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
-import java.util.OptionalInt;
+import java.time.ZonedDateTime;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
- * Deserialize JSON array as {@link OptionalInt}.
+ * Deserialize JSON array as {@link ZonedDateTime}.
  */
-public class DeserializerValueOptionalIntType extends Deserializer<OptionalInt> {
+public final class DeserializerValueZonedDateTimeType extends Deserializer<ZonedDateTime> {
 
-    static final Deserializer<OptionalInt> INSTANCE = new DeserializerValueOptionalIntType();
+    static final Deserializer<ZonedDateTime> INSTANCE = new DeserializerValueZonedDateTimeType();
 
-    private DeserializerValueOptionalIntType(){
+    private DeserializerValueZonedDateTimeType(){
     }
 
     @Override
-    public OptionalInt stringValue(ParserContext uCtx) {
-        return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
+    public ZonedDateTime stringValue(ParserContext uCtx) {
+        return ZonedDateTime.parse(uCtx.getParser().getString());
     }
 
     @Override
-    public OptionalInt numberValue(ParserContext uCtx) {
-        return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
+    public ZonedDateTime numberValue(ParserContext uCtx) {
+        return ZonedDateTime.parse(uCtx.getParser().getString());
     }
 
     @Override
-    public OptionalInt trueValue(ParserContext uCtx) {
-        return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
+    public ZonedDateTime trueValue(ParserContext uCtx) {
+        return ZonedDateTime.parse(uCtx.getParser().getString());
     }
 
     @Override
-    public OptionalInt falseValue(ParserContext uCtx) {
-        return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
+    public ZonedDateTime falseValue(ParserContext uCtx) {
+        return ZonedDateTime.parse(uCtx.getParser().getString());
     }
 
     @Override
-    public OptionalInt nullValue(ParserContext uCtx) {
+    public ZonedDateTime nullValue(ParserContext uCtx) {
         return null;
     }
 }

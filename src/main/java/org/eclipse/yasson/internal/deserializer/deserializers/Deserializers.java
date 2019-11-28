@@ -1,17 +1,45 @@
+/*******************************************************************************
+ * Copyright (c) 2019 Oracle and/or its affiliates. All rights reserved.
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
+ * which accompanies this distribution.
+ * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
+ * and the Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * Contributors:
+ * Tomas Kraus
+ * Thibault Vallin
+ ******************************************************************************/
+
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
 import java.lang.reflect.Type;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.sql.Timestamp;
-import java.util.*;
 
-import org.eclipse.yasson.internal.JsonbContext;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
+
 
 import javax.json.JsonArray;
 import javax.json.JsonNumber;
+import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
+
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import org.eclipse.yasson.internal.JsonbContext;
 
 /**
  * Primitive types deserializers selection utilities.
@@ -46,11 +74,15 @@ public final class Deserializers {
         DESERIALIZERS.put(JsonString.class, DeserializerValueJsonStringType.INSTANCE);
         DESERIALIZERS.put(JsonArray.class, DeserializerValueJsonArray.INSTANCE);
         DESERIALIZERS.put(JsonNumber.class, DeserializerValueJsonNumber.INSTANCE);
-        DESERIALIZERS.put(Timestamp.class, DeserializerValueSqlTimestamp.INSTANCE);
+        DESERIALIZERS.put(JsonObject.class, DeserializerValueJsonObject.INSTANCE);
         DESERIALIZERS.put(OptionalDouble.class, DeserializerValueOptionalDoubleType.INSTANCE);
         DESERIALIZERS.put(OptionalInt.class, DeserializerValueOptionalIntType.INSTANCE);
         DESERIALIZERS.put(OptionalLong.class, DeserializerValueOptionalLongType.INSTANCE);
         DESERIALIZERS.put(Optional.class, DeserializerValueOptionalObject.INSTANCE);
+        DESERIALIZERS.put(ZoneOffset.class, DeserializerValueZoneOffsetType.INSTANCE);
+        DESERIALIZERS.put(ZoneId.class, DeserializerValueZoneIdType.INSTANCE);
+        DESERIALIZERS.put(ZonedDateTime.class, DeserializerValueZonedDateTimeType.INSTANCE);
+        DESERIALIZERS.put(XMLGregorianCalendar.class, DeserializerValueXMLGregorianCalendarType.INSTANCE);
     }
 
     private final Map<Type, Deserializer<?>> deserializers;

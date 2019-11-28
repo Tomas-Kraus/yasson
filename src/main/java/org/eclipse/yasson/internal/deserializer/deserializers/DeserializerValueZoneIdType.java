@@ -13,42 +13,42 @@
 
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
-import java.util.OptionalInt;
+import java.time.ZoneId;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
- * Deserialize JSON array as {@link OptionalInt}.
+ * Deserialize JSON array as {@link ZoneId}.
  */
-public class DeserializerValueOptionalIntType extends Deserializer<OptionalInt> {
+public final class DeserializerValueZoneIdType extends Deserializer<ZoneId> {
 
-    static final Deserializer<OptionalInt> INSTANCE = new DeserializerValueOptionalIntType();
+    static final Deserializer<ZoneId> INSTANCE = new DeserializerValueZoneIdType();
 
-    private DeserializerValueOptionalIntType(){
+    private DeserializerValueZoneIdType(){
     }
 
     @Override
-    public OptionalInt stringValue(ParserContext uCtx) {
-        return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
+    public ZoneId stringValue(ParserContext uCtx) {
+        return ZoneId.of(uCtx.getParser().getString());
     }
 
     @Override
-    public OptionalInt numberValue(ParserContext uCtx) {
-        return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
+    public ZoneId numberValue(ParserContext uCtx) {
+        return ZoneId.of(uCtx.getParser().getString());
     }
 
     @Override
-    public OptionalInt trueValue(ParserContext uCtx) {
-        return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
+    public ZoneId trueValue(ParserContext uCtx) {
+        return ZoneId.of(uCtx.getParser().getString());
     }
 
     @Override
-    public OptionalInt falseValue(ParserContext uCtx) {
-        return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
+    public ZoneId falseValue(ParserContext uCtx) {
+        return ZoneId.of(uCtx.getParser().getString());
     }
 
     @Override
-    public OptionalInt nullValue(ParserContext uCtx) {
+    public ZoneId nullValue(ParserContext uCtx) {
         return null;
     }
 }
