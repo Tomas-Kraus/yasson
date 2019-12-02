@@ -114,7 +114,7 @@ public final class ParserContext {
         return stack;
     }
 
-    Deserializers getDeserializers() {
+    public Deserializers getDeserializers() {
         return deserializers;
     }
 

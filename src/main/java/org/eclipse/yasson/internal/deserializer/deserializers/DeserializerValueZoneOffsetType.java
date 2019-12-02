@@ -13,6 +13,7 @@
 
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.lang.reflect.Type;
 import java.time.ZoneOffset;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
@@ -28,27 +29,27 @@ public final class DeserializerValueZoneOffsetType extends Deserializer<ZoneOffs
     }
 
     @Override
-    public ZoneOffset stringValue(ParserContext uCtx) {
+    public ZoneOffset stringValue(ParserContext uCtx, Type type) {
         return ZoneOffset.of(uCtx.getParser().getString());
     }
 
     @Override
-    public ZoneOffset numberValue(ParserContext uCtx) {
+    public ZoneOffset numberValue(ParserContext uCtx, Type type) {
         return ZoneOffset.of(uCtx.getParser().getString());
     }
 
     @Override
-    public ZoneOffset trueValue(ParserContext uCtx) {
+    public ZoneOffset trueValue(ParserContext uCtx, Type type) {
         return ZoneOffset.of(uCtx.getParser().getString());
     }
 
     @Override
-    public ZoneOffset falseValue(ParserContext uCtx) {
+    public ZoneOffset falseValue(ParserContext uCtx, Type type) {
         return ZoneOffset.of(uCtx.getParser().getString());
     }
 
     @Override
-    public ZoneOffset nullValue(ParserContext uCtx) {
+    public ZoneOffset nullValue(ParserContext uCtx, Type type) {
         return null;
     }
 }

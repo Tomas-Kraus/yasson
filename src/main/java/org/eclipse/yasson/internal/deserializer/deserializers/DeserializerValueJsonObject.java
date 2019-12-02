@@ -13,6 +13,8 @@
 
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.lang.reflect.Type;
+
 import javax.json.JsonObject;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
@@ -28,22 +30,22 @@ public final class DeserializerValueJsonObject extends Deserializer<JsonObject> 
     }
 
     @Override
-    public JsonObject stringValue(ParserContext uCtx) {
+    public JsonObject stringValue(ParserContext uCtx, Type type) {
         return uCtx.getParser().getObject();
     }
 
     @Override
-    public JsonObject numberValue(ParserContext uCtx) {
+    public JsonObject numberValue(ParserContext uCtx, Type type) {
         return uCtx.getParser().getObject();
     }
 
     @Override
-    public JsonObject trueValue(ParserContext uCtx) {
+    public JsonObject trueValue(ParserContext uCtx, Type type) {
         return uCtx.getParser().getObject();
     }
 
     @Override
-    public JsonObject falseValue(ParserContext uCtx) {
+    public JsonObject falseValue(ParserContext uCtx, Type type) {
         return uCtx.getParser().getObject();
     }
 

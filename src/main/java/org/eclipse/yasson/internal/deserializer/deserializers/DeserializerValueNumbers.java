@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
@@ -31,7 +32,7 @@ import org.eclipse.yasson.internal.serializer.JsonbNumberFormatter;
 public abstract class DeserializerValueNumbers<N> extends Deserializer<N> {
 
     @Override
-    public final N stringValue(ParserContext uCtx) {
+    public final N stringValue(ParserContext uCtx, Type type) {
         final JsonbNumberFormatter numberFormat = uCtx.getDeserializeNumberFormatter(valueType());
         if (numberFormat != null) {
             DecimalFormat format = new DecimalFormat(

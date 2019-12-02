@@ -3,13 +3,17 @@ package org.eclipse.yasson.internal.deserializer;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.json.JsonValue;
 import javax.json.bind.JsonbException;
 
+import org.eclipse.yasson.internal.ReflectionUtils;
+import org.eclipse.yasson.internal.RuntimeTypeInfo;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerArray;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerObject;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerPoJoFromObject;
@@ -169,14 +173,36 @@ public final class ResolveType {
         return null;
     }
 
-    static ParameterizedType findParameterizedSuperclass(Type type) {
-        if (type == null || type instanceof ParameterizedType) {
-            return (ParameterizedType) type;
+    /**
+     * Resolve generic type from {@link Optional}.
+     *
+     * @param type {@link Optional} type to resolve
+     * @return generic type from {@link Optional} or {@code Object.classs} if type could not be resolved.
+     */
+    public static Type resolveOptionalType(Type type) {
+        if (type instanceof ParameterizedType) {
+            return ((ParameterizedType) type).getActualTypeArguments()[0];
         }
-        if (type instanceof Class) {
-            return findParameterizedSuperclass(((Class<?>) type).getGenericSuperclass());
+        return Object.class;
+    }
+
+    /**
+     * Resolve container property type.
+     * Not doing {@code instanceof Class} check which shall be done before calling this method.
+     *
+     * @param item container type information
+     * @param type property type
+     * @return resolved type
+     */
+    public static Type resolveType(RuntimeTypeInfo item, Type type) {
+        if (type instanceof TypeVariable) {
+            return ReflectionUtils.resolveItemVariableType(item, (TypeVariable<?>) type);
+        } else if (type instanceof ParameterizedType) {
+            return ReflectionUtils.resolveTypeArguments((ParameterizedType) type, item.getRuntimeType());
+        } else if (type instanceof WildcardType) {
+            return resolveMostSpecificBound((WildcardType) type);
         }
-        throw new JsonbException("Can't resolve ParameterizedType superclass for: " + type);
+        throw new JsonbException(Messages.getMessage(MessageKeys.TYPE_RESOLUTION_ERROR, type));
     }
 
     static Class<?> resolveSimpleType(Type type) {
@@ -198,7 +224,7 @@ public final class ResolveType {
         } else if (type instanceof WildcardType) {
             return resolveMostSpecificBound((WildcardType) type);
         }
-        return resolveGenericType(type);
+        throw new JsonbException(Messages.getMessage(MessageKeys.TYPE_RESOLUTION_ERROR, type));
     }
 
     private static Class<?> resolveMostSpecificBound(WildcardType wildcardType) {

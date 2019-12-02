@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 
@@ -49,17 +50,17 @@ public final class DeserializerValueByte extends DeserializerValueNumbers<Byte> 
     }
 
     @Override
-    public Byte numberValue(ParserContext uCtx) {
+    public Byte numberValue(ParserContext uCtx, Type type) {
         return Byte.parseByte(uCtx.getParser().getString());
     }
 
     @Override
-    public Byte trueValue(ParserContext uCtx) {
+    public Byte trueValue(ParserContext uCtx, Type type) {
         return VALUE_TRUE;
     }
 
     @Override
-    public Byte falseValue(ParserContext uCtx) {
+    public Byte falseValue(ParserContext uCtx, Type type) {
         return VALUE_FALSE;
     }
 

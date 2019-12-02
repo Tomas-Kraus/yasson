@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.yasson.internal.ReflectionUtils;
+import org.eclipse.yasson.internal.deserializer.ResolveType;
 import org.eclipse.yasson.internal.model.ClassModel;
 import org.eclipse.yasson.internal.model.CreatorModel;
 import org.eclipse.yasson.internal.model.JsonbCreator;
@@ -119,7 +120,10 @@ public abstract class ContainerPoJoFromObject<T> extends ContainerObject<String,
         @Override
         public void setKey(String key) {
             propertyModel = getCm().findPropertyModelByJsonReadName(key);
-            setValueType(ReflectionUtils.resolveType(this, propertyModel.getPropertyDeserializationType()));
+            final Type propertyType = propertyModel.getPropertyDeserializationType();
+            setValueType(propertyType instanceof Class
+                    ? propertyType
+                    : ResolveType.resolveType(this, propertyModel.getPropertyDeserializationType()));
             super.setKey(propertyModel.getPropertyName());
         }
 

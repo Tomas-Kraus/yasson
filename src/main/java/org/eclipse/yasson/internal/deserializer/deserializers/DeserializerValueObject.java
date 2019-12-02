@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
@@ -27,22 +28,22 @@ public final class DeserializerValueObject extends Deserializer<Object> {
     }
 
     @Override
-    public Object stringValue(ParserContext uCtx) {
+    public Object stringValue(ParserContext uCtx, Type type) {
         return uCtx.getParser().getString();
     }
 
     @Override
-    public Object numberValue(ParserContext uCtx) {
+    public Object numberValue(ParserContext uCtx, Type type) {
         return new BigDecimal(uCtx.getParser().getString());
     }
 
     @Override
-    public Object trueValue(ParserContext uCtx) {
+    public Object trueValue(ParserContext uCtx, Type type) {
         return Boolean.TRUE;
     }
 
     @Override
-    public Object falseValue(ParserContext uCtx) {
+    public Object falseValue(ParserContext uCtx, Type type) {
         return Boolean.FALSE;
     }
 

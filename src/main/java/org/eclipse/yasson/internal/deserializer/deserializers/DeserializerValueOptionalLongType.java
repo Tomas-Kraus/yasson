@@ -13,6 +13,7 @@
 
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.lang.reflect.Type;
 import java.util.OptionalLong;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
@@ -28,27 +29,27 @@ public class DeserializerValueOptionalLongType extends Deserializer<OptionalLong
     }
 
     @Override
-    public OptionalLong stringValue(ParserContext uCtx) {
+    public OptionalLong stringValue(ParserContext uCtx, Type type) {
         return OptionalLong.of(Long.parseLong(uCtx.getParser().getString()));
     }
 
     @Override
-    public OptionalLong numberValue(ParserContext uCtx) {
+    public OptionalLong numberValue(ParserContext uCtx, Type type) {
         return OptionalLong.of(Long.parseLong(uCtx.getParser().getString()));
     }
 
     @Override
-    public OptionalLong trueValue(ParserContext uCtx) {
+    public OptionalLong trueValue(ParserContext uCtx, Type type) {
         return OptionalLong.of(Long.parseLong(uCtx.getParser().getString()));
     }
 
     @Override
-    public OptionalLong falseValue(ParserContext uCtx) {
+    public OptionalLong falseValue(ParserContext uCtx, Type type) {
         return OptionalLong.of(Long.parseLong(uCtx.getParser().getString()));
     }
 
     @Override
-    public OptionalLong nullValue(ParserContext uCtx) {
+    public OptionalLong nullValue(ParserContext uCtx, Type type) {
         return OptionalLong.empty();
     }
 }

@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.lang.reflect.Type;
+
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
@@ -25,27 +27,27 @@ public final class DeserializerValueBoolean extends Deserializer<Boolean> {
     }
 
     @Override
-    public Boolean stringValue(ParserContext uCtx) {
+    public Boolean stringValue(ParserContext uCtx, Type type) {
         return Boolean.parseBoolean(uCtx.getParser().getString());
     }
 
     @Override
-    public Boolean numberValue(ParserContext uCtx) {
+    public Boolean numberValue(ParserContext uCtx, Type type) {
         return Boolean.parseBoolean(uCtx.getParser().getString());
     }
 
     @Override
-    public Boolean trueValue(ParserContext uCtx) {
+    public Boolean trueValue(ParserContext uCtx, Type type) {
         return Boolean.TRUE;
     }
 
     @Override
-    public Boolean falseValue(ParserContext uCtx) {
+    public Boolean falseValue(ParserContext uCtx, Type type) {
         return Boolean.FALSE;
     }
 
     @Override
-    public Boolean nullValue(ParserContext uCtx) {
+    public Boolean nullValue(ParserContext uCtx, Type type) {
         return null;
     }
 

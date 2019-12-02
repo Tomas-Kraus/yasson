@@ -13,6 +13,7 @@
 
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.lang.reflect.Type;
 import java.util.OptionalDouble;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
@@ -28,27 +29,27 @@ public final class DeserializerValueOptionalDoubleType extends Deserializer<Opti
     }
 
     @Override
-    public OptionalDouble stringValue(ParserContext uCtx) {
+    public OptionalDouble stringValue(ParserContext uCtx, Type type) {
         return OptionalDouble.of(Double.parseDouble(uCtx.getParser().getString()));
     }
 
     @Override
-    public OptionalDouble numberValue(ParserContext uCtx) {
+    public OptionalDouble numberValue(ParserContext uCtx, Type type) {
         return OptionalDouble.of(Double.parseDouble(uCtx.getParser().getString()));
     }
 
     @Override
-    public OptionalDouble trueValue(ParserContext uCtx) {
+    public OptionalDouble trueValue(ParserContext uCtx, Type type) {
         return OptionalDouble.of(Double.parseDouble(uCtx.getParser().getString()));
     }
 
     @Override
-    public OptionalDouble falseValue(ParserContext uCtx) {
+    public OptionalDouble falseValue(ParserContext uCtx, Type type) {
         return OptionalDouble.of(Double.parseDouble(uCtx.getParser().getString()));
     }
 
     @Override
-    public OptionalDouble nullValue(ParserContext uCtx) {
+    public OptionalDouble nullValue(ParserContext uCtx, Type type) {
         return OptionalDouble.empty();
     }
 }

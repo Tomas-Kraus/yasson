@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.lang.reflect.Type;
+
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
@@ -25,7 +27,7 @@ public final class DeserializerValueString extends Deserializer<String> {
     }
 
     @Override
-    public String stringValue(ParserContext uCtx) {
+    public String stringValue(ParserContext uCtx, Type type) {
         return uCtx.getParser().getString();
     }
 

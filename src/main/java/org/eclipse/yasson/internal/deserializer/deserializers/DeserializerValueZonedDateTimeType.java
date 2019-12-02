@@ -13,6 +13,7 @@
 
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.lang.reflect.Type;
 import java.time.ZonedDateTime;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
@@ -28,27 +29,27 @@ public final class DeserializerValueZonedDateTimeType extends Deserializer<Zoned
     }
 
     @Override
-    public ZonedDateTime stringValue(ParserContext uCtx) {
+    public ZonedDateTime stringValue(ParserContext uCtx, Type type) {
         return ZonedDateTime.parse(uCtx.getParser().getString());
     }
 
     @Override
-    public ZonedDateTime numberValue(ParserContext uCtx) {
+    public ZonedDateTime numberValue(ParserContext uCtx, Type type) {
         return ZonedDateTime.parse(uCtx.getParser().getString());
     }
 
     @Override
-    public ZonedDateTime trueValue(ParserContext uCtx) {
+    public ZonedDateTime trueValue(ParserContext uCtx, Type type) {
         return ZonedDateTime.parse(uCtx.getParser().getString());
     }
 
     @Override
-    public ZonedDateTime falseValue(ParserContext uCtx) {
+    public ZonedDateTime falseValue(ParserContext uCtx, Type type) {
         return ZonedDateTime.parse(uCtx.getParser().getString());
     }
 
     @Override
-    public ZonedDateTime nullValue(ParserContext uCtx) {
+    public ZonedDateTime nullValue(ParserContext uCtx, Type type) {
         return null;
     }
 }

@@ -14,6 +14,7 @@
 
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 
@@ -68,17 +69,17 @@ public final class DeserializerValueJsonNumber extends DeserializerValueNumbers<
     }
 
     @Override
-    public JsonNumber numberValue(ParserContext uCtx) {
+    public JsonNumber numberValue(ParserContext uCtx, Type type) {
         return  Json.createValue(Integer.parseInt(uCtx.getParser().getString()));
     }
 
     @Override
-    public JsonNumber trueValue(ParserContext uCtx) {
+    public JsonNumber trueValue(ParserContext uCtx, Type type) {
         return Json.createValue(Integer.parseInt(uCtx.getParser().getString()));
     }
 
     @Override
-    public JsonNumber falseValue(ParserContext uCtx) {
+    public JsonNumber falseValue(ParserContext uCtx, Type type) {
         return Json.createValue(Integer.parseInt(uCtx.getParser().getString()));
     }
 

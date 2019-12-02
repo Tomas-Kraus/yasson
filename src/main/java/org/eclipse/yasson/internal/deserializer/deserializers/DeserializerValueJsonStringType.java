@@ -13,6 +13,8 @@
 
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.lang.reflect.Type;
+
 import javax.json.Json;
 import javax.json.JsonString;
 
@@ -29,22 +31,22 @@ public final class DeserializerValueJsonStringType extends Deserializer<JsonStri
     }
 
     @Override
-    public JsonString stringValue(ParserContext uCtx) {
+    public JsonString stringValue(ParserContext uCtx, Type type) {
         return Json.createValue(uCtx.getParser().getString());
     }
 
     @Override
-    public JsonString numberValue(ParserContext uCtx) {
+    public JsonString numberValue(ParserContext uCtx, Type type) {
         return Json.createValue(uCtx.getParser().getString());
     }
 
     @Override
-    public JsonString trueValue(ParserContext uCtx) {
+    public JsonString trueValue(ParserContext uCtx, Type type) {
         return Json.createValue(uCtx.getParser().getString());
     }
 
     @Override
-    public JsonString falseValue(ParserContext uCtx) {
+    public JsonString falseValue(ParserContext uCtx, Type type) {
         return Json.createValue(uCtx.getParser().getString());
     }
 

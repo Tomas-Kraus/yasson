@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
@@ -51,17 +52,17 @@ public final class DeserializerValueBigInteger extends DeserializerValueNumbers<
     }
 
     @Override
-    public BigInteger numberValue(ParserContext uCtx) {
+    public BigInteger numberValue(ParserContext uCtx, Type type) {
         return new BigInteger(uCtx.getParser().getString());
     }
 
     @Override
-    public BigInteger trueValue(ParserContext uCtx) {
+    public BigInteger trueValue(ParserContext uCtx, Type type) {
         return VALUE_TRUE;
     }
 
     @Override
-    public BigInteger falseValue(ParserContext uCtx) {
+    public BigInteger falseValue(ParserContext uCtx, Type type) {
         return VALUE_FALSE;
     }
 

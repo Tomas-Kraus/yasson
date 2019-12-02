@@ -13,6 +13,8 @@
 
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.lang.reflect.Type;
+
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
@@ -28,27 +30,27 @@ public final class DeserializerValueXMLGregorianCalendarType extends Deserialize
     }
 
     @Override
-    public XMLGregorianCalendar stringValue(ParserContext uCtx) {
+    public XMLGregorianCalendar stringValue(ParserContext uCtx, Type type) {
         return null;
     }
 
     @Override
-    public XMLGregorianCalendar numberValue(ParserContext uCtx) {
+    public XMLGregorianCalendar numberValue(ParserContext uCtx, Type type) {
         return null;
     }
 
     @Override
-    public XMLGregorianCalendar trueValue(ParserContext uCtx) {
+    public XMLGregorianCalendar trueValue(ParserContext uCtx, Type type) {
         return null;
     }
 
     @Override
-    public XMLGregorianCalendar falseValue(ParserContext uCtx) {
+    public XMLGregorianCalendar falseValue(ParserContext uCtx, Type type) {
         return null;
     }
 
     @Override
-    public XMLGregorianCalendar nullValue(ParserContext uCtx) {
+    public XMLGregorianCalendar nullValue(ParserContext uCtx, Type type) {
         return null;
     }
 }

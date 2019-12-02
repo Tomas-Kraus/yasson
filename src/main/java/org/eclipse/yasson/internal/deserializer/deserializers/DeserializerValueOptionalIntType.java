@@ -13,6 +13,7 @@
 
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.lang.reflect.Type;
 import java.util.OptionalInt;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
@@ -28,27 +29,27 @@ public class DeserializerValueOptionalIntType extends Deserializer<OptionalInt> 
     }
 
     @Override
-    public OptionalInt stringValue(ParserContext uCtx) {
+    public OptionalInt stringValue(ParserContext uCtx, Type type) {
         return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
     }
 
     @Override
-    public OptionalInt numberValue(ParserContext uCtx) {
+    public OptionalInt numberValue(ParserContext uCtx, Type type) {
         return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
     }
 
     @Override
-    public OptionalInt trueValue(ParserContext uCtx) {
+    public OptionalInt trueValue(ParserContext uCtx, Type type) {
         return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
     }
 
     @Override
-    public OptionalInt falseValue(ParserContext uCtx) {
+    public OptionalInt falseValue(ParserContext uCtx, Type type) {
         return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
     }
 
     @Override
-    public OptionalInt nullValue(ParserContext uCtx) {
+    public OptionalInt nullValue(ParserContext uCtx, Type type) {
         return OptionalInt.empty();
     }
 }

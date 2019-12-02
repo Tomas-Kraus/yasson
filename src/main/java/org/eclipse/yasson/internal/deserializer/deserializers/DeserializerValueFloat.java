@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 
@@ -49,17 +50,17 @@ public final class DeserializerValueFloat extends DeserializerValueNumbers<Float
     }
 
     @Override
-    public Float numberValue(ParserContext uCtx) {
+    public Float numberValue(ParserContext uCtx, Type type) {
         return Float.parseFloat(uCtx.getParser().getString());
     }
 
     @Override
-    public Float trueValue(ParserContext uCtx) {
+    public Float trueValue(ParserContext uCtx, Type type) {
         return VALUE_TRUE;
     }
 
     @Override
-    public Float falseValue(ParserContext uCtx) {
+    public Float falseValue(ParserContext uCtx, Type type) {
         return VALUE_FALSE;
     }
 

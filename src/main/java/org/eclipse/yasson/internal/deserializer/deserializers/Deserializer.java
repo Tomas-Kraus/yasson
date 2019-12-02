@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.lang.reflect.Type;
+
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 
 /**
@@ -41,50 +43,55 @@ public abstract class Deserializer<T> {
      * Implementing code can only retrieve value from the parser. It shall not change its current position.
      *
      * @param uCtx deserialization context
+     * @param type the type of returned value
      * @return deserialized value
      */
-    public abstract T stringValue(ParserContext uCtx);
+    public abstract T stringValue(ParserContext uCtx, Type type);
 
     /**
      * Build Java value from current JSON parser {@code number} value.
-     * Calls {@link Deserializer#stringValue(ParserContext)} by default.
+     * Calls {@link Deserializer#stringValue(ParserContext, Type)} by default.
      *
      * @param uCtx deserialization context
+     * @param type the type of returned value
      * @return deserialized value
      */
-    public T numberValue(ParserContext uCtx) {
-        return stringValue(uCtx);
+    public T numberValue(ParserContext uCtx, Type type) {
+        return stringValue(uCtx, type);
     }
 
     /**
      * Build Java value from current JSON parser {@code number} value.
-     * Calls {@link Deserializer#stringValue(ParserContext)} by default.
+     * Calls {@link Deserializer#stringValue(ParserContext, Type)} by default.
      *
      * @param uCtx deserialization context
+     * @param type the type of returned value
      * @return deserialized value
      */
-    public T trueValue(ParserContext uCtx) {
-        return stringValue(uCtx);
+    public T trueValue(ParserContext uCtx, Type type) {
+        return stringValue(uCtx, type);
     }
 
     /**
      * Build Java value from current JSON parser {@code number} value.
-     * Calls {@link Deserializer#stringValue(ParserContext)} by default.
+     * Calls {@link Deserializer#stringValue(ParserContext, Type)} by default.
      *
      * @param uCtx deserialization context
+     * @param type the type of returned value
      * @return deserialized value
      */
-    public T falseValue(ParserContext uCtx) {
-        return stringValue(uCtx);
+    public T falseValue(ParserContext uCtx, Type type) {
+        return stringValue(uCtx, type);
     }
 
     /**
      * Build Java value from current JSON parser {@code null} value.
      *
      * @param uCtx deserialization context
+     * @param type the type of returned value
      * @return deserialized value as {@code null}
      */
-    public T nullValue(ParserContext uCtx) {
+    public T nullValue(ParserContext uCtx, Type type) {
         return null;
     }
 

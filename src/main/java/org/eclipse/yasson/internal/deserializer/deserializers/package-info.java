@@ -28,7 +28,7 @@
  * to target Java value (e.g. int, Integer, String, Date, etc.).
  * <p>
  * Primitive type converters are stateless classes extending {@link Deserializer} class. Conversion is implemented
- * by overriding {@link Deserializer#stringValue(org.eclipse.yasson.internal.deserializer.ParserContext)} method.<br>
+ * by overriding {@link Deserializer#stringValue(org.eclipse.yasson.internal.deserializer.ParserContext, Type)} method.<br>
  * Only JSON string and JSON number have special converters for various target Java types. Those converters
  * are registered in {@link Deserializers} class which handles their proper selection for primitive JSON value being
  * processed.
@@ -42,7 +42,7 @@
  * <li>{@link ContainerObject#keyType()} method to retrieve Java type of key to be stored in target Java Map (makes
  *     no sense for Collection)</li>
  * <li>{@link ContainerArray#valueType()} method to retrieve Java type of value to be stored in target Java structure</li>
- * <li>{@link Deserializer#stringValue(org.eclipse.yasson.internal.deserializer.ParserContext)} method
+ * <li>{@link Deserializer#stringValue(org.eclipse.yasson.internal.deserializer.ParserContext, Type)} method
  *     to retrieve target Java structure after being built</li></ul>
  * Converters are registered in {@link Containers} class which handles their proper selection for JSON object
  * and JSON array being processed.
