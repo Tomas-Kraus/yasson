@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.yasson.internal.JsonbContext;
+import org.eclipse.yasson.internal.deserializer.deserializers.ContainerGenericArrayFromArray.ComponentType;
 import org.eclipse.yasson.internal.model.ClassModel;
 
 /**
@@ -70,6 +71,7 @@ public final class Containers {
         ARRAY_CONTAINERS.put(List.class, ContainerListFromArray.AsArrayList::newInstance);
         ARRAY_CONTAINERS.put(ArrayList.class, ContainerListFromArray.AsArrayList::newInstance);
         ARRAY_CONTAINERS.put(LinkedList.class, ContainerListFromArray.AsLinkedList::newInstance);
+        ARRAY_CONTAINERS.put(ComponentType.class, ContainerGenericArrayFromArray::newInstance);
         OBJECT_CONTAINERS.put(Object.class, ContainerHashMapFromObject::newInstance);
         OBJECT_CONTAINERS.put(Map.class, ContainerHashMapFromObject::newInstance);
         OBJECT_CONTAINERS.put(HashMap.class, ContainerHashMapFromObject::newInstance);
@@ -91,13 +93,26 @@ public final class Containers {
     /**
      * Select container deserializer for JSON array.
      *
-     * @param cm class model
+     * @param cm class model of container
      * @param valueType type of container value
      * @return container deserializer for JSON array
      */
     public ContainerArray<?, ?> arrayContainer(ClassModel cm, Class<?> valueType) {
         return arrayContainers.getOrDefault(
                 cm.getType(), ContainerArrayFromArray.ObjectArray::newInstance).newInstance(cm, valueType);
+    }
+
+    /**
+     * Select container deserializer for JSON array.
+     *
+     * @param type type of container
+     * @param cm class model
+     * @param valueType type of container value
+     * @return container deserializer for JSON array
+     */
+    public ContainerArray<?, ?> arrayContainer(Type type, ClassModel cm, Class<?> valueType) {
+        return arrayContainers.getOrDefault(
+                type, ContainerArrayFromArray.ObjectArray::newInstance).newInstance(cm, valueType);
     }
 
     /**

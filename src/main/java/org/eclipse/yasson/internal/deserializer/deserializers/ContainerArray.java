@@ -16,6 +16,8 @@ import java.lang.reflect.Type;
 
 import org.eclipse.yasson.internal.RuntimeTypeInfo;
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.model.ClassModel;
+import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
  * Container deserializer.
@@ -32,10 +34,24 @@ public abstract class ContainerArray<V, T> implements RuntimeTypeInfo {
 
     /** Deserialization context. */
     private ParserContext uCtx;
+
     /** Container type. */
     private Type type;
+
+    /** Container class model. */
+    private final ClassModel classModel;
+
     /** Parent container or {@code null} if no parent exists. */
     private ContainerArray<?, ?> parent;
+
+    /**
+     * Creates an instance of container deserializer.
+     *
+     * @param classModel Java class model of the container type
+     */
+    ContainerArray(final ClassModel classModel) {
+        this.classModel = classModel;
+    }
 
     /**
      * Notification about beginning of container deserialization.
@@ -58,7 +74,6 @@ public abstract class ContainerArray<V, T> implements RuntimeTypeInfo {
      */
     public abstract T build();
 
-
     /**
      * Add last parsed JSON value to this container.
      * In <i>JSON object</i> deserialization {@code setKey(String)} is always called before this method by parser
@@ -77,12 +92,37 @@ public abstract class ContainerArray<V, T> implements RuntimeTypeInfo {
     public abstract Type valueType();
 
     /**
+     * Get current value customization.
+     *
+     * @return current value type
+     */
+    public abstract Customization valueCustomization();
+
+    /**
      * Get current deserialization context.
      *
      * @return current deserialization context
      */
     ParserContext getContext() {
         return uCtx;
+    }
+
+    /**
+     * Get container class model.
+     *
+     * @return container class model
+     */
+    public ClassModel getClassModel() {
+        return classModel;
+    }
+
+    /**
+     * Set container type.
+     *
+     * @param type container type
+     */
+    void setRuntimeType(final Type type) {
+        this.type = type;
     }
 
     /**

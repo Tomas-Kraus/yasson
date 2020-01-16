@@ -22,7 +22,7 @@ import java.math.BigInteger;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -83,6 +83,7 @@ public final class Deserializers {
         DESERIALIZERS.put(ZoneId.class, DeserializerValueZoneIdType.INSTANCE);
         DESERIALIZERS.put(ZonedDateTime.class, DeserializerValueZonedDateTimeType.INSTANCE);
         DESERIALIZERS.put(XMLGregorianCalendar.class, DeserializerValueXMLGregorianCalendarType.INSTANCE);
+        DESERIALIZERS.put(Calendar.class, DeserializerValueCalendar.INSTANCE);
     }
 
     private final Map<Type, Deserializer<?>> deserializers;

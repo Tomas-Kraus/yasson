@@ -18,7 +18,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
+import org.eclipse.yasson.internal.deserializer.ParserContext;
 import org.eclipse.yasson.internal.model.ClassModel;
+import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
  * JSON array to Java array deserializer.
@@ -31,11 +33,31 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
     /** Target array stored in List. */
     private final ArrayList<V> list;
 
+    /** Current value type (the same for all array elements). */
+    private final Class<V> valueType;
+
+    /** Array components customizations. */
+    private Customization customization;
+
+    /** Array components class model. */
+    private ClassModel valueClassModel;
+
     /**
      * Creates an instance of JSON array to Java array deserializer.
+     *
+     * @param valueType target Java value type of the container elements
+     * @param classModel Java class model of the container type
      */
-    ContainerArrayFromArray() {
+    ContainerArrayFromArray(final Class<V> valueType, final ClassModel classModel) {
+        super(classModel);
         this.list = new ArrayList<>();
+        this.valueType = valueType;
+    }
+
+    public void start(ParserContext uCtx, Type type, ContainerArray<?, ?> parent) {
+        super.start(uCtx, type, parent);
+        valueClassModel = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(valueType);
+        customization = valueClassModel.getClassCustomization();
     }
 
     /**
@@ -46,6 +68,20 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
     @Override
     public final void addValue(V value) {
         getList().add(value);
+    }
+
+    @Override
+    public Type valueType() {
+        return valueType;
+    }
+
+    public Class<V> valueClass() {
+        return valueType;
+    }
+
+    @Override
+    public Customization valueCustomization() {
+        return customization;
     }
 
     /**
@@ -62,13 +98,10 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
      */
     static final class ObjectArray<V> extends ContainerArrayFromArray<V, V[]> {
 
-        /** Current value type (the same for all array elements). */
-        private final Class<V> valueType;
-
         /**
          * Get new instance of JSON array to objects array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param cm Java class model
          * @param valueType target Java value type of array elements
          * @return new instance of JSON array to objects array deserializer
          */
@@ -79,12 +112,11 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Creates an instance of JSON array to objects array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param classModel Java class model
          * @param valueType target Java value type of array elements
          */
-        @SuppressWarnings("unchecked")
-        private ObjectArray(ClassModel cm, Class<?> valueType) {
-            this.valueType = (Class<V>) valueType;
+        private ObjectArray(ClassModel classModel, Class<V> valueType) {
+            super(valueType, classModel);
         }
 
         /**
@@ -96,21 +128,11 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         @Override
         public V[] build() {
             @SuppressWarnings("unchecked")
-            final V[] array = (V[]) Array.newInstance(valueType, getList().size());
+            final V[] array = (V[]) Array.newInstance(valueClass(), getList().size());
             for (int i = 0; i < getList().size(); i++) {
                 array[i] = getList().get(i);
             }
             return array;
-        }
-
-        /**
-         * Get current value type.
-         *
-         * @return current value type
-         */
-        @Override
-        public Type valueType() {
-            return valueType;
         }
 
     }
@@ -123,21 +145,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to byte array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param cm Java class
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to byte array deserializer
          */
+        @SuppressWarnings("unchecked")
         static ContainerArrayFromArray.PrimitiveByte newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.PrimitiveByte(cm, valueType);
+            return new ContainerArrayFromArray.PrimitiveByte(cm, (Class<Byte>) valueType);
         }
 
         /**
          * Creates an instance of JSON array to byte array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param classModel Java class model
          * @param valueType target Java value type of array elements (ignored)
          */
-        private PrimitiveByte(ClassModel cm, Class<?> valueType) {
+        private PrimitiveByte(ClassModel classModel, Class<Byte> valueType) {
+            super(valueType, classModel);
         }
 
         /**
@@ -155,16 +179,6 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
             return array;
         }
 
-        /**
-         * Get current value type.
-         *
-         * @return current value type as {@code Byte.class}
-         */
-        @Override
-        public Type valueType() {
-            return Byte.class;
-        }
-
     }
 
     /**
@@ -175,21 +189,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to Byte array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param cm Java class model
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to byte array deserializer
          */
+        @SuppressWarnings("unchecked")
         static ContainerArrayFromArray.ObjectByte newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.ObjectByte(cm, valueType);
+            return new ContainerArrayFromArray.ObjectByte(cm, (Class<Byte>) valueType);
         }
 
         /**
          * Creates an instance of JSON array to Byte array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param classModel Java class model
          * @param valueType target Java value type of array elements (ignored)
          */
-        private ObjectByte(ClassModel cm, Class<?> valueType) {
+        private ObjectByte(ClassModel classModel, Class<Byte> valueType) {
+            super(valueType, classModel);
         }
 
         /**
@@ -203,16 +219,6 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
             return getList().toArray(new Byte[getList().size()]);
         }
 
-        /**
-         * Get current value type.
-         *
-         * @return current value type as {@code Byte.class}
-         */
-        @Override
-        public Type valueType() {
-            return Byte.class;
-        }
-
     }
 
     /**
@@ -223,21 +229,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to short array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param cm Java class model
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to short array deserializer
          */
+        @SuppressWarnings("unchecked")
         static ContainerArrayFromArray.PrimitiveShort newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.PrimitiveShort(cm, valueType);
+            return new ContainerArrayFromArray.PrimitiveShort(cm, (Class<Short>) valueType);
         }
 
         /**
          * Creates an instance of JSON array to short array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param classModel Java class model
          * @param valueType target Java value type of array elements (ignored)
          */
-        private PrimitiveShort(ClassModel cm, Class<?> valueType) {
+        private PrimitiveShort(ClassModel classModel, Class<Short> valueType) {
+            super(valueType, classModel);
         }
 
         /**
@@ -255,16 +263,6 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
             return array;
         }
 
-        /**
-         * Get current value type.
-         *
-         * @return current value type as {@code Short.class}
-         */
-        @Override
-        public Type valueType() {
-            return Short.class;
-        }
-
     }
 
     /**
@@ -275,21 +273,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to Short array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param cm Java class model
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to Short array deserializer
          */
+        @SuppressWarnings("unchecked")
         static ContainerArrayFromArray.ObjectShort newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.ObjectShort(cm, valueType);
+            return new ContainerArrayFromArray.ObjectShort(cm, (Class<Short>) valueType);
         }
 
         /**
          * Creates an instance of JSON array to Short array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param classModel Java class model
          * @param valueType target Java value type of array elements (ignored)
          */
-        private ObjectShort(ClassModel cm, Class<?> valueType) {
+        private ObjectShort(ClassModel classModel, Class<Short> valueType) {
+            super(valueType, classModel);
         }
 
         /**
@@ -303,16 +303,6 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
             return getList().toArray(new Short[getList().size()]);
         }
 
-        /**
-         * Get current value type.
-         *
-         * @return current value type as {@code Short.class}
-         */
-        @Override
-        public Type valueType() {
-            return Short.class;
-        }
-
     }
 
     /**
@@ -323,21 +313,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to int array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param cm Java class model
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to int array deserializer
          */
+        @SuppressWarnings("unchecked")
         static ContainerArrayFromArray.PrimitiveInteger newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.PrimitiveInteger(cm, valueType);
+            return new ContainerArrayFromArray.PrimitiveInteger(cm, (Class<Integer>) valueType);
         }
 
         /**
          * Creates an instance of JSON array to int array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param classModel Java class model
          * @param valueType target Java value type of array elements (ignored)
          */
-        private PrimitiveInteger(ClassModel cm, Class<?> valueType) {
+        private PrimitiveInteger(ClassModel classModel, Class<Integer> valueType) {
+            super(valueType, classModel);
         }
 
         /**
@@ -355,16 +347,6 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
             return array;
         }
 
-        /**
-         * Get current value type.
-         *
-         * @return current value type as {@code Integer.class}
-         */
-        @Override
-        public Type valueType() {
-            return Integer.class;
-        }
-
     }
 
     /**
@@ -375,21 +357,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to Integer array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param cm Java class model
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to Integer array deserializer
          */
+        @SuppressWarnings("unchecked")
         static ContainerArrayFromArray.ObjectInteger newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.ObjectInteger(cm, valueType);
+            return new ContainerArrayFromArray.ObjectInteger(cm, (Class<Integer>) valueType);
         }
 
         /**
          * Creates an instance of JSON array to Integer array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param classModel Java class model
          * @param valueType target Java value type of array elements (ignored)
          */
-        private ObjectInteger(ClassModel cm, Class<?> valueType) {
+        private ObjectInteger(ClassModel classModel, Class<Integer> valueType) {
+            super(valueType, classModel);
         }
 
         /**
@@ -403,16 +387,6 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
             return getList().toArray(new Integer[getList().size()]);
         }
 
-        /**
-         * Get current value type.
-         *
-         * @return current value type as {@code Integer.class}
-         */
-        @Override
-        public Type valueType() {
-            return Integer.class;
-        }
-
     }
 
     /**
@@ -423,21 +397,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to long array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param cm Java class model
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to long array deserializer
          */
+        @SuppressWarnings("unchecked")
         static ContainerArrayFromArray.PrimitiveLong newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.PrimitiveLong(cm, valueType);
+            return new ContainerArrayFromArray.PrimitiveLong(cm, (Class<Long>) valueType);
         }
 
         /**
          * Creates an instance of JSON array to long array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param classModel Java class model
          * @param valueType target Java value type of array elements (ignored)
          */
-        private PrimitiveLong(ClassModel cm, Class<?> valueType) {
+        private PrimitiveLong(ClassModel classModel, Class<Long> valueType) {
+            super(valueType, classModel);
         }
 
         /**
@@ -455,16 +431,6 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
             return array;
         }
 
-        /**
-         * Get current value type.
-         *
-         * @return current value type as {@code Long.class}
-         */
-        @Override
-        public Type valueType() {
-            return Long.class;
-        }
-
     }
 
     /**
@@ -475,21 +441,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to Long array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param cm Java class model
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to Long array deserializer
          */
+        @SuppressWarnings("unchecked")
         static ContainerArrayFromArray.ObjectLong newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.ObjectLong(cm, valueType);
+            return new ContainerArrayFromArray.ObjectLong(cm, (Class<Long>) valueType);
         }
 
         /**
          * Creates an instance of JSON array to Long array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param classModel Java class model
          * @param valueType target Java value type of array elements (ignored)
          */
-        private ObjectLong(ClassModel cm, Class<?> valueType) {
+        private ObjectLong(ClassModel classModel, Class<Long> valueType) {
+            super(valueType, classModel);
         }
 
         /**
@@ -503,16 +471,6 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
             return getList().toArray(new Long[getList().size()]);
         }
 
-        /**
-         * Get current value type.
-         *
-         * @return current value type as {@code Long.class}
-         */
-        @Override
-        public Type valueType() {
-            return Long.class;
-        }
-
     }
 
     /**
@@ -523,21 +481,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to float array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param cm Java class model
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to float array deserializer
          */
+        @SuppressWarnings("unchecked")
         static ContainerArrayFromArray.PrimitiveFloat newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.PrimitiveFloat(cm, valueType);
+            return new ContainerArrayFromArray.PrimitiveFloat(cm, (Class<Float>) valueType);
         }
 
         /**
          * Creates an instance of JSON array to float array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param classModel Java class model
          * @param valueType target Java value type of array elements (ignored)
          */
-        private PrimitiveFloat(ClassModel cm, Class<?> valueType) {
+        private PrimitiveFloat(ClassModel classModel, Class<Float> valueType) {
+            super(valueType, classModel);
         }
 
         /**
@@ -555,16 +515,6 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
             return array;
         }
 
-        /**
-         * Get current value type.
-         *
-         * @return current value type as {@code Float.class}
-         */
-        @Override
-        public Type valueType() {
-            return Float.class;
-        }
-
     }
 
     /**
@@ -575,21 +525,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to Float array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param cm Java class model
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to Float array deserializer
          */
+        @SuppressWarnings("unchecked")
         static ContainerArrayFromArray.ObjectFloat newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.ObjectFloat(cm, valueType);
+            return new ContainerArrayFromArray.ObjectFloat(cm, (Class<Float>) valueType);
         }
 
         /**
          * Creates an instance of JSON array to Float array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param classModel Java class model
          * @param valueType target Java value type of array elements (ignored)
          */
-        private ObjectFloat(ClassModel cm, Class<?> valueType) {
+        private ObjectFloat(ClassModel classModel, Class<Float> valueType) {
+            super(valueType, classModel);
         }
 
         /**
@@ -603,16 +555,6 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
             return getList().toArray(new Float[getList().size()]);
         }
 
-        /**
-         * Get current value type.
-         *
-         * @return current value type as {@code Float.class}
-         */
-        @Override
-        public Type valueType() {
-            return Float.class;
-        }
-
     }
 
     /**
@@ -623,21 +565,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to double array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param cm Java class model
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to double array deserializer
          */
+        @SuppressWarnings("unchecked")
         static ContainerArrayFromArray.PrimitiveDouble newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.PrimitiveDouble(cm, valueType);
+            return new ContainerArrayFromArray.PrimitiveDouble(cm, (Class<Double>) valueType);
         }
 
         /**
          * Creates an instance of JSON array to double array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param classModel Java class model
          * @param valueType target Java value type of array elements (ignored)
          */
-        private PrimitiveDouble(ClassModel cm, Class<?> valueType) {
+        private PrimitiveDouble(ClassModel classModel, Class<Double> valueType) {
+            super(valueType, classModel);
         }
 
         /**
@@ -655,16 +599,6 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
             return array;
         }
 
-        /**
-         * Get current value type.
-         *
-         * @return current value type as {@code Double.class}
-         */
-        @Override
-        public Type valueType() {
-            return Double.class;
-        }
-
     }
 
     /**
@@ -675,21 +609,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to Double array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param cm Java class model
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to Double array deserializer
          */
-       static ContainerArrayFromArray.ObjectDouble newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.ObjectDouble(cm, valueType);
+        @SuppressWarnings("unchecked")
+        static ContainerArrayFromArray.ObjectDouble newInstance(ClassModel cm, Class<?> valueType) {
+            return new ContainerArrayFromArray.ObjectDouble(cm, (Class<Double>) valueType);
         }
 
        /**
         * Creates an instance of JSON array to Double array deserializer.
         *
-        * @param cm Java class model (ignored)
+        * @param classModel Java class model
         * @param valueType target Java value type of array elements (ignored)
         */
-        private ObjectDouble(ClassModel cm, Class<?> valueType) {
+        private ObjectDouble(ClassModel classModel, Class<Double> valueType) {
+            super(valueType, classModel);
         }
 
         /**
@@ -703,16 +639,6 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
             return getList().toArray(new Double[getList().size()]);
         }
 
-        /**
-         * Get current value type.
-         *
-         * @return current value type as {@code Double.class}
-         */
-        @Override
-        public Type valueType() {
-            return Double.class;
-        }
-
     }
 
     /**
@@ -723,21 +649,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
        /**
         * Get new instance of JSON array to BigInteger array deserializer.
         *
-        * @param cm Java class model (ignored)
+        * @param cm Java class model
         * @param valueType target Java value type of array elements (ignored)
         * @return new instance of JSON array to BigInteger array deserializer
         */
+        @SuppressWarnings("unchecked")
         static ContainerArrayFromArray.ObjectBigInteger newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.ObjectBigInteger(cm, valueType);
+            return new ContainerArrayFromArray.ObjectBigInteger(cm, (Class<BigInteger>)valueType);
         }
 
         /**
          * Creates an instance of JSON array to BigInteger array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param classModel Java class model
          * @param valueType target Java value type of array elements (ignored)
          */
-        private ObjectBigInteger(ClassModel cm, Class<?> valueType) {
+        private ObjectBigInteger(ClassModel classModel, Class<BigInteger> valueType) {
+            super(valueType, classModel);
         }
 
         /**
@@ -751,16 +679,6 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
             return getList().toArray(new BigInteger[getList().size()]);
         }
 
-        /**
-         * Get current value type.
-         *
-         * @return current value type as {@code BigInteger.class}
-         */
-        @Override
-        public Type valueType() {
-            return BigInteger.class;
-        }
-
     }
 
    /**
@@ -771,21 +689,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to BigDecimal array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param cm Java class model
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to BigDecimal array deserializer
          */
+        @SuppressWarnings("unchecked")
         static ContainerArrayFromArray.ObjectBigDecimal newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.ObjectBigDecimal(cm, valueType);
+            return new ContainerArrayFromArray.ObjectBigDecimal(cm, (Class<BigDecimal>) valueType);
         }
 
         /**
          * Creates an instance of JSON array to BigDecimal array deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param classModel Java class model
          * @param valueType target Java value type of array elements (ignored)
          */
-        private ObjectBigDecimal(ClassModel cm, Class<?> valueType) {
+        private ObjectBigDecimal(ClassModel classModel, Class<BigDecimal> valueType) {
+            super(valueType, classModel);
         }
 
         /**
@@ -797,16 +717,6 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         @Override
         public BigDecimal[] build() {
             return getList().toArray(new BigDecimal[getList().size()]);
-        }
-
-        /**
-         * Get current value type.
-         *
-         * @return current value type as {@code BigDecimal.class}
-         */
-        @Override
-        public Type valueType() {
-            return BigDecimal.class;
         }
 
     }

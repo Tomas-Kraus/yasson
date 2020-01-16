@@ -2,6 +2,8 @@ package org.eclipse.yasson.internal.deserializer.deserializers;
 
 import java.lang.reflect.Type;
 
+import org.eclipse.yasson.internal.model.ClassModel;
+
 /**
  * Container with key to value mapping deserializer.
  * <p>
@@ -18,6 +20,15 @@ public abstract class ContainerObject<K, V, T> extends ContainerArray<V, T> {
 
     /** Key of current JSON object value being parsed. */
     private K key;
+
+    /**
+     * Creates an instance of container with key to value mapping deserializer.
+     *
+     * @param classModel Java class model of the container type
+     */
+    ContainerObject(final ClassModel classModel) {
+        super(classModel);
+    }
 
     /**
      * Set key of next JSON object value to be added to the container.

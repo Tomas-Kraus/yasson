@@ -17,6 +17,7 @@ import org.eclipse.yasson.internal.RuntimeTypeInfo;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerArray;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerObject;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerPoJoFromObject;
+import org.eclipse.yasson.internal.deserializer.deserializers.ContainerGenericArrayFromArray.ComponentType;
 import org.eclipse.yasson.internal.model.customization.PropertyCustomization;
 import org.eclipse.yasson.internal.properties.MessageKeys;
 import org.eclipse.yasson.internal.properties.Messages;
@@ -123,9 +124,11 @@ public final class ResolveType {
                         Object.class);
             }
         } else if (type instanceof GenericArrayType) {
-            final Class<?> typeClass = ((GenericArrayType) type).getClass();
-            final Type valueType = ((GenericArrayType) type).getGenericComponentType();
-            return selectDeserializerForArray(uCtx, typeClass, resolveGenericType(valueType));
+            Class<?> component = (Class<?>) ((GenericArrayType) type).getGenericComponentType();
+            return uCtx.getContainers().arrayContainer(
+                    type,
+                    uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel((Class<?>) type),
+                    component);
         } else if (type instanceof ParameterizedType) {
             final Class<?> typeClass = (Class<?>) ((ParameterizedType) type).getRawType();
             final Type[] argsTypes = ((ParameterizedType) type).getActualTypeArguments();
@@ -138,16 +141,13 @@ public final class ResolveType {
     private static ContainerArray<?, ?> selectDeserializerForArray(ParserContext uCtx, Class<?> typeClass,
             Class<?> valueClass) {
         if (typeClass == Object.class) {
-            return uCtx.getContainers().arrayContainer(
-                    uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(typeClass), valueClass);
+            return uCtx.getContainers().arrayContainer(uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(typeClass), valueClass);
         } else if (JsonValue.class.isAssignableFrom(typeClass)) {
             return null; // TODO Return JsonArrayDeserializer
         } else if (typeClass.isArray()) {
-            return uCtx.getContainers().arrayContainer(
-                    uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(typeClass), valueClass);
+            return uCtx.getContainers().arrayContainer(uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(typeClass), valueClass);
         } else if (Collection.class.isAssignableFrom(typeClass)) {
-            return uCtx.getContainers().arrayContainer(
-                    uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(typeClass), valueClass);
+            return uCtx.getContainers().arrayContainer(uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(typeClass), valueClass);
         } else {
             throw new JsonbException("Can't deserialize JSON array into: " + typeClass.getName());
         }
@@ -199,6 +199,10 @@ public final class ResolveType {
             return ReflectionUtils.resolveItemVariableType(item, (TypeVariable<?>) type);
         } else if (type instanceof ParameterizedType) {
             return ReflectionUtils.resolveTypeArguments((ParameterizedType) type, item.getRuntimeType());
+        } else if (type instanceof GenericArrayType) {
+            return new ComponentType(ReflectionUtils
+                    .resolveRawType(item, ((GenericArrayType)type).getGenericComponentType()));
+//            return type;//ReflectionUtils.resolveRawType(item, ((GenericArrayType)type).getGenericComponentType());
         } else if (type instanceof WildcardType) {
             return resolveMostSpecificBound((WildcardType) type);
         }
@@ -221,6 +225,8 @@ public final class ResolveType {
             return (Class<?>) type;
         } else if (type instanceof ParameterizedType) {
             return (Class<?>) ((ParameterizedType) type).getRawType();
+        } else if (type instanceof TypeVariable) {
+            ReflectionUtils.resolveRawType(null, type);
         } else if (type instanceof WildcardType) {
             return resolveMostSpecificBound((WildcardType) type);
         }

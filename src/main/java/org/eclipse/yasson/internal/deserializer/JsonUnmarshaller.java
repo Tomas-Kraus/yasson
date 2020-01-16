@@ -18,6 +18,7 @@ import javax.json.bind.serializer.DeserializationContext;
 import javax.json.stream.JsonParser;
 
 import org.eclipse.yasson.internal.JsonbContext;
+import org.eclipse.yasson.internal.ReflectionUtils;
 
 /**
  * JSON-B deserialization entry point.

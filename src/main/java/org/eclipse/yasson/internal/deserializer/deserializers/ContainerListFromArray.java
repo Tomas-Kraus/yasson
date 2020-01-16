@@ -20,10 +20,12 @@ abstract class ContainerListFromArray<V> extends ContainerCollectionFromArray<V>
     /**
      * Creates an instance of JSON array to Java {@code List} deserializer.
      *
+     * @param target Java {@code List} instance
      * @param valueType target Java value type of Collection elements
+     * @param classModel Java class model of the container type
      */
-    ContainerListFromArray(List<V> list, Class<?> valueType) {
-        super(valueType);
+    ContainerListFromArray(List<V> list, Class<?> valueType, final ClassModel classModel) {
+        super(valueType, classModel);
         this.list = list;
     }
 
@@ -59,21 +61,22 @@ abstract class ContainerListFromArray<V> extends ContainerCollectionFromArray<V>
         /**
          * Get new instance of JSON array to Java {@code ArrayList} deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param cm Java class model
          * @param valueType target Java value type of array elements
          * @return new instance of JSON array to Java {@code ArrayList} deserializer
          */
         static <V> AsArrayList<V> newInstance(ClassModel cm, Class<V> valueType) {
-            return new AsArrayList<>(valueType);
+            return new AsArrayList<>(valueType, cm);
         }
 
         /**
          * Creates an instance of JSON array to Java {@code ArrayList} deserializer.
          *
          * @param valueType target Java value type of Collection elements
+         * @param classModel Java class model of the container type
          */
-        AsArrayList(Class<?> valueType) {
-            super(new ArrayList<>(), valueType);
+        AsArrayList(Class<?> valueType, ClassModel classModel) {
+            super(new ArrayList<>(), valueType, classModel);
         }
 
     }
@@ -88,21 +91,22 @@ abstract class ContainerListFromArray<V> extends ContainerCollectionFromArray<V>
         /**
          * Get new instance of JSON array to Java {@code LinkedList} deserializer.
          *
-         * @param cm Java class model (ignored)
+         * @param cm Java class model
          * @param valueType target Java value type of array elements
          * @return new instance of JSON array to Java {@code LinkedList} deserializer
          */
         static <V> AsLinkedList<V> newInstance(ClassModel cm, Class<V> valueType) {
-            return new AsLinkedList<>(valueType);
+            return new AsLinkedList<>(valueType, cm);
         }
 
         /**
          * Creates an instance of JSON array to Java {@code LinkedList} deserializer.
          *
          * @param valueType target Java value type of Collection elements
+         * @param classModel Java class model of the container type
          */
-        AsLinkedList(Class<?> valueType) {
-            super(new LinkedList<>(), valueType);
+        AsLinkedList(Class<?> valueType, ClassModel classModel) {
+            super(new LinkedList<>(), valueType, classModel);
         }
 
     }

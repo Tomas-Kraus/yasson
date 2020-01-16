@@ -15,6 +15,10 @@ package org.eclipse.yasson.internal.deserializer.deserializers;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
+import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.model.ClassModel;
+import org.eclipse.yasson.internal.model.customization.Customization;
+
 /**
  * JSON array to Java Collection deserializer.
  *
@@ -25,24 +29,48 @@ public abstract class ContainerCollectionFromArray<V> extends ContainerArray<V, 
     /** Current value type (the same for all Collection elements). */
     private final Class<V> valueType;
 
+    /** Collection components customizations. */
+    private Customization customization;
+
+    /** Collection components class model. */
+    private ClassModel classModel;
+
     /**
      * Creates an instance of JSON array to Java Collection deserializer.
      *
      * @param valueType target Java value type of Collection elements
+     * @param classModel Java class model of the container type
      */
     @SuppressWarnings("unchecked")
-    ContainerCollectionFromArray(Class<?> valueType) {
+    ContainerCollectionFromArray(Class<?> valueType, final ClassModel classModel) {
+        super(classModel);
         this.valueType = (Class<V>) valueType;
     }
 
+    public void start(ParserContext uCtx, Type type, ContainerArray<?, ?> parent) {
+        super.start(uCtx, type, parent);
+        classModel = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(valueType);
+        customization = classModel.getClassCustomization();
+    }
+
     /**
-     * Get current value type.
+     * Get collection value type.
      *
      * @return current value type
      */
     @Override
     public final Type valueType() {
         return valueType;
+    }
+
+    /**
+     * Get collection value customizations.
+     *
+     * @return current value customizations
+     */
+    @Override
+    public Customization valueCustomization() {
+        return customization;
     }
 
 }
