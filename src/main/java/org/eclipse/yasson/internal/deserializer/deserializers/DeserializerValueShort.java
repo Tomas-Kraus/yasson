@@ -17,6 +17,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
  * Deserialize JSON simple value as {@link Short}.
@@ -50,17 +51,17 @@ public final class DeserializerValueShort extends DeserializerValueNumbers<Short
     }
 
     @Override
-    public Short numberValue(ParserContext uCtx, Type type) {
+    public Short numberValue(ParserContext uCtx, Type type, Customization customization) {
         return Short.parseShort(uCtx.getParser().getString());
     }
 
     @Override
-    public Short trueValue(ParserContext uCtx, Type type) {
+    public Short trueValue(ParserContext uCtx, Type type, Customization customization) {
         return VALUE_TRUE;
     }
 
     @Override
-    public Short falseValue(ParserContext uCtx, Type type) {
+    public Short falseValue(ParserContext uCtx, Type type, Customization customization) {
         return VALUE_FALSE;
     }
 

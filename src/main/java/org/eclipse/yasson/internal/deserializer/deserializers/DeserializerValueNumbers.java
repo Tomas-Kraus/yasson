@@ -20,6 +20,7 @@ import java.text.ParseException;
 import javax.json.bind.JsonbException;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.model.customization.Customization;
 import org.eclipse.yasson.internal.properties.MessageKeys;
 import org.eclipse.yasson.internal.properties.Messages;
 import org.eclipse.yasson.internal.serializer.JsonbNumberFormatter;
@@ -32,7 +33,7 @@ import org.eclipse.yasson.internal.serializer.JsonbNumberFormatter;
 public abstract class DeserializerValueNumbers<N> extends Deserializer<N> {
 
     @Override
-    public final N stringValue(ParserContext uCtx, Type type) {
+    public final N stringValue(ParserContext uCtx, Type type, Customization customization) {
         final JsonbNumberFormatter numberFormat = uCtx.getDeserializeNumberFormatter(valueType());
         if (numberFormat != null) {
             DecimalFormat format = new DecimalFormat(

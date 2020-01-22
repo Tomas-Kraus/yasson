@@ -15,9 +15,9 @@ import javax.json.bind.JsonbException;
 import org.eclipse.yasson.internal.ReflectionUtils;
 import org.eclipse.yasson.internal.RuntimeTypeInfo;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerArray;
+import org.eclipse.yasson.internal.deserializer.deserializers.ContainerGenericArrayFromArray.ComponentType;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerObject;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerPoJoFromObject;
-import org.eclipse.yasson.internal.deserializer.deserializers.ContainerGenericArrayFromArray.ComponentType;
 import org.eclipse.yasson.internal.model.customization.PropertyCustomization;
 import org.eclipse.yasson.internal.properties.MessageKeys;
 import org.eclipse.yasson.internal.properties.Messages;
@@ -201,7 +201,7 @@ public final class ResolveType {
             return ReflectionUtils.resolveTypeArguments((ParameterizedType) type, item.getRuntimeType());
         } else if (type instanceof GenericArrayType) {
             return new ComponentType(ReflectionUtils
-                    .resolveRawType(item, ((GenericArrayType)type).getGenericComponentType()));
+                    .resolveRawType(item, ((GenericArrayType) type).getGenericComponentType()));
 //            return type;//ReflectionUtils.resolveRawType(item, ((GenericArrayType)type).getGenericComponentType());
         } else if (type instanceof WildcardType) {
             return resolveMostSpecificBound((WildcardType) type);

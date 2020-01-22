@@ -47,6 +47,14 @@ public abstract class ContainerCollectionFromArray<V> extends ContainerArray<V, 
         this.valueType = (Class<V>) valueType;
     }
 
+    /**
+     * Notification about beginning of container deserialization.
+     *
+     * @param uCtx deserialization context
+     * @param type container type
+     * @param parent parent container or {@code null} if no parent exists
+     */
+    @Override
     public void start(ParserContext uCtx, Type type, ContainerArray<?, ?> parent) {
         super.start(uCtx, type, parent);
         classModel = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(valueType);

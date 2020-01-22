@@ -15,6 +15,7 @@ package org.eclipse.yasson.internal.deserializer.deserializers;
 import java.lang.reflect.Type;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
  * Deserialize JSON {@code string} or {@code number} as {@link Boolean} value.
@@ -27,27 +28,27 @@ public final class DeserializerValueBoolean extends Deserializer<Boolean> {
     }
 
     @Override
-    public Boolean stringValue(ParserContext uCtx, Type type) {
+    public Boolean stringValue(ParserContext uCtx, Type type, Customization customization) {
         return Boolean.parseBoolean(uCtx.getParser().getString());
     }
 
     @Override
-    public Boolean numberValue(ParserContext uCtx, Type type) {
+    public Boolean numberValue(ParserContext uCtx, Type type, Customization customization) {
         return Boolean.parseBoolean(uCtx.getParser().getString());
     }
 
     @Override
-    public Boolean trueValue(ParserContext uCtx, Type type) {
+    public Boolean trueValue(ParserContext uCtx, Type type, Customization customization) {
         return Boolean.TRUE;
     }
 
     @Override
-    public Boolean falseValue(ParserContext uCtx, Type type) {
+    public Boolean falseValue(ParserContext uCtx, Type type, Customization customization) {
         return Boolean.FALSE;
     }
 
     @Override
-    public Boolean nullValue(ParserContext uCtx, Type type) {
+    public Boolean nullValue(ParserContext uCtx, Type type, Customization customization) {
         return null;
     }
 

@@ -22,6 +22,7 @@ import javax.json.Json;
 import javax.json.JsonNumber;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
  * Deserialize JSON value as {@link JsonNumber}.
@@ -69,17 +70,17 @@ public final class DeserializerValueJsonNumber extends DeserializerValueNumbers<
     }
 
     @Override
-    public JsonNumber numberValue(ParserContext uCtx, Type type) {
+    public JsonNumber numberValue(ParserContext uCtx, Type type, Customization customization) {
         return  Json.createValue(Integer.parseInt(uCtx.getParser().getString()));
     }
 
     @Override
-    public JsonNumber trueValue(ParserContext uCtx, Type type) {
+    public JsonNumber trueValue(ParserContext uCtx, Type type, Customization customization) {
         return Json.createValue(Integer.parseInt(uCtx.getParser().getString()));
     }
 
     @Override
-    public JsonNumber falseValue(ParserContext uCtx, Type type) {
+    public JsonNumber falseValue(ParserContext uCtx, Type type, Customization customization) {
         return Json.createValue(Integer.parseInt(uCtx.getParser().getString()));
     }
 

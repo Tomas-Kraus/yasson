@@ -17,6 +17,7 @@ import java.lang.reflect.Type;
 import java.time.ZonedDateTime;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
  * Deserialize JSON value as {@link ZonedDateTime}.
@@ -29,27 +30,27 @@ public final class DeserializerValueZonedDateTimeType extends Deserializer<Zoned
     }
 
     @Override
-    public ZonedDateTime stringValue(ParserContext uCtx, Type type) {
+    public ZonedDateTime stringValue(ParserContext uCtx, Type type, Customization customization) {
         return ZonedDateTime.parse(uCtx.getParser().getString());
     }
 
     @Override
-    public ZonedDateTime numberValue(ParserContext uCtx, Type type) {
+    public ZonedDateTime numberValue(ParserContext uCtx, Type type, Customization customization) {
         return ZonedDateTime.parse(uCtx.getParser().getString());
     }
 
     @Override
-    public ZonedDateTime trueValue(ParserContext uCtx, Type type) {
+    public ZonedDateTime trueValue(ParserContext uCtx, Type type, Customization customization) {
         return ZonedDateTime.parse(uCtx.getParser().getString());
     }
 
     @Override
-    public ZonedDateTime falseValue(ParserContext uCtx, Type type) {
+    public ZonedDateTime falseValue(ParserContext uCtx, Type type, Customization customization) {
         return ZonedDateTime.parse(uCtx.getParser().getString());
     }
 
     @Override
-    public ZonedDateTime nullValue(ParserContext uCtx, Type type) {
+    public ZonedDateTime nullValue(ParserContext uCtx, Type type, Customization customization) {
         return null;
     }
 }

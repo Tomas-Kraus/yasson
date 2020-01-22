@@ -17,6 +17,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
  * Deserialize JSON simple value as {@link Byte}.
@@ -50,17 +51,17 @@ public final class DeserializerValueByte extends DeserializerValueNumbers<Byte> 
     }
 
     @Override
-    public Byte numberValue(ParserContext uCtx, Type type) {
+    public Byte numberValue(ParserContext uCtx, Type type, Customization customization) {
         return Byte.parseByte(uCtx.getParser().getString());
     }
 
     @Override
-    public Byte trueValue(ParserContext uCtx, Type type) {
+    public Byte trueValue(ParserContext uCtx, Type type, Customization customization) {
         return VALUE_TRUE;
     }
 
     @Override
-    public Byte falseValue(ParserContext uCtx, Type type) {
+    public Byte falseValue(ParserContext uCtx, Type type, Customization customization) {
         return VALUE_FALSE;
     }
 

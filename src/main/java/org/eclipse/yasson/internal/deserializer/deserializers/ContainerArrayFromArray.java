@@ -655,7 +655,7 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         */
         @SuppressWarnings("unchecked")
         static ContainerArrayFromArray.ObjectBigInteger newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.ObjectBigInteger(cm, (Class<BigInteger>)valueType);
+            return new ContainerArrayFromArray.ObjectBigInteger(cm, (Class<BigInteger>) valueType);
         }
 
         /**

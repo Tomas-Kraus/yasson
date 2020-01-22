@@ -17,6 +17,7 @@ import java.lang.reflect.Type;
 import java.time.ZoneId;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
  * Deserialize JSON string or number as {@link ZoneId}.
@@ -29,27 +30,27 @@ public final class DeserializerValueZoneIdType extends Deserializer<ZoneId> {
     }
 
     @Override
-    public ZoneId stringValue(ParserContext uCtx, Type type) {
+    public ZoneId stringValue(ParserContext uCtx, Type type, Customization customization) {
         return ZoneId.of(uCtx.getParser().getString());
     }
 
     @Override
-    public ZoneId numberValue(ParserContext uCtx, Type type) {
+    public ZoneId numberValue(ParserContext uCtx, Type type, Customization customization) {
         return ZoneId.of(uCtx.getParser().getString());
     }
 
     @Override
-    public ZoneId trueValue(ParserContext uCtx, Type type) {
+    public ZoneId trueValue(ParserContext uCtx, Type type, Customization customization) {
         return ZoneId.of(uCtx.getParser().getString());
     }
 
     @Override
-    public ZoneId falseValue(ParserContext uCtx, Type type) {
+    public ZoneId falseValue(ParserContext uCtx, Type type, Customization customization) {
         return ZoneId.of(uCtx.getParser().getString());
     }
 
     @Override
-    public ZoneId nullValue(ParserContext uCtx, Type type) {
+    public ZoneId nullValue(ParserContext uCtx, Type type, Customization customization) {
         return null;
     }
 }

@@ -16,6 +16,7 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
  * Deserialize JSON {@code string} or {@code number} as {@link Object} value.
@@ -28,22 +29,22 @@ public final class DeserializerValueObject extends Deserializer<Object> {
     }
 
     @Override
-    public Object stringValue(ParserContext uCtx, Type type) {
+    public Object stringValue(ParserContext uCtx, Type type, Customization customization) {
         return uCtx.getParser().getString();
     }
 
     @Override
-    public Object numberValue(ParserContext uCtx, Type type) {
+    public Object numberValue(ParserContext uCtx, Type type, Customization customization) {
         return new BigDecimal(uCtx.getParser().getString());
     }
 
     @Override
-    public Object trueValue(ParserContext uCtx, Type type) {
+    public Object trueValue(ParserContext uCtx, Type type, Customization customization) {
         return Boolean.TRUE;
     }
 
     @Override
-    public Object falseValue(ParserContext uCtx, Type type) {
+    public Object falseValue(ParserContext uCtx, Type type, Customization customization) {
         return Boolean.FALSE;
     }
 

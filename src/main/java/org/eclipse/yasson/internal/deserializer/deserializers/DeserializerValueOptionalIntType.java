@@ -17,6 +17,7 @@ import java.lang.reflect.Type;
 import java.util.OptionalInt;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
  * Deserialize JSON value as {@link OptionalInt}.
@@ -29,27 +30,27 @@ public class DeserializerValueOptionalIntType extends Deserializer<OptionalInt> 
     }
 
     @Override
-    public OptionalInt stringValue(ParserContext uCtx, Type type) {
+    public OptionalInt stringValue(ParserContext uCtx, Type type, Customization customization) {
         return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
     }
 
     @Override
-    public OptionalInt numberValue(ParserContext uCtx, Type type) {
+    public OptionalInt numberValue(ParserContext uCtx, Type type, Customization customization) {
         return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
     }
 
     @Override
-    public OptionalInt trueValue(ParserContext uCtx, Type type) {
+    public OptionalInt trueValue(ParserContext uCtx, Type type, Customization customization) {
         return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
     }
 
     @Override
-    public OptionalInt falseValue(ParserContext uCtx, Type type) {
+    public OptionalInt falseValue(ParserContext uCtx, Type type, Customization customization) {
         return OptionalInt.of(Integer.parseInt(uCtx.getParser().getString()));
     }
 
     @Override
-    public OptionalInt nullValue(ParserContext uCtx, Type type) {
+    public OptionalInt nullValue(ParserContext uCtx, Type type, Customization customization) {
         return OptionalInt.empty();
     }
 }

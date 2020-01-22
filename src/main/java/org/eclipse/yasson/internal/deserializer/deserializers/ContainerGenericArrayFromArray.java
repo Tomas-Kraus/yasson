@@ -16,18 +16,27 @@ import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Type;
 
-import org.eclipse.yasson.internal.deserializer.ParserContext;
 import org.eclipse.yasson.internal.model.ClassModel;
 
 /**
  * JSON array to generic array deserializer.
+ *
+ * @param <V> the type of array value returned by primitive type deserializer
  */
 public class ContainerGenericArrayFromArray<V> extends ContainerArrayFromArray<V, V[]> {
 
+    /**
+     * Generic type of array component.
+     */
     public static final class ComponentType implements GenericArrayType {
 
         private final Type component;
 
+        /**
+         * Creates an instance of generic type of array component.
+         *
+         * @param component type of array component
+         */
         public ComponentType(final Type component) {
             this.component = component;
         }

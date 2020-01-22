@@ -17,6 +17,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
  * Deserialize JSON {@code string} or {@code number} as {@link Double} value.
@@ -50,17 +51,17 @@ public final class DeserializerValueDouble extends DeserializerValueNumbers<Doub
     }
 
     @Override
-    public Double numberValue(ParserContext uCtx, Type type) {
+    public Double numberValue(ParserContext uCtx, Type type, Customization customization) {
         return Double.parseDouble(uCtx.getParser().getString());
     }
 
     @Override
-    public Double trueValue(ParserContext uCtx, Type type) {
+    public Double trueValue(ParserContext uCtx, Type type, Customization customization) {
         return VALUE_TRUE;
     }
 
     @Override
-    public Double falseValue(ParserContext uCtx, Type type) {
+    public Double falseValue(ParserContext uCtx, Type type, Customization customization) {
         return VALUE_FALSE;
     }
 

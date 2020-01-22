@@ -16,6 +16,7 @@ package org.eclipse.yasson.internal.deserializer.deserializers;
 import java.lang.reflect.Type;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
  * Deserialize JSON simple value as {@link Character}.
@@ -37,7 +38,7 @@ public class DeserializerValueChar extends Deserializer<Character> {
      * @return 1st character from JSON string
      */
     @Override
-    public Character stringValue(ParserContext uCtx, Type type) {
+    public Character stringValue(ParserContext uCtx, Type type, Customization customization) {
         final String str = uCtx.getParser().getString();
         return str.isEmpty() ? null : str.charAt(0);
     }
@@ -48,7 +49,7 @@ public class DeserializerValueChar extends Deserializer<Character> {
      * @return character matching provided UTF-16 non supplementary code point in JSON number
      */
     @Override
-    public Character numberValue(ParserContext uCtx, Type type) {
+    public Character numberValue(ParserContext uCtx, Type type, Customization customization) {
         return (char) Integer.parseInt(uCtx.getParser().getString());
     }
 
@@ -58,7 +59,7 @@ public class DeserializerValueChar extends Deserializer<Character> {
      * @return '1' as JSON true value representation
      */
     @Override
-    public Character trueValue(ParserContext uCtx, Type type) {
+    public Character trueValue(ParserContext uCtx, Type type, Customization customization) {
         return VALUE_TRUE;
     }
 
@@ -68,7 +69,7 @@ public class DeserializerValueChar extends Deserializer<Character> {
      * @return '0' as JSON false value representation
      */
     @Override
-    public Character falseValue(ParserContext uCtx, Type type) {
+    public Character falseValue(ParserContext uCtx, Type type, Customization customization) {
         return VALUE_FALSE;
     }
 
@@ -78,7 +79,7 @@ public class DeserializerValueChar extends Deserializer<Character> {
      * @return {@code null} as JSON null value representation
      */
     @Override
-    public Character nullValue(ParserContext uCtx, Type type) {
+    public Character nullValue(ParserContext uCtx, Type type, Customization customization) {
         return null;
     }
 

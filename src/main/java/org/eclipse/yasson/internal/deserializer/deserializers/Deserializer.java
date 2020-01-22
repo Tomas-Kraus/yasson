@@ -15,6 +15,7 @@ package org.eclipse.yasson.internal.deserializer.deserializers;
 import java.lang.reflect.Type;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
  * JSON simpe value deserializer.
@@ -44,44 +45,48 @@ public abstract class Deserializer<T> {
      *
      * @param uCtx deserialization context
      * @param type the type of returned value
+     * @param customization value customization
      * @return deserialized value
      */
-    public abstract T stringValue(ParserContext uCtx, Type type);
+    public abstract T stringValue(ParserContext uCtx, Type type, Customization customization);
 
     /**
      * Build Java value from current JSON parser {@code number} value.
-     * Calls {@link Deserializer#stringValue(ParserContext, Type)} by default.
+     * Calls {@link Deserializer#stringValue(ParserContext,Type,Customization)} by default.
      *
      * @param uCtx deserialization context
      * @param type the type of returned value
+     * @param customization value customization
      * @return deserialized value
      */
-    public T numberValue(ParserContext uCtx, Type type) {
-        return stringValue(uCtx, type);
+    public T numberValue(ParserContext uCtx, Type type, Customization customization) {
+        return stringValue(uCtx, type, customization);
     }
 
     /**
      * Build Java value from current JSON parser {@code number} value.
-     * Calls {@link Deserializer#stringValue(ParserContext, Type)} by default.
+     * Calls {@link Deserializer#stringValue(ParserContext,Type,Customization)} by default.
      *
      * @param uCtx deserialization context
      * @param type the type of returned value
+     * @param customization value customization
      * @return deserialized value
      */
-    public T trueValue(ParserContext uCtx, Type type) {
-        return stringValue(uCtx, type);
+    public T trueValue(ParserContext uCtx, Type type, Customization customization) {
+        return stringValue(uCtx, type, customization);
     }
 
     /**
      * Build Java value from current JSON parser {@code number} value.
-     * Calls {@link Deserializer#stringValue(ParserContext, Type)} by default.
+     * Calls {@link Deserializer#stringValue(ParserContext,Type,Customization)} by default.
      *
      * @param uCtx deserialization context
      * @param type the type of returned value
+     * @param customization value customization
      * @return deserialized value
      */
-    public T falseValue(ParserContext uCtx, Type type) {
-        return stringValue(uCtx, type);
+    public T falseValue(ParserContext uCtx, Type type, Customization customization) {
+        return stringValue(uCtx, type, customization);
     }
 
     /**
@@ -89,9 +94,10 @@ public abstract class Deserializer<T> {
      *
      * @param uCtx deserialization context
      * @param type the type of returned value
+     * @param customization value customization
      * @return deserialized value as {@code null}
      */
-    public T nullValue(ParserContext uCtx, Type type) {
+    public T nullValue(ParserContext uCtx, Type type, Customization customization) {
         return null;
     }
 

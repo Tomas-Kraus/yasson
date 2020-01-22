@@ -41,7 +41,8 @@ final class TerminalValueTrue {
      */
     @SuppressWarnings("unchecked")
     static void read(ParserContext uCtx, Type type, StackNode parent, Deserializer<?> deserializer) {
-        ((ContainerArray<Object, Object>) parent.getContainer()).addValue(deserializer.trueValue(uCtx, type));
+        final ContainerArray<Object, Object> container = (ContainerArray<Object, Object>) parent.getContainer();
+        container.addValue(deserializer.trueValue(uCtx, type, container.valueCustomization()));
     }
 
 }

@@ -15,14 +15,16 @@
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
 import java.lang.reflect.Type;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
-
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -30,13 +32,11 @@ import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 
-
 import javax.json.JsonArray;
 import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
-
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.eclipse.yasson.internal.JsonbContext;
@@ -84,6 +84,11 @@ public final class Deserializers {
         DESERIALIZERS.put(ZonedDateTime.class, DeserializerValueZonedDateTimeType.INSTANCE);
         DESERIALIZERS.put(XMLGregorianCalendar.class, DeserializerValueXMLGregorianCalendarType.INSTANCE);
         DESERIALIZERS.put(Calendar.class, DeserializerValueCalendar.INSTANCE);
+        DESERIALIZERS.put(Date.class, DeserializerValueDate.INSTANCE);
+        DESERIALIZERS.put(java.sql.Date.class, DeserializerValueSqlDate.INSTANCE);
+        DESERIALIZERS.put(LocalDateTime.class, DeserializerValueLocalDateTime.INSTANCE);
+        DESERIALIZERS.put(LocalDate.class, DeserializerValueLocalDate.INSTANCE);
+        DESERIALIZERS.put(LocalTime.class, DeserializerValueLocalTime.INSTANCE);
     }
 
     private final Map<Type, Deserializer<?>> deserializers;

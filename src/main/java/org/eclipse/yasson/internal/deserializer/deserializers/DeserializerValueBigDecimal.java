@@ -18,6 +18,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
  * Deserialize JSON simple value as {@link BigDecimal}.
@@ -51,17 +52,17 @@ public final class DeserializerValueBigDecimal extends DeserializerValueNumbers<
     }
 
     @Override
-    public BigDecimal numberValue(ParserContext uCtx, Type type) {
+    public BigDecimal numberValue(ParserContext uCtx, Type type, Customization customization) {
         return new BigDecimal(uCtx.getParser().getString());
     }
 
     @Override
-    public BigDecimal trueValue(ParserContext uCtx, Type type) {
+    public BigDecimal trueValue(ParserContext uCtx, Type type, Customization customization) {
         return VALUE_TRUE;
     }
 
     @Override
-    public BigDecimal falseValue(ParserContext uCtx, Type type) {
+    public BigDecimal falseValue(ParserContext uCtx, Type type, Customization customization) {
         return VALUE_FALSE;
     }
 

@@ -17,6 +17,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
  * Deserialize JSON simple value as {@link Long}.
@@ -50,17 +51,17 @@ public final class DeserializerValueLong extends DeserializerValueNumbers<Long> 
     }
 
     @Override
-    public Long numberValue(ParserContext uCtx, Type type) {
+    public Long numberValue(ParserContext uCtx, Type type, Customization customization) {
         return Long.parseLong(uCtx.getParser().getString());
     }
 
     @Override
-    public Long trueValue(ParserContext uCtx, Type type) {
+    public Long trueValue(ParserContext uCtx, Type type, Customization customization) {
         return VALUE_TRUE;
     }
 
     @Override
-    public Long falseValue(ParserContext uCtx, Type type) {
+    public Long falseValue(ParserContext uCtx, Type type, Customization customization) {
         return VALUE_FALSE;
     }
 

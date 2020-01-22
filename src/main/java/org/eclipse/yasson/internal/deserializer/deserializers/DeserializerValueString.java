@@ -15,6 +15,7 @@ package org.eclipse.yasson.internal.deserializer.deserializers;
 import java.lang.reflect.Type;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
  * Deserialize JSON {@code string} or {@code number} as {@link String} value.
@@ -27,7 +28,7 @@ public final class DeserializerValueString extends Deserializer<String> {
     }
 
     @Override
-    public String stringValue(ParserContext uCtx, Type type) {
+    public String stringValue(ParserContext uCtx, Type type, Customization customization) {
         return uCtx.getParser().getString();
     }
 

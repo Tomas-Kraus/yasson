@@ -17,6 +17,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
  * Deserialize JSON {@code string} or {@code number} as {@link Float} value.
@@ -50,17 +51,17 @@ public final class DeserializerValueFloat extends DeserializerValueNumbers<Float
     }
 
     @Override
-    public Float numberValue(ParserContext uCtx, Type type) {
+    public Float numberValue(ParserContext uCtx, Type type, Customization customization) {
         return Float.parseFloat(uCtx.getParser().getString());
     }
 
     @Override
-    public Float trueValue(ParserContext uCtx, Type type) {
+    public Float trueValue(ParserContext uCtx, Type type, Customization customization) {
         return VALUE_TRUE;
     }
 
     @Override
-    public Float falseValue(ParserContext uCtx, Type type) {
+    public Float falseValue(ParserContext uCtx, Type type, Customization customization) {
         return VALUE_FALSE;
     }
 

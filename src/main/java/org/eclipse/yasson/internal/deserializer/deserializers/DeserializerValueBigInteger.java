@@ -19,6 +19,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
  * Deserialize JSON {@code string} or {@code number} as {@link BigInteger} value.
@@ -52,17 +53,17 @@ public final class DeserializerValueBigInteger extends DeserializerValueNumbers<
     }
 
     @Override
-    public BigInteger numberValue(ParserContext uCtx, Type type) {
+    public BigInteger numberValue(ParserContext uCtx, Type type, Customization customization) {
         return new BigInteger(uCtx.getParser().getString());
     }
 
     @Override
-    public BigInteger trueValue(ParserContext uCtx, Type type) {
+    public BigInteger trueValue(ParserContext uCtx, Type type, Customization customization) {
         return VALUE_TRUE;
     }
 
     @Override
-    public BigInteger falseValue(ParserContext uCtx, Type type) {
+    public BigInteger falseValue(ParserContext uCtx, Type type, Customization customization) {
         return VALUE_FALSE;
     }
 

@@ -17,6 +17,7 @@ import java.lang.reflect.Type;
 import java.util.OptionalLong;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
  * Deserialize JSON value as {@link OptionalLong}.
@@ -29,27 +30,27 @@ public class DeserializerValueOptionalLongType extends Deserializer<OptionalLong
     }
 
     @Override
-    public OptionalLong stringValue(ParserContext uCtx, Type type) {
+    public OptionalLong stringValue(ParserContext uCtx, Type type, Customization customization) {
         return OptionalLong.of(Long.parseLong(uCtx.getParser().getString()));
     }
 
     @Override
-    public OptionalLong numberValue(ParserContext uCtx, Type type) {
+    public OptionalLong numberValue(ParserContext uCtx, Type type, Customization customization) {
         return OptionalLong.of(Long.parseLong(uCtx.getParser().getString()));
     }
 
     @Override
-    public OptionalLong trueValue(ParserContext uCtx, Type type) {
+    public OptionalLong trueValue(ParserContext uCtx, Type type, Customization customization) {
         return OptionalLong.of(Long.parseLong(uCtx.getParser().getString()));
     }
 
     @Override
-    public OptionalLong falseValue(ParserContext uCtx, Type type) {
+    public OptionalLong falseValue(ParserContext uCtx, Type type, Customization customization) {
         return OptionalLong.of(Long.parseLong(uCtx.getParser().getString()));
     }
 
     @Override
-    public OptionalLong nullValue(ParserContext uCtx, Type type) {
+    public OptionalLong nullValue(ParserContext uCtx, Type type, Customization customization) {
         return OptionalLong.empty();
     }
 }
