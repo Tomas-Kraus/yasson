@@ -12,6 +12,7 @@
  ******************************************************************************/
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -38,13 +39,13 @@ public class DeserializerValueDate extends DeserializerDateTime<Date> {
     @Override
     Date fromFormatedString(final String dateTimeValue, final JsonbDateFormatter formatter) {
         TemporalAccessor parsed = parseWithOrWithoutZone(dateTimeValue, formatter.getDateTimeFormatter(), UTC);
-        return new Date(temporalToTimeInMilis(parsed));
+        return Date.from(Instant.from(parsed));
     }
 
     @Override
     Date fromDefault(final String dateTimeValue, Locale locale) {
         TemporalAccessor parsed = parseWithOrWithoutZone(dateTimeValue, DEFAULT_DATE_TIME_FORMATTER.withLocale(locale), UTC);
-        return new Date(temporalToTimeInMilis(parsed));
+        return Date.from(Instant.from(parsed));
     }
 
     /**

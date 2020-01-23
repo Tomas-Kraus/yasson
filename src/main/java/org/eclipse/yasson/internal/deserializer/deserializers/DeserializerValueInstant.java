@@ -12,34 +12,33 @@
  ******************************************************************************/
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
-import java.sql.Date;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import org.eclipse.yasson.internal.serializer.JsonbDateFormatter;
 
 /**
- * Deserialize JSON simple value as {@link Date} value.
+ * Deserialize JSON simple value as {@link Instant} value.
  */
-public class DeserializerValueSqlDate extends DeserializerDateTime<Date> {
+public class DeserializerValueInstant extends DeserializerDateTime<Instant> {
 
-    static final Deserializer<Date> INSTANCE = new DeserializerValueSqlDate();
-    private static final DateTimeFormatter DEFAULT_FORMATTER = DateTimeFormatter.ISO_DATE.withZone(UTC);
+    static final Deserializer<Instant> INSTANCE = new DeserializerValueInstant();
+    private static final DateTimeFormatter DEFAULT_FORMATTER = DateTimeFormatter.ISO_INSTANT.withZone(UTC);
 
     @Override
-    Date fromTimeInMillis(final Long timeInMillis) {
-        return new Date(timeInMillis);
+    Instant fromTimeInMillis(final Long timeInMillis) {
+        return Instant.ofEpochMilli(timeInMillis);
     }
 
     @Override
-    Date fromFormatedString(final String dateTimeValue, final JsonbDateFormatter formatter) {
-        return Date.valueOf(LocalDate.parse(dateTimeValue, formatter.getDateTimeFormatter()));
+    Instant fromFormatedString(final String dateTimeValue, final JsonbDateFormatter formatter) {
+        return Instant.from(getZonedFormatter(formatter.getDateTimeFormatter()).parse(dateTimeValue));
     }
 
     @Override
-    Date fromDefault(final String dateTimeValue, Locale locale) {
-        return Date.valueOf(LocalDate.parse(dateTimeValue, DEFAULT_FORMATTER));
+    Instant fromDefault(final String dateTimeValue, Locale locale) {
+        return Instant.from(DEFAULT_FORMATTER.withLocale(locale).parse(dateTimeValue));
     }
 
 }

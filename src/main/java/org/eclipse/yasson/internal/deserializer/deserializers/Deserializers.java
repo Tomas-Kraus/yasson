@@ -17,9 +17,12 @@ package org.eclipse.yasson.internal.deserializer.deserializers;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -31,6 +34,8 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 
 import javax.json.JsonArray;
 import javax.json.JsonNumber;
@@ -46,7 +51,7 @@ import org.eclipse.yasson.internal.JsonbContext;
  */
 public final class Deserializers {
 
-    private static final Map<Type, Deserializer<?>> DESERIALIZERS = new HashMap<>(19);
+    private static final Map<Type, Deserializer<?>> DESERIALIZERS = new HashMap<>(64);
 
     static {
         DESERIALIZERS.put(String.class, DeserializerValueString.INSTANCE);
@@ -79,16 +84,22 @@ public final class Deserializers {
         DESERIALIZERS.put(OptionalInt.class, DeserializerValueOptionalIntType.INSTANCE);
         DESERIALIZERS.put(OptionalLong.class, DeserializerValueOptionalLongType.INSTANCE);
         DESERIALIZERS.put(Optional.class, DeserializerValueOptionalObject.INSTANCE);
-        DESERIALIZERS.put(ZoneOffset.class, DeserializerValueZoneOffsetType.INSTANCE);
-        DESERIALIZERS.put(ZoneId.class, DeserializerValueZoneIdType.INSTANCE);
-        DESERIALIZERS.put(ZonedDateTime.class, DeserializerValueZonedDateTimeType.INSTANCE);
+        DESERIALIZERS.put(ZoneOffset.class, DeserializerValueZoneOffset.INSTANCE);
+        DESERIALIZERS.put(ZoneId.class, DeserializerValueZoneId.INSTANCE);
+        DESERIALIZERS.put(ZonedDateTime.class, DeserializerValueZonedDateTime.INSTANCE);
         DESERIALIZERS.put(XMLGregorianCalendar.class, DeserializerValueXMLGregorianCalendarType.INSTANCE);
         DESERIALIZERS.put(Calendar.class, DeserializerValueCalendar.INSTANCE);
         DESERIALIZERS.put(Date.class, DeserializerValueDate.INSTANCE);
         DESERIALIZERS.put(java.sql.Date.class, DeserializerValueSqlDate.INSTANCE);
+        DESERIALIZERS.put(java.sql.Timestamp.class, DeserializerValueSqlTimestamp.INSTANCE);
         DESERIALIZERS.put(LocalDateTime.class, DeserializerValueLocalDateTime.INSTANCE);
         DESERIALIZERS.put(LocalDate.class, DeserializerValueLocalDate.INSTANCE);
         DESERIALIZERS.put(LocalTime.class, DeserializerValueLocalTime.INSTANCE);
+        DESERIALIZERS.put(Instant.class, DeserializerValueInstant.INSTANCE);
+        DESERIALIZERS.put(OffsetDateTime.class, DeserializerValueOffsetDateTime.INSTANCE);
+        DESERIALIZERS.put(OffsetTime.class, DeserializerValueOffsetTime.INSTANCE);
+        DESERIALIZERS.put(SimpleTimeZone.class, DeserializerValueTimeZone.INSTANCE);
+        DESERIALIZERS.put(TimeZone.class, DeserializerValueTimeZone.INSTANCE);
     }
 
     private final Map<Type, Deserializer<?>> deserializers;

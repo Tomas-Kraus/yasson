@@ -16,6 +16,7 @@ import java.lang.reflect.Type;
 import java.time.DateTimeException;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.util.Locale;
@@ -38,8 +39,6 @@ public abstract class DeserializerDateTime<D> extends Deserializer<D> {
     
     static final ZoneId UTC = ZoneId.of("UTC");
     static final LocalTime ZERO_LOCAL_TIME = LocalTime.parse("00:00:00");
-    /** Count of miliseconds in a day (24 hours * 60 minutes * 60 seconds * 1000 miliseconds). */
-    private static final long MILLIS_IN_DAY = 24 * 60 * 60 * 1000;
 
     DeserializerDateTime() {
     }
@@ -74,6 +73,11 @@ public abstract class DeserializerDateTime<D> extends Deserializer<D> {
                 uCtx.getJsonbContext().getConfigProperties().getLocale(formatter.getLocale()));
     }
 
+    @Override
+    public D numberValue(ParserContext uCtx, Type type, Customization customization) {
+        return fromTimeInMillis(Long.parseLong(uCtx.getParser().getString()));
+    }
+
     private D callFromFormatedString(final Type type, final String dateTimeValue, final JsonbDateFormatter formatter) {
         try {
             return fromFormatedString(dateTimeValue, formatter);
@@ -106,6 +110,18 @@ public abstract class DeserializerDateTime<D> extends Deserializer<D> {
      */
     protected static final long temporalToTimeInMilis(final TemporalAccessor parsed) {
         return 1000L * parsed.getLong(ChronoField.INSTANT_SECONDS) + parsed.getLong(ChronoField.MILLI_OF_SECOND);
+    }
+
+    /**
+     * Append UTC zone in case zone is not set on formatter.
+     *
+     * @param formatter formatter
+     * @return zoned formatter
+     */
+    protected static final DateTimeFormatter getZonedFormatter(DateTimeFormatter formatter) {
+        return formatter.getZone() != null
+                ? formatter
+                : formatter.withZone(UTC);
     }
 
 }

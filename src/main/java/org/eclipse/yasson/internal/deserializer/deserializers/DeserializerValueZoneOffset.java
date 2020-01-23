@@ -9,8 +9,8 @@
  *
  * Contributors:
  * Thibault Vallin
+ * Tomas Kraus
  ******************************************************************************/
-
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
 import java.lang.reflect.Type;
@@ -20,37 +20,15 @@ import org.eclipse.yasson.internal.deserializer.ParserContext;
 import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
- * Deserialize JSON value as {@link ZoneOffset}.
+ * Deserialize JSON simple value as {@link ZoneOffset} value.
  */
-public final class DeserializerValueZoneOffsetType extends Deserializer<ZoneOffset> {
+public final class DeserializerValueZoneOffset extends Deserializer<ZoneOffset> {
 
-    static final Deserializer<ZoneOffset> INSTANCE = new DeserializerValueZoneOffsetType();
-
-    private DeserializerValueZoneOffsetType(){
-    }
+    static final Deserializer<ZoneOffset> INSTANCE = new DeserializerValueZoneOffset();
 
     @Override
     public ZoneOffset stringValue(ParserContext uCtx, Type type, Customization customization) {
         return ZoneOffset.of(uCtx.getParser().getString());
     }
 
-    @Override
-    public ZoneOffset numberValue(ParserContext uCtx, Type type, Customization customization) {
-        return ZoneOffset.of(uCtx.getParser().getString());
-    }
-
-    @Override
-    public ZoneOffset trueValue(ParserContext uCtx, Type type, Customization customization) {
-        return ZoneOffset.of(uCtx.getParser().getString());
-    }
-
-    @Override
-    public ZoneOffset falseValue(ParserContext uCtx, Type type, Customization customization) {
-        return ZoneOffset.of(uCtx.getParser().getString());
-    }
-
-    @Override
-    public ZoneOffset nullValue(ParserContext uCtx, Type type, Customization customization) {
-        return null;
-    }
 }

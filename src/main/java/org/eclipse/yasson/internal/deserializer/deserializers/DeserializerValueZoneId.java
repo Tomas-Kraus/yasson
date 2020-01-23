@@ -9,8 +9,8 @@
  *
  * Contributors:
  * Thibault Vallin
+ * Tomas Kraus
  ******************************************************************************/
-
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
 import java.lang.reflect.Type;
@@ -20,37 +20,15 @@ import org.eclipse.yasson.internal.deserializer.ParserContext;
 import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
- * Deserialize JSON string or number as {@link ZoneId}.
+ * Deserialize JSON simple value as {@link ZoneId} value.
  */
-public final class DeserializerValueZoneIdType extends Deserializer<ZoneId> {
+public final class DeserializerValueZoneId extends Deserializer<ZoneId> {
 
-    static final Deserializer<ZoneId> INSTANCE = new DeserializerValueZoneIdType();
-
-    private DeserializerValueZoneIdType(){
-    }
+static final Deserializer<ZoneId> INSTANCE = new DeserializerValueZoneId();
 
     @Override
     public ZoneId stringValue(ParserContext uCtx, Type type, Customization customization) {
         return ZoneId.of(uCtx.getParser().getString());
     }
 
-    @Override
-    public ZoneId numberValue(ParserContext uCtx, Type type, Customization customization) {
-        return ZoneId.of(uCtx.getParser().getString());
-    }
-
-    @Override
-    public ZoneId trueValue(ParserContext uCtx, Type type, Customization customization) {
-        return ZoneId.of(uCtx.getParser().getString());
-    }
-
-    @Override
-    public ZoneId falseValue(ParserContext uCtx, Type type, Customization customization) {
-        return ZoneId.of(uCtx.getParser().getString());
-    }
-
-    @Override
-    public ZoneId nullValue(ParserContext uCtx, Type type, Customization customization) {
-        return null;
-    }
 }
