@@ -72,9 +72,12 @@ public final class Containers {
         ARRAY_CONTAINERS.put(ArrayList.class, ContainerListFromArray.AsArrayList::newInstance);
         ARRAY_CONTAINERS.put(LinkedList.class, ContainerListFromArray.AsLinkedList::newInstance);
         ARRAY_CONTAINERS.put(ComponentType.class, ContainerGenericArrayFromArray::newInstance);
+        ARRAY_CONTAINERS.put(HashMap.class, ContainerHashMapFromArray::newInstance);
+        ARRAY_CONTAINERS.put(Map.class, ContainerHashMapFromArray::newInstance);
         OBJECT_CONTAINERS.put(Object.class, ContainerHashMapFromObject::newInstance);
         OBJECT_CONTAINERS.put(Map.class, ContainerHashMapFromObject::newInstance);
         OBJECT_CONTAINERS.put(HashMap.class, ContainerHashMapFromObject::newInstance);
+        OBJECT_CONTAINERS.put(ContainerHashMapItemFromArray.class, ContainerHashMapItemFromArray::newInstance);
     }
 
     private final Map<Type, ArrayContainerBuiler> arrayContainers;

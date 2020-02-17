@@ -16,6 +16,8 @@ import org.eclipse.yasson.internal.ReflectionUtils;
 import org.eclipse.yasson.internal.RuntimeTypeInfo;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerArray;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerGenericArrayFromArray.ComponentType;
+import org.eclipse.yasson.internal.deserializer.deserializers.ContainerHashMapFromArray;
+import org.eclipse.yasson.internal.deserializer.deserializers.ContainerHashMapItemFromArray;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerObject;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerPoJoFromObject;
 import org.eclipse.yasson.internal.model.customization.PropertyCustomization;
@@ -37,10 +39,20 @@ public final class ResolveType {
      * Select and initialize container deserializer for JSON object parsing.
      *
      * @param uCtx parser context
+     * @return container deserializer for JSON object
+     */
+    static ContainerObject<?, ?, ?> deserializerForObject(ParserContext uCtx, StackNode parent) {
+        return deserializerForObject(uCtx, parent, parent.getContainer().valueType());
+    }
+
+    /**
+     * Select and initialize container deserializer for JSON object parsing.
+     *
+     * @param uCtx parser context
      * @param type unresolved target Java type
      * @return container deserializer for JSON object
      */
-    static ContainerObject<?, ?, ?> deserializerForObject(ParserContext uCtx, Type type) {
+    static ContainerObject<?, ?, ?> deserializerForObject(ParserContext uCtx, StackNode parent, Type type) {
         Class<?> typeClass;
         if (type instanceof Class) {
             typeClass = (Class<?>) type;
@@ -50,6 +62,11 @@ public final class ResolveType {
                 return uCtx.getContainers().objectContainer(
                         uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(typeClass), String.class,
                         Object.class);
+            } else if (ContainerHashMapItemFromArray.class.isAssignableFrom(typeClass)) {
+                return uCtx.getContainers().objectContainer(
+                        uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(typeClass),
+                        (Class<?>) parent.getContainer().object().keyType(),
+                        (Class<?>) parent.getContainer().valueType());
             } else if (typeClass.isInterface()) {
                 Class<?> mappedType = getInterfaceMappedType(uCtx, typeClass, null);
                 if (mappedType == null) {
@@ -118,6 +135,13 @@ public final class ResolveType {
                 return uCtx.getContainers().arrayContainer(
                         uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel((Class<?>) type),
                         ((Class<?>) type).getComponentType());
+            } else if (Map.class.isAssignableFrom((Class<?>) type)) {
+                ContainerArray<?, ?> container = uCtx.getContainers().arrayContainer(
+                        type,
+                        uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel((Class<?>) type),
+                        Object.class);
+                ((ContainerHashMapFromArray) container).setKeyType(Object.class);
+                return container;
             } else {
                 return uCtx.getContainers().arrayContainer(
                         uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel((Class<?>) type),
@@ -131,9 +155,34 @@ public final class ResolveType {
                     component);
         } else if (type instanceof ParameterizedType) {
             final Class<?> typeClass = (Class<?>) ((ParameterizedType) type).getRawType();
-            final Type[] argsTypes = ((ParameterizedType) type).getActualTypeArguments();
-            final Type valueType = argsTypes.length > 0 ? argsTypes[0] : Object.class;
-            return selectDeserializerForArray(uCtx, typeClass, resolveGenericType(valueType));
+            if (JsonValue.class.isAssignableFrom(typeClass)) {
+                return null; // TODO Return JsonObjectDeserializer
+            } else if (Map.class.isAssignableFrom(typeClass)) {
+                // Array will never be null, but may be empty.
+                Type[] genericsArray = ((ParameterizedType) type).getActualTypeArguments();
+                Class<?> keyClass;
+                Class<?> valueClass;
+                if (genericsArray.length > 1 && genericsArray[1] != null) {
+                    Type keyType = genericsArray[0];
+                    Type valueType = genericsArray[1];
+                    keyClass = resolveGenericType(keyType);
+                    valueClass = resolveGenericType(valueType);
+                } else {
+                    keyClass = Object.class;
+                    valueClass = Object.class;
+                }
+                ContainerArray<?, ?> container = uCtx.getContainers().arrayContainer(
+                        typeClass,
+                        uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(typeClass),
+                        valueClass);
+                //uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(keyClass);
+                ((ContainerHashMapFromArray) container).setKeyType(keyClass);
+                return container;
+            } else {
+                final Type[] argsTypes = ((ParameterizedType) type).getActualTypeArguments();
+                final Type valueType = argsTypes.length > 0 ? argsTypes[0] : Object.class;
+                return selectDeserializerForArray(uCtx, typeClass, resolveGenericType(valueType));
+            }
         }
         throw new JsonbException(Messages.getMessage(MessageKeys.TYPE_RESOLUTION_ERROR, type));
     }

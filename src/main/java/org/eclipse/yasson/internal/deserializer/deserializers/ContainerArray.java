@@ -94,7 +94,7 @@ public abstract class ContainerArray<V, T> implements RuntimeTypeInfo {
     /**
      * Get current value customization.
      *
-     * @return current value type
+     * @return current value customization
      */
     public abstract Customization valueCustomization();
 

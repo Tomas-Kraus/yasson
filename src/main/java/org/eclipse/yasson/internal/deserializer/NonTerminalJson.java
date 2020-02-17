@@ -78,7 +78,7 @@ final class NonTerminalJson extends SymbolNonTerminal {
                 NonTerminalJsonObject.getInstance(), parent,
                 parent.getType(),
                 // Calling this before new StackNodeNonTerminalReduced causes tests failure
-                ResolveType.deserializerForObject(uCtx, rawType));
+                ResolveType.deserializerForObject(uCtx, parent, rawType));
         parent.setContainer(new ContainerSimple(parent.getType(), rawType, stackNode.getContainer().getClassModel()));
         uCtx.getStack().push(stackNode);
         TerminalStartObject.read(uCtx, parent.getType(), parent, stackNode.getContainer());
@@ -100,7 +100,7 @@ final class NonTerminalJson extends SymbolNonTerminal {
                 NonTerminalJsonArray.getInstance(), parent,
                 parent.getType(),
                 // Calling this before new StackNodeNonTerminalReduced causes tests failure
-                ResolveType.deserializerForArray(uCtx, rawType));
+                ResolveType.deserializerForArray(uCtx, parent.getType()));
         parent.setContainer(new ContainerSimple(parent.getType(), rawType, stackNode.getContainer().getClassModel()));
         uCtx.getStack().push(stackNode);
         TerminalStartArray.read(uCtx, parent.getType(), parent, stackNode.getContainer());
