@@ -1,11 +1,10 @@
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.eclipse.yasson.internal.model.ClassModel;
 
 /**
  * JSON array to Java {@code List} deserializer.
@@ -20,12 +19,12 @@ abstract class ContainerListFromArray<V> extends ContainerCollectionFromArray<V>
     /**
      * Creates an instance of JSON array to Java {@code List} deserializer.
      *
-     * @param target Java {@code List} instance
+     * @param list target Java {@code List} instance
+     * @param containerClass class of the container
      * @param valueType target Java value type of Collection elements
-     * @param classModel Java class model of the container type
      */
-    ContainerListFromArray(List<V> list, Class<?> valueType, final ClassModel classModel) {
-        super(valueType, classModel);
+    ContainerListFromArray(final List<V> list, final Class<Collection<V>> containerClass, final Type valueType) {
+        super(containerClass, valueType);
         this.list = list;
     }
 
@@ -61,22 +60,22 @@ abstract class ContainerListFromArray<V> extends ContainerCollectionFromArray<V>
         /**
          * Get new instance of JSON array to Java {@code ArrayList} deserializer.
          *
-         * @param cm Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements
          * @return new instance of JSON array to Java {@code ArrayList} deserializer
          */
-        static <V> AsArrayList<V> newInstance(ClassModel cm, Class<V> valueType) {
-            return new AsArrayList<>(valueType, cm);
+        static <V> AsArrayList<V> newInstance(final Class<Collection<V>> containerClass, final Type valueType) {
+            return new AsArrayList<>(containerClass, valueType);
         }
 
         /**
          * Creates an instance of JSON array to Java {@code ArrayList} deserializer.
          *
+         * @param containerClass class of the container
          * @param valueType target Java value type of Collection elements
-         * @param classModel Java class model of the container type
          */
-        AsArrayList(Class<?> valueType, ClassModel classModel) {
-            super(new ArrayList<>(), valueType, classModel);
+        AsArrayList(final Class<Collection<V>> containerClass, final Type valueType) {
+            super(new ArrayList<>(), containerClass, valueType);
         }
 
     }
@@ -91,22 +90,22 @@ abstract class ContainerListFromArray<V> extends ContainerCollectionFromArray<V>
         /**
          * Get new instance of JSON array to Java {@code LinkedList} deserializer.
          *
-         * @param cm Java class model
+         *@param containerClass class of the container
          * @param valueType target Java value type of array elements
          * @return new instance of JSON array to Java {@code LinkedList} deserializer
          */
-        static <V> AsLinkedList<V> newInstance(ClassModel cm, Class<V> valueType) {
-            return new AsLinkedList<>(valueType, cm);
+        static <V> AsLinkedList<V> newInstance(final Class<Collection<V>> containerClass, final Type valueType) {
+            return new AsLinkedList<>(containerClass, valueType);
         }
 
         /**
          * Creates an instance of JSON array to Java {@code LinkedList} deserializer.
          *
+         * @param containerClass class of the container
          * @param valueType target Java value type of Collection elements
-         * @param classModel Java class model of the container type
          */
-        AsLinkedList(Class<?> valueType, ClassModel classModel) {
-            super(new LinkedList<>(), valueType, classModel);
+        AsLinkedList(final Class<Collection<V>> containerClass, final Type valueType) {
+            super(new LinkedList<>(), containerClass, valueType);
         }
 
     }

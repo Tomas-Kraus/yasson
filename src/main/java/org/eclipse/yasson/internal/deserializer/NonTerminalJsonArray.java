@@ -93,7 +93,7 @@ final class NonTerminalJsonArray extends SymbolNonTerminal {
     void expandValueString(ParserContext uCtx, StackNode parent) {
         TerminalValueString.read(
                 uCtx, parent.getContainer().valueType(), parent,
-                uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
+                uCtx.getDeserializers().deserializer(parent.getContainer().valueClass()));
         uCtx.nextToken();
     }
 
@@ -109,7 +109,7 @@ final class NonTerminalJsonArray extends SymbolNonTerminal {
     void expandValueNumber(ParserContext uCtx, StackNode parent) {
         TerminalValueNumber.read(
                 uCtx, parent.getContainer().valueType(), parent,
-                uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
+                uCtx.getDeserializers().deserializer(parent.getContainer().valueClass()));
         uCtx.nextToken();
     }
 
@@ -125,7 +125,7 @@ final class NonTerminalJsonArray extends SymbolNonTerminal {
     void expandValueTrue(ParserContext uCtx, StackNode parent) {
         TerminalValueTrue.read(
                 uCtx, parent.getContainer().valueType(), parent,
-                uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
+                uCtx.getDeserializers().deserializer(parent.getContainer().valueClass()));
         uCtx.nextToken();
     }
 
@@ -141,7 +141,7 @@ final class NonTerminalJsonArray extends SymbolNonTerminal {
     void expandValueFalse(ParserContext uCtx, StackNode parent) {
         TerminalValueFalse.read(
                 uCtx, parent.getContainer().valueType(), parent,
-                uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
+                uCtx.getDeserializers().deserializer(parent.getContainer().valueClass()));
         uCtx.nextToken();
     }
 
@@ -157,7 +157,7 @@ final class NonTerminalJsonArray extends SymbolNonTerminal {
     void expandValueNull(ParserContext uCtx, StackNode parent) {
         TerminalValueNull.read(
                 uCtx, parent.getContainer().valueType(), parent,
-                uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
+                uCtx.getDeserializers().deserializer(parent.getContainer().valueClass()));
         uCtx.nextToken();
     }
 

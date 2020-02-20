@@ -12,8 +12,6 @@
  ******************************************************************************/
 package org.eclipse.yasson.internal.deserializer;
 
-import java.math.BigDecimal;
-
 import javax.json.stream.JsonParser;
 
 import org.eclipse.yasson.internal.JsonbContext;
@@ -104,7 +102,7 @@ public final class ParserContext {
      * @return number formatter for deserialization for provided class or {@code null} if no such formatter exists
      */
     public JsonbNumberFormatter getDeserializeNumberFormatter(Class<?> clazz) {
-        final ClassModel cm = jsonbContext.getMappingContext().getClassModel(BigDecimal.class);
+        final ClassModel cm = jsonbContext.getMappingContext().getClassModel(clazz);
         return cm != null && cm.getClassCustomization() != null
                 ? cm.getClassCustomization().getDeserializeNumberFormatter()
                 : null;

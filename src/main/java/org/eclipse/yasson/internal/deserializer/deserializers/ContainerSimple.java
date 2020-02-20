@@ -12,24 +12,32 @@ public class ContainerSimple extends ContainerArray<Object, Object> {
 
     private Object value;
 
-    /** Current value type (the same for all array elements). */
-    private final Class<Object> valueType;
-
     /** Array components customizations. */
-    private Customization customization;
+    private final Customization customization;
 
     /**
      * Create s an instance of simple container deserializer.
      *
-     * @param type container type
-     * @param valueType target Java value type of Collection elements
+     * @param type target java value type
+     * @param typeClass class of the container
+     */
+    @SuppressWarnings("unchecked")
+    public ContainerSimple(final Type type, final Class<?> typeClass) {
+        super((Class<Object>) typeClass);
+        setRuntimeType(type);
+        this.customization = null;
+    }
+
+    /**
+     * Create s an instance of simple container deserializer.
+     *
+     * @param type target java value type
      * @param classModel Java class model of the container type
      */
     @SuppressWarnings("unchecked")
-    public ContainerSimple(final Type type, final Class<?> valueType, ClassModel classModel) {
-        super(classModel);
+    public ContainerSimple(final Type type, final ClassModel classModel) {
+        super((Class<Object>) classModel.getType());
         setRuntimeType(type);
-        this.valueType = (Class<Object>) valueType;
         this.customization = classModel.getClassCustomization();
     }
 
@@ -46,7 +54,12 @@ public class ContainerSimple extends ContainerArray<Object, Object> {
 
     @Override
     public Type valueType() {
-        return valueType;
+        return getRuntimeType();
+    }
+
+    @Override
+    public Class<Object> valueClass() {
+        return getContainerClass();
     }
 
     @Override

@@ -16,7 +16,7 @@ import java.lang.reflect.Type;
 
 import org.eclipse.yasson.internal.RuntimeTypeInfo;
 import org.eclipse.yasson.internal.deserializer.ParserContext;
-import org.eclipse.yasson.internal.model.ClassModel;
+import org.eclipse.yasson.internal.deserializer.deserializers.ContainerObject.MapKey;
 import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
@@ -38,8 +38,8 @@ public abstract class ContainerArray<V, T> implements RuntimeTypeInfo {
     /** Container type. */
     private Type type;
 
-    /** Container class model. */
-    private final ClassModel classModel;
+    /** Class of the container. */
+    private final Class<T> containerClass;
 
     /** Parent container or {@code null} if no parent exists. */
     private ContainerArray<?, ?> parent;
@@ -47,10 +47,10 @@ public abstract class ContainerArray<V, T> implements RuntimeTypeInfo {
     /**
      * Creates an instance of container deserializer.
      *
-     * @param classModel Java class model of the container type
+     * @param containerClass class of the container
      */
-    ContainerArray(final ClassModel classModel) {
-        this.classModel = classModel;
+    ContainerArray(final Class<T> containerClass) {
+        this.containerClass = containerClass;
     }
 
     /**
@@ -92,6 +92,13 @@ public abstract class ContainerArray<V, T> implements RuntimeTypeInfo {
     public abstract Type valueType();
 
     /**
+     * Get current value type.
+     *
+     * @return current value type
+     */
+    public abstract Class<V> valueClass();
+
+    /**
      * Get current value customization.
      *
      * @return current value customization
@@ -112,8 +119,8 @@ public abstract class ContainerArray<V, T> implements RuntimeTypeInfo {
      *
      * @return container class model
      */
-    public ClassModel getClassModel() {
-        return classModel;
+    public Class<T> getContainerClass() {
+        return containerClass;
     }
 
     /**
@@ -146,12 +153,30 @@ public abstract class ContainerArray<V, T> implements RuntimeTypeInfo {
     }
 
     /**
+     * Check whether this class implements key to value mapping and needs key type.
+     *
+     * @return value of {@code true} if this class needs key type or {@code false} otherwise
+     */
+    public boolean isMap() {
+        return false;
+    }
+
+    /**
      * Get {@link ContainerObject} instance of this class if implemented.
      *
      * @return {@link ContainerObject} instance of this class if implemented.
      */
     public ContainerObject<Object, Object, Object> object() {
         throw new UnsupportedOperationException("This instance does not implement ContainerObject.");
+    }
+
+    /**
+     * Get {@link MapKey} instance of this class if implemented.
+     *
+     * @return {@link MapKey} instance of this class if implemented.
+     */
+    public MapKey mapKey() {
+        throw new UnsupportedOperationException("This instance does not implement MapKey.");
     }
 
 }

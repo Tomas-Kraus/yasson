@@ -96,27 +96,27 @@ final class NonTerminalJsonObject extends SymbolNonTerminal {
             case VALUE_STRING:
                 TerminalValueString.read(
                         uCtx, parent.getContainer().valueType(), parent,
-                        uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
+                        uCtx.getDeserializers().deserializer(parent.getContainer().valueClass()));
                 break;
             case VALUE_NUMBER:
                 TerminalValueNumber.read(
                         uCtx, parent.getContainer().valueType(), parent,
-                        uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
+                        uCtx.getDeserializers().deserializer(parent.getContainer().valueClass()));
                 break;
             case VALUE_TRUE:
                 TerminalValueTrue.read(
                         uCtx, parent.getContainer().valueType(), parent,
-                        uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
+                        uCtx.getDeserializers().deserializer(parent.getContainer().valueClass()));
                 break;
             case VALUE_FALSE:
                 TerminalValueFalse.read(
                         uCtx, parent.getContainer().valueType(), parent,
-                        uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
+                        uCtx.getDeserializers().deserializer(parent.getContainer().valueClass()));
                 break;
             case VALUE_NULL:
                 TerminalValueNull.read(
                         uCtx, parent.getContainer().valueType(), parent,
-                        uCtx.getDeserializers().deserializer(parent.getContainer().valueType()));
+                        uCtx.getDeserializers().deserializer(parent.getContainer().valueClass()));
                 break;
             default: throw new IllegalStateException("Illegal JSON token "
                 + uCtx.getToken().name() + " after KEY_NAME in JSON object");

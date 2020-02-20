@@ -19,6 +19,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.deserializer.ResolveType;
 import org.eclipse.yasson.internal.model.ClassModel;
 import org.eclipse.yasson.internal.model.customization.Customization;
 
@@ -34,7 +35,10 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
     private final ArrayList<V> list;
 
     /** Current value type (the same for all array elements). */
-    private final Class<V> valueType;
+    private final Type valueType;
+
+    /** Current value class (the same for all array elements). */
+    private final Class<V> valueClass;
 
     /** Array components customizations. */
     private Customization customization;
@@ -45,18 +49,20 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
     /**
      * Creates an instance of JSON array to Java array deserializer.
      *
+     * @param containerClass class of the container
      * @param valueType target Java value type of the container elements
-     * @param classModel Java class model of the container type
      */
-    ContainerArrayFromArray(final Class<V> valueType, final ClassModel classModel) {
-        super(classModel);
+    @SuppressWarnings("unchecked")
+    ContainerArrayFromArray(final Class<T> containerClass, final Type valueType) {
+        super(containerClass);
         this.list = new ArrayList<>();
         this.valueType = valueType;
+        this.valueClass = (Class<V>) ResolveType.resolveGenericType(valueType);
     }
 
     public void start(ParserContext uCtx, Type type, ContainerArray<?, ?> parent) {
         super.start(uCtx, type, parent);
-        valueClassModel = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(valueType);
+        valueClassModel = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(valueClass);
         customization = valueClassModel.getClassCustomization();
     }
 
@@ -76,7 +82,7 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
     }
 
     public Class<V> valueClass() {
-        return valueType;
+        return valueClass;
     }
 
     @Override
@@ -101,22 +107,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to objects array deserializer.
          *
-         * @param cm Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements
          * @return new instance of JSON array to objects array deserializer
          */
-        static ContainerArrayFromArray.ObjectArray<?> newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.ObjectArray<>(cm, valueType);
+        static <V> ContainerArrayFromArray.ObjectArray<V>
+        newInstance(final Class<V[]> containerClass, final Type valueType) {
+            return new ContainerArrayFromArray.ObjectArray<>(containerClass, valueType);
         }
 
         /**
          * Creates an instance of JSON array to objects array deserializer.
          *
-         * @param classModel Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements
          */
-        private ObjectArray(ClassModel classModel, Class<V> valueType) {
-            super(valueType, classModel);
+        private ObjectArray(final Class<V[]> containerClass, final Type valueType) {
+            super(containerClass, valueType);
         }
 
         /**
@@ -145,23 +152,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to byte array deserializer.
          *
-         * @param cm Java class
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to byte array deserializer
          */
-        @SuppressWarnings("unchecked")
-        static ContainerArrayFromArray.PrimitiveByte newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.PrimitiveByte(cm, (Class<Byte>) valueType);
+        static ContainerArrayFromArray.PrimitiveByte
+        newInstance(final Class<byte[]> containerClass, final Type valueType) {
+            return new ContainerArrayFromArray.PrimitiveByte(containerClass, valueType);
         }
 
         /**
          * Creates an instance of JSON array to byte array deserializer.
          *
-         * @param classModel Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          */
-        private PrimitiveByte(ClassModel classModel, Class<Byte> valueType) {
-            super(valueType, classModel);
+        private PrimitiveByte(final Class<byte[]> containerClass, final Type valueType) {
+            super(containerClass, valueType);
         }
 
         /**
@@ -189,23 +196,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to Byte array deserializer.
          *
-         * @param cm Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to byte array deserializer
          */
-        @SuppressWarnings("unchecked")
-        static ContainerArrayFromArray.ObjectByte newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.ObjectByte(cm, (Class<Byte>) valueType);
+        static ContainerArrayFromArray.ObjectByte
+        newInstance(final Class<Byte[]> containerClass, final Type valueType) {
+            return new ContainerArrayFromArray.ObjectByte(containerClass, valueType);
         }
 
         /**
          * Creates an instance of JSON array to Byte array deserializer.
          *
-         * @param classModel Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          */
-        private ObjectByte(ClassModel classModel, Class<Byte> valueType) {
-            super(valueType, classModel);
+        private ObjectByte(final Class<Byte[]> containerClass, final Type valueType) {
+            super(containerClass, valueType);
         }
 
         /**
@@ -229,23 +236,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to short array deserializer.
          *
-         * @param cm Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to short array deserializer
          */
-        @SuppressWarnings("unchecked")
-        static ContainerArrayFromArray.PrimitiveShort newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.PrimitiveShort(cm, (Class<Short>) valueType);
+        static ContainerArrayFromArray.PrimitiveShort
+        newInstance(final Class<short[]> containerClass, final Type valueType) {
+            return new ContainerArrayFromArray.PrimitiveShort(containerClass, valueType);
         }
 
         /**
          * Creates an instance of JSON array to short array deserializer.
          *
-         * @param classModel Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          */
-        private PrimitiveShort(ClassModel classModel, Class<Short> valueType) {
-            super(valueType, classModel);
+        private PrimitiveShort(final Class<short[]> containerClass, final Type valueType) {
+            super(containerClass, valueType);
         }
 
         /**
@@ -273,23 +280,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to Short array deserializer.
          *
-         * @param cm Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to Short array deserializer
          */
-        @SuppressWarnings("unchecked")
-        static ContainerArrayFromArray.ObjectShort newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.ObjectShort(cm, (Class<Short>) valueType);
+        static ContainerArrayFromArray.ObjectShort
+        newInstance(final Class<Short[]> containerClass, final Type valueType) {
+            return new ContainerArrayFromArray.ObjectShort(containerClass, valueType);
         }
 
         /**
          * Creates an instance of JSON array to Short array deserializer.
          *
-         * @param classModel Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          */
-        private ObjectShort(ClassModel classModel, Class<Short> valueType) {
-            super(valueType, classModel);
+        private ObjectShort(final Class<Short[]> containerClass, final Type valueType) {
+            super(containerClass, valueType);
         }
 
         /**
@@ -313,23 +320,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to int array deserializer.
          *
-         * @param cm Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to int array deserializer
          */
-        @SuppressWarnings("unchecked")
-        static ContainerArrayFromArray.PrimitiveInteger newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.PrimitiveInteger(cm, (Class<Integer>) valueType);
+        static ContainerArrayFromArray.PrimitiveInteger
+        newInstance(final Class<int[]> containerClass, final Type valueType) {
+            return new ContainerArrayFromArray.PrimitiveInteger(containerClass, valueType);
         }
 
         /**
          * Creates an instance of JSON array to int array deserializer.
          *
-         * @param classModel Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          */
-        private PrimitiveInteger(ClassModel classModel, Class<Integer> valueType) {
-            super(valueType, classModel);
+        private PrimitiveInteger(final Class<int[]> containerClass, final Type valueType) {
+            super(containerClass, valueType);
         }
 
         /**
@@ -357,23 +364,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to Integer array deserializer.
          *
-         * @param cm Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to Integer array deserializer
          */
-        @SuppressWarnings("unchecked")
-        static ContainerArrayFromArray.ObjectInteger newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.ObjectInteger(cm, (Class<Integer>) valueType);
+        static ContainerArrayFromArray.ObjectInteger
+        newInstance(final Class<Integer[]> containerClass, final Type valueType) {
+            return new ContainerArrayFromArray.ObjectInteger(containerClass, valueType);
         }
 
         /**
          * Creates an instance of JSON array to Integer array deserializer.
          *
-         * @param classModel Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          */
-        private ObjectInteger(ClassModel classModel, Class<Integer> valueType) {
-            super(valueType, classModel);
+        private ObjectInteger(final Class<Integer[]> containerClass, final Type valueType) {
+            super(containerClass, valueType);
         }
 
         /**
@@ -397,23 +404,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to long array deserializer.
          *
-         * @param cm Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to long array deserializer
          */
-        @SuppressWarnings("unchecked")
-        static ContainerArrayFromArray.PrimitiveLong newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.PrimitiveLong(cm, (Class<Long>) valueType);
+        static ContainerArrayFromArray.PrimitiveLong
+        newInstance(final Class<long[]> containerClass, final Type valueType) {
+            return new ContainerArrayFromArray.PrimitiveLong(containerClass, valueType);
         }
 
         /**
          * Creates an instance of JSON array to long array deserializer.
          *
-         * @param classModel Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          */
-        private PrimitiveLong(ClassModel classModel, Class<Long> valueType) {
-            super(valueType, classModel);
+        private PrimitiveLong(final Class<long[]> containerClass, final Type valueType) {
+            super(containerClass, valueType);
         }
 
         /**
@@ -441,23 +448,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to Long array deserializer.
          *
-         * @param cm Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to Long array deserializer
          */
-        @SuppressWarnings("unchecked")
-        static ContainerArrayFromArray.ObjectLong newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.ObjectLong(cm, (Class<Long>) valueType);
+        static ContainerArrayFromArray.ObjectLong
+        newInstance(final Class<Long[]> containerClass, final Type valueType) {
+            return new ContainerArrayFromArray.ObjectLong(containerClass, valueType);
         }
 
         /**
          * Creates an instance of JSON array to Long array deserializer.
          *
-         * @param classModel Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          */
-        private ObjectLong(ClassModel classModel, Class<Long> valueType) {
-            super(valueType, classModel);
+        private ObjectLong(final Class<Long[]> containerClass, final Type valueType) {
+            super(containerClass, valueType);
         }
 
         /**
@@ -481,23 +488,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to float array deserializer.
          *
-         * @param cm Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to float array deserializer
          */
-        @SuppressWarnings("unchecked")
-        static ContainerArrayFromArray.PrimitiveFloat newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.PrimitiveFloat(cm, (Class<Float>) valueType);
+        static ContainerArrayFromArray.PrimitiveFloat
+        newInstance(final Class<float[]> containerClass, final Type valueType) {
+            return new ContainerArrayFromArray.PrimitiveFloat(containerClass, valueType);
         }
 
         /**
          * Creates an instance of JSON array to float array deserializer.
          *
-         * @param classModel Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          */
-        private PrimitiveFloat(ClassModel classModel, Class<Float> valueType) {
-            super(valueType, classModel);
+        private PrimitiveFloat(final Class<float[]> containerClass, final Type valueType) {
+            super(containerClass, valueType);
         }
 
         /**
@@ -525,23 +532,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to Float array deserializer.
          *
-         * @param cm Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to Float array deserializer
          */
-        @SuppressWarnings("unchecked")
-        static ContainerArrayFromArray.ObjectFloat newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.ObjectFloat(cm, (Class<Float>) valueType);
+        static ContainerArrayFromArray.ObjectFloat
+        newInstance(final Class<Float[]> containerClass, final Type valueType) {
+            return new ContainerArrayFromArray.ObjectFloat(containerClass, valueType);
         }
 
         /**
          * Creates an instance of JSON array to Float array deserializer.
          *
-         * @param classModel Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          */
-        private ObjectFloat(ClassModel classModel, Class<Float> valueType) {
-            super(valueType, classModel);
+        private ObjectFloat(final Class<Float[]> containerClass, final Type valueType) {
+            super(containerClass, valueType);
         }
 
         /**
@@ -565,23 +572,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to double array deserializer.
          *
-         * @param cm Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to double array deserializer
          */
-        @SuppressWarnings("unchecked")
-        static ContainerArrayFromArray.PrimitiveDouble newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.PrimitiveDouble(cm, (Class<Double>) valueType);
+        static ContainerArrayFromArray.PrimitiveDouble
+        newInstance(final Class<double[]> containerClass, final Type valueType) {
+            return new ContainerArrayFromArray.PrimitiveDouble(containerClass, valueType);
         }
 
         /**
          * Creates an instance of JSON array to double array deserializer.
          *
-         * @param classModel Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          */
-        private PrimitiveDouble(ClassModel classModel, Class<Double> valueType) {
-            super(valueType, classModel);
+        private PrimitiveDouble(final Class<double[]> containerClass, final Type valueType) {
+            super(containerClass, valueType);
         }
 
         /**
@@ -609,23 +616,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to Double array deserializer.
          *
-         * @param cm Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to Double array deserializer
          */
-        @SuppressWarnings("unchecked")
-        static ContainerArrayFromArray.ObjectDouble newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.ObjectDouble(cm, (Class<Double>) valueType);
+        static ContainerArrayFromArray.ObjectDouble
+        newInstance(final Class<Double[]> containerClass, final Type valueType) {
+            return new ContainerArrayFromArray.ObjectDouble(containerClass, valueType);
         }
 
        /**
         * Creates an instance of JSON array to Double array deserializer.
         *
-        * @param classModel Java class model
+        * @param containerClass class of the container
         * @param valueType target Java value type of array elements (ignored)
         */
-        private ObjectDouble(ClassModel classModel, Class<Double> valueType) {
-            super(valueType, classModel);
+        private ObjectDouble(final Class<Double[]> containerClass, final Type valueType) {
+            super(containerClass, valueType);
         }
 
         /**
@@ -649,23 +656,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
        /**
         * Get new instance of JSON array to BigInteger array deserializer.
         *
-        * @param cm Java class model
+        * @param containerClass class of the container
         * @param valueType target Java value type of array elements (ignored)
         * @return new instance of JSON array to BigInteger array deserializer
         */
-        @SuppressWarnings("unchecked")
-        static ContainerArrayFromArray.ObjectBigInteger newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.ObjectBigInteger(cm, (Class<BigInteger>) valueType);
+        static ContainerArrayFromArray.ObjectBigInteger
+        newInstance(final Class<BigInteger[]> containerClass, final Type valueType) {
+            return new ContainerArrayFromArray.ObjectBigInteger(containerClass, valueType);
         }
 
         /**
          * Creates an instance of JSON array to BigInteger array deserializer.
          *
-         * @param classModel Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          */
-        private ObjectBigInteger(ClassModel classModel, Class<BigInteger> valueType) {
-            super(valueType, classModel);
+        private ObjectBigInteger(final Class<BigInteger[]> containerClass, final Type valueType) {
+            super(containerClass, valueType);
         }
 
         /**
@@ -689,23 +696,23 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         /**
          * Get new instance of JSON array to BigDecimal array deserializer.
          *
-         * @param cm Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          * @return new instance of JSON array to BigDecimal array deserializer
          */
-        @SuppressWarnings("unchecked")
-        static ContainerArrayFromArray.ObjectBigDecimal newInstance(ClassModel cm, Class<?> valueType) {
-            return new ContainerArrayFromArray.ObjectBigDecimal(cm, (Class<BigDecimal>) valueType);
+        static ContainerArrayFromArray.ObjectBigDecimal
+        newInstance(final Class<BigDecimal[]> containerClass, final Type valueType) {
+            return new ContainerArrayFromArray.ObjectBigDecimal(containerClass, valueType);
         }
 
         /**
          * Creates an instance of JSON array to BigDecimal array deserializer.
          *
-         * @param classModel Java class model
+         * @param containerClass class of the container
          * @param valueType target Java value type of array elements (ignored)
          */
-        private ObjectBigDecimal(ClassModel classModel, Class<BigDecimal> valueType) {
-            super(valueType, classModel);
+        private ObjectBigDecimal(final Class<BigDecimal[]> containerClass, final Type valueType) {
+            super(containerClass, valueType);
         }
 
         /**
@@ -717,6 +724,129 @@ abstract class ContainerArrayFromArray<V, T> extends ContainerArray<V, T> {
         @Override
         public BigDecimal[] build() {
             return getList().toArray(new BigDecimal[getList().size()]);
+        }
+
+    }
+
+    /**
+     * JSON array to double array deserializer.
+     */
+    static final class PrimitiveChar extends ContainerArrayFromArray<Character, char[]> {
+
+        /**
+         * Get new instance of JSON array to double array deserializer.
+         *
+         * @param containerClass class of the container
+         * @param valueType target Java value type of array elements (ignored)
+         * @return new instance of JSON array to double array deserializer
+         */
+        static ContainerArrayFromArray.PrimitiveChar
+        newInstance(final Class<char[]> containerClass, final Type valueType) {
+            return new ContainerArrayFromArray.PrimitiveChar(containerClass, valueType);
+        }
+
+        /**
+         * Creates an instance of JSON array to double array deserializer.
+         *
+         * @param containerClass class of the container
+         * @param valueType target Java value type of array elements (ignored)
+         */
+        private PrimitiveChar(final Class<char[]> containerClass, final Type valueType) {
+            super(containerClass, valueType);
+        }
+
+        /**
+         * Build target Java double array value from array elements already stored in this container.
+         *
+         * @param deserialization context
+         * @return target Java double array value
+         */
+        @Override
+        public char[] build() {
+            final char[] array = new char[getList().size()];
+            for (int i = 0; i < getList().size(); i++) {
+                array[i] = getList().get(i);
+            }
+            return array;
+        }
+
+    }
+
+    /**
+     * JSON array to Byte array deserializer.
+     */
+    static final class ObjectChar extends ContainerArrayFromArray<Character, Character[]> {
+
+        /**
+         * Get new instance of JSON array to Double array deserializer.
+         *
+         * @param containerClass class of the container
+         * @param valueType target Java value type of array elements (ignored)
+         * @return new instance of JSON array to Double array deserializer
+         */
+        static ContainerArrayFromArray.ObjectChar
+        newInstance(final Class<Character[]> containerClass, final Type valueType) {
+            return new ContainerArrayFromArray.ObjectChar(containerClass, valueType);
+        }
+
+       /**
+        * Creates an instance of JSON array to Double array deserializer.
+        *
+        * @param containerClass class of the container
+        * @param valueType target Java value type of array elements (ignored)
+        */
+        private ObjectChar(final Class<Character[]> containerClass, final Type valueType) {
+            super(containerClass, valueType);
+        }
+
+        /**
+         * Build target Java Double array value from array elements already stored in this container.
+         *
+         * @param deserialization context
+         * @return target Java Double array value
+         */
+        @Override
+        public Character[] build() {
+            return getList().toArray(new Character[getList().size()]);
+        }
+
+    }
+
+    /**
+     * JSON array to Byte array deserializer.
+     */
+    static final class StringArray extends ContainerArrayFromArray<String, String[]> {
+
+        /**
+         * Get new instance of JSON array to Double array deserializer.
+         *
+         * @param containerClass class of the container
+         * @param valueType target Java value type of array elements (ignored)
+         * @return new instance of JSON array to Double array deserializer
+         */
+        static ContainerArrayFromArray.StringArray newInstance(final Class<String[]> containerClass, final Type valueType) {
+            return new ContainerArrayFromArray.StringArray(containerClass, valueType);
+        }
+
+       /**
+        * Creates an instance of JSON array to Double array deserializer.
+        *
+        * @param containerClass class of the container
+        * @param valueType target Java value type of array elements (ignored)
+        */
+        private StringArray(final Class<String[]> containerClass, final Type valueType) {
+            super(containerClass, valueType);
+        }
+
+        /**
+         * Build target Java Double array value from array elements already stored in this container.
+         *
+         * @param deserialization context
+         * @return target Java Double array value
+         */
+        @Override
+        public String[] build() {
+            return getList().toArray(new String[getList().size()]);
         }
 
     }

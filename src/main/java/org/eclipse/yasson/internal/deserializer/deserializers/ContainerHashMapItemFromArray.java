@@ -15,7 +15,6 @@ package org.eclipse.yasson.internal.deserializer.deserializers;
 import java.lang.reflect.Type;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
-import org.eclipse.yasson.internal.model.ClassModel;
 import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
@@ -31,12 +30,12 @@ public class ContainerHashMapItemFromArray extends ContainerObject<Object, Objec
     /**
      * Get new instance of JSON object to Java {@code HashMap} deserializer.
      *
-     * @param classModel Java class model
+     * @param containerClass class of the container
      * @param keyType target Java key type of Map elements
      * @param valueType target Java value type of Map elements
      * @return new instance of JSON array to Java {@code ArrayList} deserializer
      */
-    static final ContainerHashMapItemFromArray newInstance(ClassModel classModel, Class<?> keyType, Class<?> valueType) {
+    static final ContainerHashMapItemFromArray newInstance(Class<?> containerClass, Type keyType, Type valueType) {
         return new ContainerHashMapItemFromArray();
     }
 
@@ -126,6 +125,18 @@ public class ContainerHashMapItemFromArray extends ContainerObject<Object, Objec
                 return mapContainer.keyType();
             case VALUE:
                 return mapContainer.mapValueType();
+            default:
+                throw new IllegalStateException("Unknown map entry state: " + state);
+        }
+    }
+
+    @Override
+    public Class<Object> valueClass() {
+        switch (state) {
+            case KEY:
+                return mapContainer.keyClass();
+            case VALUE:
+                return mapContainer.mapValueClass();
             default:
                 throw new IllegalStateException("Unknown map entry state: " + state);
         }

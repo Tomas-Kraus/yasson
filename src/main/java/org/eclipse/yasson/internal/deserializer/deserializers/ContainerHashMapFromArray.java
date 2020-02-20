@@ -17,19 +17,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.deserializer.ResolveType;
+import org.eclipse.yasson.internal.deserializer.deserializers.ContainerObject.MapKey;
 import org.eclipse.yasson.internal.model.ClassModel;
 import org.eclipse.yasson.internal.model.customization.Customization;
 
 /**
  * JSON array to Java {@code HashMap} deserializer.
  */
-public class ContainerHashMapFromArray extends ContainerObject<Object, Object, Map<Object, Object>> {
+public class ContainerHashMapFromArray extends ContainerObject<Object, Object, Map<Object, Object>> implements MapKey {
 
     /** Current value type (the same for all @code Map} values). */
-    private Class<?> valueType;
+    private final Type valueType;
 
     /** Current value type (the same for all @code Map} values). */
-    private Class<?> keyType;
+    private Type keyType;
+
+    /** Current key class (the same for all array elements). */
+    private Class<Object> keyClass;
+
+    /** Current value class (the same for all array elements). */
+    private final Class<Object> valueClass;
 
     /** Map components class model. */
     private ClassModel keyClassModel;
@@ -49,34 +57,37 @@ public class ContainerHashMapFromArray extends ContainerObject<Object, Object, M
     /**
      * Get new instance of JSON array to Java {@code HashMap} deserializer.
      *
-     * @param classModel Java class model
+     * @param containerClass class of the container
      * @param keyType target Java key type of Map elements
      * @param valueType target Java value type of Map elements
      * @return new instance of JSON array to Java {@code ArrayList} deserializer
      */
-    static final ContainerHashMapFromArray newInstance(ClassModel classModel, Class<?> valueType) {
-        return new ContainerHashMapFromArray(classModel, valueType);
+    static final ContainerHashMapFromArray
+    newInstance(final Class<Map<Object, Object>> containerClass, final Type valueType) {
+        return new ContainerHashMapFromArray(containerClass, valueType);
     }
 
     /**
      * Creates an instance of container deserializer.
      *
-     * @param classModel Java class model of the container type
+     * @param containerClass class of the container
      * @param valueType target Java value type of Map elements
      */
-    ContainerHashMapFromArray(final ClassModel classModel, Class<?> valueType) {
-        super(classModel);
+    ContainerHashMapFromArray(final Class<Map<Object, Object>> containerClass, final Type valueType) {
+        super(containerClass);
         this.valueType = valueType;
+        this.valueClass = (Class<Object>) ResolveType.resolveGenericType(valueType);
         this.keyType = null;
+        this.keyClass = null;
         this.map = new HashMap<>();
     }
 
     @Override
     public void start(ParserContext uCtx, Type type, ContainerArray<?, ?> parent) {
         super.start(uCtx, type, parent);
-        keyClassModel = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(keyType);
+        keyClassModel = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(keyClass);
         keyCustomization = keyClassModel.getClassCustomization();
-        valueClassModel = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(valueType);
+        valueClassModel = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(valueClass);
         valueCustomization = valueClassModel.getClassCustomization();
     }
 
@@ -86,8 +97,9 @@ public class ContainerHashMapFromArray extends ContainerObject<Object, Object, M
      *
      * @param keyType key type to set.
      */
-    public void setKeyType(Class<?> keyType) {
+    public void setKeyType(Type keyType) {
         this.keyType = keyType;
+        this.keyClass = (Class<Object>) ResolveType.resolveGenericType(keyType);
     }
 
     /**
@@ -117,8 +129,22 @@ public class ContainerHashMapFromArray extends ContainerObject<Object, Object, M
     }
 
     @Override
+    public Class<Object> valueClass() {
+        return (Class) ContainerHashMapItemFromArray.class;
+    }
+
+    @Override
     public Type keyType() {
         return keyType;
+    }
+
+    /**
+     * Get class of map key.
+     *
+     * @return class of map key
+     */
+    public Class<Object> keyClass() {
+        return keyClass;
     }
 
     /**
@@ -129,6 +155,16 @@ public class ContainerHashMapFromArray extends ContainerObject<Object, Object, M
      */
     public Type mapValueType() {
         return valueType;
+    }
+
+    /**
+     * Map value type.
+     * Type of map value to be returned.
+     *
+     * @return type of map value to be returned.
+     */
+    public Class<Object> mapValueClass() {
+        return valueClass;
     }
 
     /**
@@ -143,6 +179,25 @@ public class ContainerHashMapFromArray extends ContainerObject<Object, Object, M
     @Override
     public Customization valueCustomization() {
         return valueCustomization;
+    }
+
+    /**
+     * Check whether this class implements key to value mapping and needs key type.
+     *
+     * @return value of {@code true} if this class needs key type or {@code false} otherwise
+     */
+    @Override
+    public boolean isMap() {
+        return true;
+    }
+
+    /**
+     * Get {@link MapKey} instance of this class if implemented.
+     *
+     * @return {@link MapKey} instance of this class if implemented.
+     */
+    public MapKey mapKey() {
+        return this;
     }
 
 }

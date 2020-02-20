@@ -2,8 +2,6 @@ package org.eclipse.yasson.internal.deserializer.deserializers;
 
 import java.lang.reflect.Type;
 
-import org.eclipse.yasson.internal.model.ClassModel;
-
 /**
  * Container with key to value mapping deserializer.
  * <p>
@@ -18,16 +16,30 @@ import org.eclipse.yasson.internal.model.ClassModel;
  */
 public abstract class ContainerObject<K, V, T> extends ContainerArray<V, T> {
 
+    /**
+     * Interface to set type of Map key during container initialization.  
+     */
+    public interface MapKey {
+        /**
+         * Set key type.
+         * This container is inicialized as an array container so key type must be passed later.
+         *
+         * @param keyType key type to set.
+         */
+        void setKeyType(Type keyType);
+
+    }
+
     /** Key of current JSON object value being parsed. */
     private K key;
 
     /**
      * Creates an instance of container with key to value mapping deserializer.
      *
-     * @param classModel Java class model of the container type
+     * @param containerClass class of the container
      */
-    ContainerObject(final ClassModel classModel) {
-        super(classModel);
+    ContainerObject(final Class<T> containerClass) {
+        super(containerClass);
     }
 
     /**

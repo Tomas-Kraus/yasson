@@ -34,7 +34,9 @@ public abstract class DeserializerValueNumbers<N> extends Deserializer<N> {
 
     @Override
     public final N stringValue(ParserContext uCtx, Type type, Customization customization) {
-        final JsonbNumberFormatter numberFormat = uCtx.getDeserializeNumberFormatter(valueType());
+        final JsonbNumberFormatter numberFormat = customization != null
+                ? customization.getDeserializeNumberFormatter()
+                : uCtx.getDeserializeNumberFormatter(valueType());
         if (numberFormat != null) {
             DecimalFormat format = new DecimalFormat(
                     numberFormat.getFormat(),

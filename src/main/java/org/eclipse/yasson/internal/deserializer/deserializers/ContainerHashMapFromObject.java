@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.deserializer.ResolveType;
 import org.eclipse.yasson.internal.model.ClassModel;
 import org.eclipse.yasson.internal.model.customization.Customization;
 
@@ -26,7 +27,10 @@ import org.eclipse.yasson.internal.model.customization.Customization;
 class ContainerHashMapFromObject extends ContainerObject<String, Object, Map<String, Object>> {
 
     /** Current value type (the same for all @code Map} values). */
-    private Class<?> valueType;
+    private Type valueType;
+
+    /** Current value class (the same for all array elements). */
+    private final Class<Object> valueClass;
 
     /** Map components customizations. */
     private Customization customization;
@@ -40,30 +44,32 @@ class ContainerHashMapFromObject extends ContainerObject<String, Object, Map<Str
     /**
      * Get new instance of JSON object to Java {@code HashMap} deserializer.
      *
-     * @param classModel Java class model
+     * @param containerClass class of the container
      * @param keyType target Java key type of Map elements
      * @param valueType target Java value type of Map elements
      * @return new instance of JSON array to Java {@code ArrayList} deserializer
      */
-    static final ContainerHashMapFromObject newInstance(ClassModel classModel, Class<?> keyType, Class<?> valueType) {
-        return new ContainerHashMapFromObject(valueType, classModel);
+    static final ContainerHashMapFromObject
+    newInstance(final Class<Map<String, Object>> containerClass, final Type keyType, final Type valueType) {
+        return new ContainerHashMapFromObject(containerClass, valueType);
     }
 
     /**
      * Creates an instance of JSON array to Java {@code HashMap} deserializer.
      *
+     * @param containerClass class of the container
      * @param valueType target Java value type of Collection elements
-     * @param classModel Java class model of the container type
      */
-    private ContainerHashMapFromObject(final Class<?> valueType, final ClassModel classModel) {
-        super(classModel);
+    private ContainerHashMapFromObject(final Class<Map<String, Object>> containerClass, final Type valueType) {
+        super(containerClass);
         this.valueType = valueType;
+        this.valueClass = (Class<Object>) ResolveType.resolveGenericType(valueType);
         this.map = new HashMap<>();
     }
 
     public void start(ParserContext uCtx, Type type, ContainerArray<?, ?> parent) {
         super.start(uCtx, type, parent);
-        classModel = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(valueType);
+        classModel = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(valueClass);
         customization = classModel.getClassCustomization();
     }
 
@@ -105,8 +111,18 @@ class ContainerHashMapFromObject extends ContainerObject<String, Object, Map<Str
      * @return map value type
      */
     @Override
-    public final Class<? extends Object> valueType() {
+    public final Type valueType() {
         return valueType;
+    }
+
+    /**
+     * Get map value class.
+     *
+     * @return map value class
+     */
+    @Override
+    public final Class<Object> valueClass() {
+        return valueClass;
     }
 
     /**

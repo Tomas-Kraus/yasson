@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2019 Oracle and/or its affiliates. All rights reserved.
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
+ * which accompanies this distribution.
+ * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
+ * and the Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * Contributors:
+ * Tomas Kraus
+ ******************************************************************************/
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
 import java.lang.reflect.Type;
@@ -5,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.yasson.internal.ReflectionUtils;
+import org.eclipse.yasson.internal.deserializer.ParserContext;
 import org.eclipse.yasson.internal.deserializer.ResolveType;
 import org.eclipse.yasson.internal.model.ClassModel;
 import org.eclipse.yasson.internal.model.CreatorModel;
@@ -17,36 +30,66 @@ import org.eclipse.yasson.internal.model.customization.Customization;
  *
  * @param <T> the type of returned PoJo
  */
-public abstract class ContainerPoJoFromObject<T> extends ContainerObject<String, Object, T>  {
+public class ContainerPoJoFromObject<T> extends ContainerObject<String, Object, T>  {
+
+    private interface DataBuilder<T> {
+        String getKey(String key);
+        void addValue(Object value);
+        T build();
+    }
 
     /**
      * Get new instance of JSON object to Java PoJo deserializer.
      *
-     * @param cm target Java class model
+     * @param <T> target type 
+     * @param containerClass class of the container
      * @param keyType target container key type (ignored)
      * @param valueType target container key type (will be overwritten by PoJo properties types)
      * @return new instance of JSON object to Java PoJo deserializer
      */
-    public static final ContainerPoJoFromObject<?> newInstance(ClassModel cm, Class<?> keyType, Class<?> valueType) {
-        return cm.getClassCustomization().getCreator() == null
-                ? new WithoutCreator<>(cm, valueType) : new WithCreator<>(cm, valueType);
+    public static final <T> ContainerPoJoFromObject<T>
+    newInstance(Class<T> containerClass, Type keyType, Type valueType) {
+        return new ContainerPoJoFromObject<>(containerClass, valueType);
     }
 
     /** Type of current PoJo value to be deserialized. Set when key is being processed. */
     private Type valueType;
 
+    /** Current value class (the same for all array elements). */
+    private Class<Object> valueClass;
+
     /** Array components customizations. */
     private Customization customization;
 
+    /** Java class model of the container type. */
+    private ClassModel classModel;
+
+    /** Internal data builder depending on customizations. */
+    private DataBuilder<T> dataBuilder;
+    
     /**
      * Creates an instance of JSON object to Java PoJo deserializer.
      *
-     * @param classModel Java class model of the container type
+     * @param containerClass class of the container
      * @param valueType type of current PoJo value to be deserialized
      */
-    ContainerPoJoFromObject(ClassModel classModel, Class<?> valueType) {
-        super(classModel);
+    ContainerPoJoFromObject(Class<T> containerClass, Type valueType) {
+        super(containerClass);
         this.valueType = valueType;
+    }
+
+    /**
+     * Notification about beginning of container deserialization.
+     *
+     * @param uCtx deserialization context
+     * @param type container type
+     * @param parent parent container or {@code null} if no parent exists
+     */
+    public void start(ParserContext uCtx, Type type, ContainerArray<?, ?> parent) {
+        super.start(uCtx, type, parent);
+        classModel = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(getContainerClass());
+        dataBuilder = classModel.getClassCustomization().getCreator() == null
+                ? new WithoutCreator<>(this) : new WithCreator<>(this);
     }
 
     /**
@@ -70,6 +113,16 @@ public abstract class ContainerPoJoFromObject<T> extends ContainerObject<String,
     }
 
     /**
+     * Get current value type.
+     *
+     * @return current value type
+     */
+    @Override
+    public final Class<Object> valueClass() {
+        return valueClass;
+    }
+
+    /**
      * Get current value customization.
      *
      * @return current value customization
@@ -86,6 +139,7 @@ public abstract class ContainerPoJoFromObject<T> extends ContainerObject<String,
      */
     final void setValueType(Type valueType) {
         this.valueType = valueType;
+        this.valueClass = (Class<Object>) ResolveType.resolveGenericType(valueType);
     }
 
     /**
@@ -97,13 +151,40 @@ public abstract class ContainerPoJoFromObject<T> extends ContainerObject<String,
         this.customization = customization;
     }
 
+    private ClassModel getClassModel() {
+        return classModel;
+    }
+
+    
+    @Override
+    public T build() {
+        return dataBuilder.build();
+    }
+
+    /**
+     * Set key of next JSON object value to be added to the container.
+     *
+     * @param key key of next JSON value (already converted to target key type)
+     */
+    public void setKey(String key) {
+        super.setKey(dataBuilder.getKey(key));
+    }
+
+    @Override
+    public void addValue(Object value) {
+        dataBuilder.addValue(value);
+    }
+
     /**
      * JSON object to Java PoJo deserializer.
      * Performance optimized version with no custom instance creator.
      *
      * @param <T> the type of returned PoJo
      */
-    private static final class WithoutCreator<T> extends ContainerPoJoFromObject<T> {
+    private static final class WithoutCreator<T> implements DataBuilder<T> {
+
+        /** JSON object to Java PoJo deserializer. */
+        private final ContainerPoJoFromObject<T> container;
 
         /** Target PoJo instance. */
         private final T instance;
@@ -118,9 +199,9 @@ public abstract class ContainerPoJoFromObject<T> extends ContainerObject<String,
          * @param valueType type of current PoJo value to be deserialized
          */
         @SuppressWarnings("unchecked")
-        private WithoutCreator(ClassModel cm, Class<?> valueType) {
-            super(cm, valueType);
-            instance = (T) ReflectionUtils.createNoArgConstructorInstance(cm);
+        private WithoutCreator(final ContainerPoJoFromObject<T> container) {
+            this.container = container;
+            this.instance = (T) ReflectionUtils.createNoArgConstructorInstance(container.getClassModel());
         }
 
         /**
@@ -129,14 +210,14 @@ public abstract class ContainerPoJoFromObject<T> extends ContainerObject<String,
          * @param key key of next JSON value (already converted to target key type)
          */
         @Override
-        public void setKey(String key) {
-            propertyModel = getClassModel().findPropertyModelByJsonReadName(key);
+        public String getKey(String key) {
+            propertyModel = container.getClassModel().findPropertyModelByJsonReadName(key);
             final Type propertyType = propertyModel.getPropertyDeserializationType();
-            setValueType(propertyType instanceof Class
+            container.setValueType(propertyType instanceof Class
                     ? propertyType
-                    : ResolveType.resolveType(this, propertyModel.getPropertyDeserializationType()));
-            setValueCustomization(propertyModel.getCustomization());
-            super.setKey(propertyModel.getPropertyName());
+                    : ResolveType.resolveType(container, propertyModel.getPropertyDeserializationType()));
+            container.setValueCustomization(propertyModel.getCustomization());
+            return propertyModel.getPropertyName();
         }
 
         /**
@@ -147,7 +228,7 @@ public abstract class ContainerPoJoFromObject<T> extends ContainerObject<String,
         @Override
         public void addValue(Object value) {
             propertyModel.setValue(instance, value);
-            resetKey();
+            container.resetKey();
         }
 
         /**
@@ -169,7 +250,10 @@ public abstract class ContainerPoJoFromObject<T> extends ContainerObject<String,
      *
      * @param <T> the type of returned PoJo
      */
-    private static final class WithCreator<T> extends ContainerPoJoFromObject<T> {
+    private static final class WithCreator<T> implements DataBuilder<T> {
+
+        /** JSON object to Java PoJo deserializer. */
+        private final ContainerPoJoFromObject<T> container;
 
         /** Values retrieved from JSON object. */
         private Map<String, Object> values;
@@ -186,9 +270,9 @@ public abstract class ContainerPoJoFromObject<T> extends ContainerObject<String,
          * @param cm target Java class model
          * @param valueType type of current PoJo value to be deserialized
          */
-        private WithCreator(ClassModel cm, Class<?> valueType) {
-            super(cm, valueType);
-            this.creator = cm.getClassCustomization().getCreator();
+        private WithCreator(ContainerPoJoFromObject<T> container) {
+            this.container = container;
+            this.creator = container.getClassModel().getClassCustomization().getCreator();
             this.values = new HashMap<>(creator.getParams().length);
         }
 
@@ -198,12 +282,12 @@ public abstract class ContainerPoJoFromObject<T> extends ContainerObject<String,
          * @param key key of next JSON value (already converted to target key type)
          */
         @Override
-        public void setKey(String key) {
+        public String getKey(String key) {
             // Find proper creator parameter for key. Returns null when not found.
             param = creator.findByName(key);
-            setValueType(param.getType());
-            setValueCustomization(param.getCustomization());
-            super.setKey(param.getName());
+            container.setValueType(param.getType());
+            container.setValueCustomization(param.getCustomization());
+            return param.getName();
         }
 
         /**
@@ -215,9 +299,9 @@ public abstract class ContainerPoJoFromObject<T> extends ContainerObject<String,
         public void addValue(Object value) {
             // Add value only when its name was recognized as creator parameter.
             if (param != null) {
-                values.put(getKey(), value);
+                values.put(container.getKey(), value);
             }
-            resetKey();
+            container.resetKey();
         }
 
         /**
@@ -235,7 +319,7 @@ public abstract class ContainerPoJoFromObject<T> extends ContainerObject<String,
             for (int i = 0; i < parLength; i++) {
                 paramValues[i] = values.get(params[i].getName());
             }
-            return (T) creator.call(paramValues, getClassModel().getType());
+            return (T) creator.call(paramValues, container.getClassModel().getType());
         }
 
     }

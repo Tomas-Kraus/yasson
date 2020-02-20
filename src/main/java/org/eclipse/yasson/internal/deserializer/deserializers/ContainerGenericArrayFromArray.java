@@ -16,8 +16,6 @@ import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Type;
 
-import org.eclipse.yasson.internal.model.ClassModel;
-
 /**
  * JSON array to generic array deserializer.
  *
@@ -50,12 +48,13 @@ public class ContainerGenericArrayFromArray<V> extends ContainerArrayFromArray<V
     /**
      * Get new instance of JSON array to byte array deserializer.
      *
-     * @param cm Java class model (ignored)
-     * @param valueType target Java value type of array elements (ignored)
+     * @param containerClass class of the container
+     * @param valueType target Java value type of array elements
      * @return new instance of JSON array to byte array deserializer
      */
-    static ContainerGenericArrayFromArray<?> newInstance(ClassModel cm, Type valueType) {
-        return new ContainerGenericArrayFromArray<>(cm, valueType);
+    static final <V> ContainerGenericArrayFromArray<V>
+    newInstance(final Class<V[]> containerClass, final Type valueType) {
+        return new ContainerGenericArrayFromArray<>(containerClass, valueType);
     }
 
     /**
@@ -65,8 +64,8 @@ public class ContainerGenericArrayFromArray<V> extends ContainerArrayFromArray<V
      * @param classModel Java class model of the container type
      */
     @SuppressWarnings("unchecked")
-    ContainerGenericArrayFromArray(ClassModel classModel, Type valueType) {
-        super((Class<V>) ((GenericArrayType) valueType).getGenericComponentType(), classModel);
+    ContainerGenericArrayFromArray(final Class<V[]> containerClass, final Type valueType) {
+        super(containerClass, (Class<V>) ((GenericArrayType) valueType).getGenericComponentType());
     }
 
     /**

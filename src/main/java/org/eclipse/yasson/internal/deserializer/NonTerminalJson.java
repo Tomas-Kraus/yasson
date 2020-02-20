@@ -78,8 +78,8 @@ final class NonTerminalJson extends SymbolNonTerminal {
                 NonTerminalJsonObject.getInstance(), parent,
                 parent.getType(),
                 // Calling this before new StackNodeNonTerminalReduced causes tests failure
-                ResolveType.deserializerForObject(uCtx, parent, rawType));
-        parent.setContainer(new ContainerSimple(parent.getType(), rawType, stackNode.getContainer().getClassModel()));
+                ResolveType.deserializerForObject(uCtx, parent.getType()));
+        parent.setContainer(new ContainerSimple(parent.getType(), rawType));
         uCtx.getStack().push(stackNode);
         TerminalStartObject.read(uCtx, parent.getType(), parent, stackNode.getContainer());
         uCtx.nextToken();
@@ -101,7 +101,7 @@ final class NonTerminalJson extends SymbolNonTerminal {
                 parent.getType(),
                 // Calling this before new StackNodeNonTerminalReduced causes tests failure
                 ResolveType.deserializerForArray(uCtx, parent.getType()));
-        parent.setContainer(new ContainerSimple(parent.getType(), rawType, stackNode.getContainer().getClassModel()));
+        parent.setContainer(new ContainerSimple(parent.getType(), rawType));
         uCtx.getStack().push(stackNode);
         TerminalStartArray.read(uCtx, parent.getType(), parent, stackNode.getContainer());
         uCtx.nextToken();
@@ -120,10 +120,10 @@ final class NonTerminalJson extends SymbolNonTerminal {
         // JSON (parent) is last stack symbol before getting empty, it shall hold output data.
         final Class<?> rawType = ResolveType.resolveSimpleType(parent.getType());
         final ClassModel cm = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(rawType);
-        parent.setContainer(new ContainerSimple(parent.getType(), rawType, cm));
+        parent.setContainer(new ContainerSimple(parent.getType(), cm));
         TerminalValueString.read(
                 uCtx, String.class, parent,
-                uCtx.getDeserializers().deserializer(parent.getType()));
+                uCtx.getDeserializers().deserializer(rawType));
         uCtx.nextToken();
     }
 
@@ -140,10 +140,10 @@ final class NonTerminalJson extends SymbolNonTerminal {
         // JSON (parent) is last stack symbol before getting empty, it shall hold output data.
         final Class<?> rawType = ResolveType.resolveSimpleType(parent.getType());
         final ClassModel cm = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(rawType);
-        parent.setContainer(new ContainerSimple(parent.getType(), rawType, cm));
+        parent.setContainer(new ContainerSimple(parent.getType(), cm));
         TerminalValueNumber.read(
                 uCtx, BigDecimal.class, parent,
-                uCtx.getDeserializers().deserializer(parent.getType()));
+                uCtx.getDeserializers().deserializer(rawType));
         uCtx.nextToken();
     }
 
@@ -160,10 +160,10 @@ final class NonTerminalJson extends SymbolNonTerminal {
         // JSON (parent) is last stack symbol before getting empty, it shall hold output data.
         final Class<?> rawType = ResolveType.resolveSimpleType(parent.getType());
         final ClassModel cm = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(rawType);
-        parent.setContainer(new ContainerSimple(parent.getType(), rawType, cm));
+        parent.setContainer(new ContainerSimple(parent.getType(), cm));
         TerminalValueTrue.read(
                 uCtx, Boolean.class, parent,
-                uCtx.getDeserializers().deserializer(parent.getType()));
+                uCtx.getDeserializers().deserializer(rawType));
         uCtx.nextToken();
     }
 
@@ -180,10 +180,10 @@ final class NonTerminalJson extends SymbolNonTerminal {
         // JSON (parent) is last stack symbol before getting empty, it shall hold output data.
         final Class<?> rawType = ResolveType.resolveSimpleType(parent.getType());
         final ClassModel cm = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(rawType);
-        parent.setContainer(new ContainerSimple(parent.getType(), rawType, cm));
+        parent.setContainer(new ContainerSimple(parent.getType(), cm));
         TerminalValueFalse.read(
                 uCtx, Boolean.class, parent,
-                uCtx.getDeserializers().deserializer(parent.getType()));
+                uCtx.getDeserializers().deserializer(rawType));
         uCtx.nextToken();
     }
 
@@ -200,10 +200,10 @@ final class NonTerminalJson extends SymbolNonTerminal {
         // JSON (parent) is last stack symbol before getting empty, it shall hold output data.
         final Class<?> rawType = ResolveType.resolveSimpleType(parent.getType());
         final ClassModel cm = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(rawType);
-        parent.setContainer(new ContainerSimple(parent.getType(), rawType, cm));
+        parent.setContainer(new ContainerSimple(parent.getType(), cm));
         TerminalValueNull.read(
                 uCtx, null, parent,
-                uCtx.getDeserializers().deserializer(parent.getType()));
+                uCtx.getDeserializers().deserializer(rawType));
         uCtx.nextToken();
     }
 

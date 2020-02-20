@@ -16,6 +16,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
+import org.eclipse.yasson.internal.deserializer.ResolveType;
 import org.eclipse.yasson.internal.model.ClassModel;
 import org.eclipse.yasson.internal.model.customization.Customization;
 
@@ -27,7 +28,10 @@ import org.eclipse.yasson.internal.model.customization.Customization;
 public abstract class ContainerCollectionFromArray<V> extends ContainerArray<V, Collection<V>> {
 
     /** Current value type (the same for all Collection elements). */
-    private final Class<V> valueType;
+    private final Type valueType;
+
+    /** Current value class (the same for all array elements). */
+    private final Class<V> valueClass;
 
     /** Collection components customizations. */
     private Customization customization;
@@ -38,13 +42,14 @@ public abstract class ContainerCollectionFromArray<V> extends ContainerArray<V, 
     /**
      * Creates an instance of JSON array to Java Collection deserializer.
      *
+     * @param containerClass class of the container
      * @param valueType target Java value type of Collection elements
-     * @param classModel Java class model of the container type
      */
     @SuppressWarnings("unchecked")
-    ContainerCollectionFromArray(Class<?> valueType, final ClassModel classModel) {
-        super(classModel);
-        this.valueType = (Class<V>) valueType;
+    ContainerCollectionFromArray(final Class<Collection<V>> containerClass, final Type valueType) {
+        super(containerClass);
+        this.valueType = valueType;
+        this.valueClass = (Class<V>) ResolveType.resolveGenericType(valueType);
     }
 
     /**
@@ -57,7 +62,7 @@ public abstract class ContainerCollectionFromArray<V> extends ContainerArray<V, 
     @Override
     public void start(ParserContext uCtx, Type type, ContainerArray<?, ?> parent) {
         super.start(uCtx, type, parent);
-        classModel = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(valueType);
+        classModel = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(valueClass);
         customization = classModel.getClassCustomization();
     }
 
@@ -69,6 +74,16 @@ public abstract class ContainerCollectionFromArray<V> extends ContainerArray<V, 
     @Override
     public final Type valueType() {
         return valueType;
+    }
+
+    /**
+     * Get collection value type.
+     *
+     * @return current value type
+     */
+    @Override
+    public final Class<V> valueClass() {
+        return valueClass;
     }
 
     /**

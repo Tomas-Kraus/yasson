@@ -6,7 +6,6 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.json.JsonValue;
@@ -16,10 +15,10 @@ import org.eclipse.yasson.internal.ReflectionUtils;
 import org.eclipse.yasson.internal.RuntimeTypeInfo;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerArray;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerGenericArrayFromArray.ComponentType;
-import org.eclipse.yasson.internal.deserializer.deserializers.ContainerHashMapFromArray;
-import org.eclipse.yasson.internal.deserializer.deserializers.ContainerHashMapItemFromArray;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerObject;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerPoJoFromObject;
+import org.eclipse.yasson.internal.deserializer.deserializers.Containers.ArrayContainerBuilder;
+import org.eclipse.yasson.internal.deserializer.deserializers.Containers.ObjectContainerBuilder;
 import org.eclipse.yasson.internal.model.customization.PropertyCustomization;
 import org.eclipse.yasson.internal.properties.MessageKeys;
 import org.eclipse.yasson.internal.properties.Messages;
@@ -42,7 +41,7 @@ public final class ResolveType {
      * @return container deserializer for JSON object
      */
     static ContainerObject<?, ?, ?> deserializerForObject(ParserContext uCtx, StackNode parent) {
-        return deserializerForObject(uCtx, parent, parent.getContainer().valueType());
+        return deserializerForObject(uCtx, parent.getContainer().valueType());
     }
 
     /**
@@ -52,65 +51,58 @@ public final class ResolveType {
      * @param type unresolved target Java type
      * @return container deserializer for JSON object
      */
-    static ContainerObject<?, ?, ?> deserializerForObject(ParserContext uCtx, StackNode parent, Type type) {
+    public static ContainerObject<?, ?, ?> deserializerForObject(ParserContext uCtx, Type type) {
         Class<?> typeClass;
         if (type instanceof Class) {
             typeClass = (Class<?>) type;
+            final ObjectContainerBuilder cb = uCtx.getContainers().objectContainerBuilder(typeClass);
+            if (cb != null) {
+                return cb.newInstance(typeClass, Object.class, Object.class);
+            }
             if (JsonValue.class.isAssignableFrom(typeClass)) {
                 return null; // TODO Return JsonObjectDeserializer
-            } else if (typeClass == Object.class || Map.class.isAssignableFrom(typeClass)) {
-                return uCtx.getContainers().objectContainer(
-                        uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(typeClass), String.class,
-                        Object.class);
-            } else if (ContainerHashMapItemFromArray.class.isAssignableFrom(typeClass)) {
-                return uCtx.getContainers().objectContainer(
-                        uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(typeClass),
-                        (Class<?>) parent.getContainer().object().keyType(),
-                        (Class<?>) parent.getContainer().valueType());
             } else if (typeClass.isInterface()) {
                 Class<?> mappedType = getInterfaceMappedType(uCtx, typeClass, null);
                 if (mappedType == null) {
                     throw new JsonbException(
                             Messages.getMessage(MessageKeys.INFER_TYPE_FOR_UNMARSHALL, typeClass.getName()));
                 }
-                return ContainerPoJoFromObject.newInstance(
-                        uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(mappedType), String.class,
-                        Object.class);
+                return ContainerPoJoFromObject.newInstance(mappedType, String.class, Object.class);
             } else {
-                return ContainerPoJoFromObject.newInstance(
-                        uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(typeClass), String.class,
-                        Object.class);
+                return ContainerPoJoFromObject.newInstance(typeClass, String.class, Object.class);
             }
         } else if (type instanceof ParameterizedType) {
             typeClass = (Class<?>) ((ParameterizedType) type).getRawType();
+            final ObjectContainerBuilder cb = uCtx.getContainers().objectContainerBuilder(typeClass);
+            if (cb != null) {
+                final Type[] genericsArray = ((ParameterizedType) type).getActualTypeArguments();
+                Type valueType;
+                Type keyType;
+                if (genericsArray.length > 0) {
+                    if (genericsArray.length > 1) {
+                        keyType = genericsArray[0] != null ? genericsArray[0] : Object.class;
+                        valueType = genericsArray[1] != null ? genericsArray[1] : Object.class;
+                    } else {
+                        valueType = genericsArray[0] != null ? genericsArray[0] : Object.class;
+                        keyType = Object.class;
+                    }
+                } else {
+                    valueType = Object.class;
+                    keyType = Object.class;
+                }
+                return cb.newInstance(typeClass, keyType, valueType);
+            }
             if (JsonValue.class.isAssignableFrom(typeClass)) {
                 return null; // TODO Return JsonObjectDeserializer
-            } else if (Map.class.isAssignableFrom(typeClass)) {
-                // Array will never be null, but may be empty.
-                Type[] genericsArray = ((ParameterizedType) type).getActualTypeArguments();
-                Class<?> valueClass;
-                if (genericsArray.length > 1 && genericsArray[1] != null) {
-                    Type valueType = genericsArray[1];
-                    valueClass = resolveGenericType(valueType);
-                } else {
-                    valueClass = Object.class;
-                }
-                return uCtx.getContainers().objectContainer(
-                        uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(typeClass), String.class,
-                        valueClass);
             } else if (typeClass.isInterface()) {
                 Class<?> mappedType = getInterfaceMappedType(uCtx, typeClass, null);
                 if (mappedType == null) {
                     throw new JsonbException(
                             Messages.getMessage(MessageKeys.INFER_TYPE_FOR_UNMARSHALL, typeClass.getName()));
                 }
-                return ContainerPoJoFromObject.newInstance(
-                        uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(mappedType), String.class,
-                        Object.class);
+                return ContainerPoJoFromObject.newInstance(mappedType, String.class, Object.class);
             } else {
-                return ContainerPoJoFromObject.newInstance(
-                        uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(typeClass), String.class,
-                        Object.class);
+                return ContainerPoJoFromObject.newInstance(typeClass, String.class, Object.class);
             }
         }
         throw new JsonbException(Messages.getMessage(MessageKeys.TYPE_RESOLUTION_ERROR, type));
@@ -123,83 +115,66 @@ public final class ResolveType {
      * @param type unresolved target Java type
      * @return container deserializer for JSON object
      */
-    static ContainerArray<?, ?> deserializerForArray(ParserContext uCtx, Type type) {
+    public static ContainerArray<?, ?> deserializerForArray(ParserContext uCtx, Type type) {
+        Class<?> typeClass;
         if (type instanceof Class) {
-            if (type == Object.class) {
-                return uCtx.getContainers().arrayContainer(
-                        uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel((Class<?>) type),
-                        Object.class);
-            } else if (JsonValue.class.isAssignableFrom((Class<?>) type)) {
-                return null; // TODO Return JsonArrayDeserializer
-            } else if (((Class<?>) type).isArray()) {
-                return uCtx.getContainers().arrayContainer(
-                        uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel((Class<?>) type),
-                        ((Class<?>) type).getComponentType());
-            } else if (Map.class.isAssignableFrom((Class<?>) type)) {
-                ContainerArray<?, ?> container = uCtx.getContainers().arrayContainer(
-                        type,
-                        uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel((Class<?>) type),
-                        Object.class);
-                ((ContainerHashMapFromArray) container).setKeyType(Object.class);
+            typeClass = (Class<?>) type;
+            final ArrayContainerBuilder ab = uCtx.getContainers().arrayContainerBuilder(typeClass);
+            if (ab != null) {
+                final ContainerArray<?, ?> container =  ab.newInstance(
+                        typeClass, typeClass.isArray() ? typeClass.getComponentType() : Object.class);
+                if (container.isMap()) {
+                    container.mapKey().setKeyType(Object.class);
+                }
                 return container;
+            }
+            if (JsonValue.class.isAssignableFrom((Class<?>) type)) {
+                return null; // TODO Return JsonArrayDeserializer
             } else {
                 return uCtx.getContainers().arrayContainer(
-                        uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel((Class<?>) type),
-                        Object.class);
+                        typeClass, typeClass.isArray() ? typeClass.getComponentType() : Object.class);
             }
         } else if (type instanceof GenericArrayType) {
             Class<?> component = (Class<?>) ((GenericArrayType) type).getGenericComponentType();
-            return uCtx.getContainers().arrayContainer(
-                    type,
-                    uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel((Class<?>) type),
-                    component);
+            return uCtx.getContainers().arrayContainer(type, (Class<?>) type, component);
         } else if (type instanceof ParameterizedType) {
-            final Class<?> typeClass = (Class<?>) ((ParameterizedType) type).getRawType();
+            typeClass = (Class<?>) ((ParameterizedType) type).getRawType();
+            final ArrayContainerBuilder ab = uCtx.getContainers().arrayContainerBuilder(typeClass);
+            if (ab != null) {
+                final Type[] genericsArray = ((ParameterizedType) type).getActualTypeArguments();
+                Type valueType;
+                Type keyType;
+                if (genericsArray.length > 0) {
+                    if (genericsArray.length > 1) {
+                        keyType = genericsArray[0] != null ? genericsArray[0] : Object.class;
+                        valueType = genericsArray[1] != null ? genericsArray[1] : Object.class;
+                    } else {
+                        valueType = genericsArray[0] != null ? genericsArray[0] : Object.class;
+                        keyType = Object.class;
+                    }
+                } else {
+                    valueType = Object.class;
+                    keyType = Object.class;
+                }
+                final ContainerArray<?, ?> container =  ab.newInstance(
+                        typeClass, typeClass.isArray() ? typeClass.getComponentType() : valueType);
+                if (container.isMap()) {
+                    container.mapKey().setKeyType(keyType);
+                }
+                return container;
+            }
             if (JsonValue.class.isAssignableFrom(typeClass)) {
                 return null; // TODO Return JsonObjectDeserializer
-            } else if (Map.class.isAssignableFrom(typeClass)) {
-                // Array will never be null, but may be empty.
-                Type[] genericsArray = ((ParameterizedType) type).getActualTypeArguments();
-                Class<?> keyClass;
-                Class<?> valueClass;
-                if (genericsArray.length > 1 && genericsArray[1] != null) {
-                    Type keyType = genericsArray[0];
-                    Type valueType = genericsArray[1];
-                    keyClass = resolveGenericType(keyType);
-                    valueClass = resolveGenericType(valueType);
-                } else {
-                    keyClass = Object.class;
-                    valueClass = Object.class;
-                }
-                ContainerArray<?, ?> container = uCtx.getContainers().arrayContainer(
-                        typeClass,
-                        uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(typeClass),
-                        valueClass);
-                //uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(keyClass);
-                ((ContainerHashMapFromArray) container).setKeyType(keyClass);
-                return container;
             } else {
                 final Type[] argsTypes = ((ParameterizedType) type).getActualTypeArguments();
                 final Type valueType = argsTypes.length > 0 ? argsTypes[0] : Object.class;
-                return selectDeserializerForArray(uCtx, typeClass, resolveGenericType(valueType));
+                if (typeClass.isArray() || Collection.class.isAssignableFrom(typeClass)) {
+                    return uCtx.getContainers().arrayContainer(typeClass, valueType);
+                }
+                throw new JsonbException("Can't deserialize JSON array into: " + typeClass.getName());
             }
         }
         throw new JsonbException(Messages.getMessage(MessageKeys.TYPE_RESOLUTION_ERROR, type));
-    }
-
-    private static ContainerArray<?, ?> selectDeserializerForArray(ParserContext uCtx, Class<?> typeClass,
-            Class<?> valueClass) {
-        if (typeClass == Object.class) {
-            return uCtx.getContainers().arrayContainer(uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(typeClass), valueClass);
-        } else if (JsonValue.class.isAssignableFrom(typeClass)) {
-            return null; // TODO Return JsonArrayDeserializer
-        } else if (typeClass.isArray()) {
-            return uCtx.getContainers().arrayContainer(uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(typeClass), valueClass);
-        } else if (Collection.class.isAssignableFrom(typeClass)) {
-            return uCtx.getContainers().arrayContainer(uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(typeClass), valueClass);
-        } else {
-            throw new JsonbException("Can't deserialize JSON array into: " + typeClass.getName());
-        }
     }
 
     private static Class<?> getInterfaceMappedType(ParserContext uCtx, Class<?> interfaceType,
@@ -269,7 +244,13 @@ public final class ResolveType {
         throw new JsonbException(Messages.getMessage(MessageKeys.TYPE_RESOLUTION_ERROR, type));
     }
 
-    static Class<?> resolveGenericType(Type type) {
+    /**
+     * Resolve generic type.
+     *
+     * @param type type to be resolved
+     * @return resolved class of generic type
+     */
+    public static Class<?> resolveGenericType(Type type) {
         if (type instanceof Class) {
             return (Class<?>) type;
         } else if (type instanceof ParameterizedType) {
