@@ -40,7 +40,7 @@ public class ContainerHashMapItemFromArray extends ContainerObject<Object, Objec
     }
 
     /** Map container reference. */    
-    private ContainerHashMapFromArray mapContainer;
+    private ContainerMapFromArray mapContainer;
 
     /** Internal state: expecting key or value. */
     private State state;
@@ -61,7 +61,7 @@ public class ContainerHashMapItemFromArray extends ContainerObject<Object, Objec
     @Override
     public void start(ParserContext uCtx, Type type, ContainerArray<?, ?> parent) {
         super.start(uCtx, type, parent);
-        this.mapContainer = (ContainerHashMapFromArray) parent;
+        this.mapContainer = (ContainerMapFromArray) parent;
     }
 
     @Override

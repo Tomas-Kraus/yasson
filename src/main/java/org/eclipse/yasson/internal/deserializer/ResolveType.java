@@ -14,6 +14,7 @@ import javax.json.bind.JsonbException;
 import org.eclipse.yasson.internal.ReflectionUtils;
 import org.eclipse.yasson.internal.RuntimeTypeInfo;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerArray;
+import org.eclipse.yasson.internal.deserializer.deserializers.ContainerCollectionFromArray;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerGenericArrayFromArray.ComponentType;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerObject;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerPoJoFromObject;
@@ -140,7 +141,7 @@ public final class ResolveType {
         } else if (type instanceof ParameterizedType) {
             typeClass = (Class<?>) ((ParameterizedType) type).getRawType();
             final ArrayContainerBuilder ab = uCtx.getContainers().arrayContainerBuilder(typeClass);
-            if (ab != null) {
+            if (ab != null || Collection.class.isAssignableFrom(typeClass)) {
                 final Type[] genericsArray = ((ParameterizedType) type).getActualTypeArguments();
                 Type valueType;
                 Type keyType;
@@ -156,8 +157,9 @@ public final class ResolveType {
                     valueType = Object.class;
                     keyType = Object.class;
                 }
-                final ContainerArray<?, ?> container =  ab.newInstance(
-                        typeClass, typeClass.isArray() ? typeClass.getComponentType() : valueType);
+                final ContainerArray<Object, ?> container = ab != null
+                        ? ab.newInstance(typeClass, typeClass.isArray() ? typeClass.getComponentType() : valueType)
+                        : ContainerCollectionFromArray.CommonCollection.newInstance((Class<Collection<Object>>) typeClass, valueType);
                 if (container.isMap()) {
                     container.mapKey().setKeyType(keyType);
                 }

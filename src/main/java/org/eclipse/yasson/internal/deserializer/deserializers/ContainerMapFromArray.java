@@ -13,8 +13,11 @@
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
 import java.lang.reflect.Type;
+import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 import org.eclipse.yasson.internal.deserializer.ResolveType;
@@ -25,7 +28,7 @@ import org.eclipse.yasson.internal.model.customization.Customization;
 /**
  * JSON array to Java {@code HashMap} deserializer.
  */
-public class ContainerHashMapFromArray extends ContainerObject<Object, Object, Map<Object, Object>> implements MapKey {
+public class ContainerMapFromArray extends ContainerObject<Object, Object, Map<Object, Object>> implements MapKey {
 
     /** Current value type (the same for all @code Map} values). */
     private final Type valueType;
@@ -52,34 +55,22 @@ public class ContainerHashMapFromArray extends ContainerObject<Object, Object, M
     private Customization keyCustomization;
 
     /** Target Java {@code HashMap} being built from JSON array. */
-    private final HashMap<Object, Object> map;
-
-    /**
-     * Get new instance of JSON array to Java {@code HashMap} deserializer.
-     *
-     * @param containerClass class of the container
-     * @param keyType target Java key type of Map elements
-     * @param valueType target Java value type of Map elements
-     * @return new instance of JSON array to Java {@code ArrayList} deserializer
-     */
-    static final ContainerHashMapFromArray
-    newInstance(final Class<Map<Object, Object>> containerClass, final Type valueType) {
-        return new ContainerHashMapFromArray(containerClass, valueType);
-    }
+    private Map<Object, Object> map;
 
     /**
      * Creates an instance of container deserializer.
      *
+     * @param map target @link Map} instance
      * @param containerClass class of the container
      * @param valueType target Java value type of Map elements
      */
-    ContainerHashMapFromArray(final Class<Map<Object, Object>> containerClass, final Type valueType) {
+    ContainerMapFromArray(final Map<Object, Object> map, final Class<Map<Object, Object>> containerClass, final Type valueType) {
         super(containerClass);
         this.valueType = valueType;
         this.valueClass = (Class<Object>) ResolveType.resolveGenericType(valueType);
         this.keyType = null;
         this.keyClass = null;
-        this.map = new HashMap<>();
+        this.map = map;
     }
 
     @Override
@@ -89,6 +80,14 @@ public class ContainerHashMapFromArray extends ContainerObject<Object, Object, M
         keyCustomization = keyClassModel.getClassCustomization();
         valueClassModel = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(valueClass);
         valueCustomization = valueClassModel.getClassCustomization();
+    }
+
+    protected Map<Object, Object> getMap() {
+        return map;
+    }
+
+    protected void setMap(final Map<Object, Object> map) {
+        this.map = map;
     }
 
     /**
@@ -198,6 +197,131 @@ public class ContainerHashMapFromArray extends ContainerObject<Object, Object, M
      */
     public MapKey mapKey() {
         return this;
+    }
+
+    /**
+     * JSON array to Java {@code HashMap} deserializer.
+     *
+     * @param <V> the type of {@code HashMap} value returned by primitive type deserializer
+     */
+    static final class AsHashMap extends ContainerMapFromArray {
+
+        /**
+         * Get new instance of JSON array to Java {@code HashMap} deserializer.
+         *
+         * @param containerClass class of the container
+         * @param valueType target Java value type of Map elements
+         * @return new instance of JSON array to Java {@code HashMap} deserializer
+         */
+        static final AsHashMap
+        newInstance(final Class<Map<Object, Object>> containerClass, final Type valueType) {
+            return new AsHashMap(containerClass, valueType);
+        }
+
+        /**
+         * Creates an instance of JSON array to Java {@code HashMap} deserializer.
+         *
+         * @param containerClass class of the container
+         * @param valueType target Java value type of Collection elements
+         */
+        AsHashMap(final Class<Map<Object, Object>> containerClass, final Type valueType) {
+            super(new HashMap<>(), containerClass, valueType);
+        }
+
+    }
+
+    /**
+     * JSON array to Java {@code TreeMap} deserializer.
+     *
+     * @param <V> the type of {@code TreeMap} value returned by primitive type deserializer
+     */
+    static final class AsTreeMap extends ContainerMapFromArray {
+
+        /**
+         * Get new instance of JSON array to Java {@code TreeMap} deserializer.
+         *
+         * @param containerClass class of the container
+         * @param valueType target Java value type of Map elements
+         * @return new instance of JSON array to Java {@code TreeMap} deserializer
+         */
+        static final AsTreeMap
+        newInstance(final Class<Map<Object, Object>> containerClass, final Type valueType) {
+            return new AsTreeMap(containerClass, valueType);
+        }
+
+        /**
+         * Creates an instance of JSON array to Java {@code TreeMap} deserializer.
+         *
+         * @param containerClass class of the container
+         * @param valueType target Java value type of Collection elements
+         */
+        AsTreeMap(final Class<Map<Object, Object>> containerClass, final Type valueType) {
+            super(new TreeMap<>(), containerClass, valueType);
+        }
+
+    }
+
+    /**
+     * JSON array to Java {@code LinkedHashMap} deserializer.
+     *
+     * @param <V> the type of {@code LinkedHashMap} value returned by primitive type deserializer
+     */
+    static final class AsLinkedHashMap extends ContainerMapFromArray {
+
+        /**
+         * Get new instance of JSON array to Java {@code LinkedHashMap} deserializer.
+         *
+         * @param containerClass class of the container
+         * @param valueType target Java value type of Map elements
+         * @return new instance of JSON array to Java {@code LinkedHashMap} deserializer
+         */
+        static final AsLinkedHashMap
+        newInstance(final Class<Map<Object, Object>> containerClass, final Type valueType) {
+            return new AsLinkedHashMap(containerClass, valueType);
+        }
+
+        /**
+         * Creates an instance of JSON array to Java {@code LinkedHashMap} deserializer.
+         *
+         * @param containerClass class of the container
+         * @param valueType target Java value type of Collection elements
+         */
+        AsLinkedHashMap(final Class<Map<Object, Object>> containerClass, final Type valueType) {
+            super(new LinkedHashMap<>(), containerClass, valueType);
+        }
+
+    }
+
+    /**
+     * JSON array to Java {@code EnumMap} deserializer.
+     *
+     * @param <V> the type of {@code EnumMap} value returned by primitive type deserializer
+     */
+    static final class AsEnumMap extends ContainerMapFromArray {
+
+        /**
+         * Get new instance of JSON array to Java {@code EnumMap} deserializer.
+         *
+         * @param containerClass class of the container
+         * @param valueType target Java value type of Map elements
+         * @return new instance of JSON array to Java {@code EnumMap} deserializer
+         */
+        static final AsEnumMap
+        newInstance(final Class<Map<Object, Object>> containerClass, final Type valueType) {
+            return new AsEnumMap(containerClass, valueType);
+        }
+
+        /**
+         * Creates an instance of JSON array to Java {@code EnumMap} deserializer.
+         *
+         * @param containerClass class of the container
+         * @param valueType target Java value type of Collection elements
+         */
+        AsEnumMap(final Class<Map<Object, Object>> containerClass, final Type valueType) {
+            super(null, containerClass, valueType);
+            setMap(new EnumMap<>((Class)mapValueClass()));
+        }
+
     }
 
 }
