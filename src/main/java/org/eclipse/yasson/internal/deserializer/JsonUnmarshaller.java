@@ -82,7 +82,9 @@ public final class JsonUnmarshaller implements DeserializationContext {
             node.processNode(uCtx);
         }
         if (node.getContainer() != null) {
-            data = (T) node.getContainer().build();
+            data = node.getParent() != null
+                    ? (T) node.getParent().getContainer().build()
+                    : (T) node.getContainer().build();
         }
         return data;
     }

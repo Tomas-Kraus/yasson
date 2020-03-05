@@ -17,12 +17,12 @@ import java.lang.reflect.Type;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.TreeSet;
-import java.util.EnumSet;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
 import org.eclipse.yasson.internal.deserializer.ResolveType;
@@ -102,7 +102,6 @@ public abstract class ContainerCollectionFromArray<V> extends ContainerArray<V, 
     /**
      * Return target Java {@code List} value built from already added array elements.
      *
-     * @param deserialization context
      * @return target Java {@code List} value
      */
     @Override
@@ -139,19 +138,29 @@ public abstract class ContainerCollectionFromArray<V> extends ContainerArray<V, 
     public Customization valueCustomization() {
         return customization;
     }
-
+    /**
+     * JSON array to Java {@code Collection} deserializer.
+     *
+     * @param <V> the type of {@code Collection} value returned by primitive type deserializer
+     */
     public static final class CommonCollection<V> extends ContainerCollectionFromArray<V> {
 
         /**
          * Get new instance of JSON array to Java {@code ArrayList} deserializer.
          *
+         * @param <V> the type of {@code Collection} value returned by primitive type deserializer
          * @param containerClass class of the container
          * @param valueType target Java value type of array elements
          * @return new instance of JSON array to Java {@code ArrayList} deserializer
          */
-        public static <V> CommonCollection<V> newInstance(final Class<Collection<V>> containerClass, final Type valueType) {
+        public static <V> CommonCollection<V> newInstance(
+                final Class<Collection<V>> containerClass, final Type valueType) {
+            return new CommonCollection<>(containerClass, valueType);
+        }
+
+        private static <V> Collection<V> newCollection(final Class<Collection<V>> containerClass) {
             try {
-                return new CommonCollection<>(containerClass, valueType);
+                return containerClass.getDeclaredConstructor().newInstance();
             } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException
                     | IllegalArgumentException | InstantiationException | SecurityException ex) {
                 throw new YassonDeserializationException(
@@ -167,12 +176,9 @@ public abstract class ContainerCollectionFromArray<V> extends ContainerArray<V, 
          * @throws SecurityException
          * @throws NoSuchMethodException
          * @throws InvocationTargetException
-         * @throws IllegalArgumentException
-         * @throws IllegalAccessException
-         * @throws InstantiationException
          */
-        CommonCollection(final Class<Collection<V>> containerClass, final Type valueType) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-            super(containerClass.getDeclaredConstructor().newInstance(), containerClass, valueType);
+        CommonCollection(final Class<Collection<V>> containerClass, final Type valueType) {
+            super(newCollection(containerClass), containerClass, valueType);
         }
     }
 

@@ -19,8 +19,10 @@ import java.util.Optional;
 import javax.json.bind.JsonbException;
 
 import org.eclipse.yasson.internal.deserializer.ParserContext;
-import org.eclipse.yasson.internal.deserializer.ResolveType;
 import org.eclipse.yasson.internal.model.customization.Customization;
+
+import static org.eclipse.yasson.internal.deserializer.ResolveType.resolveGenericType;
+import static org.eclipse.yasson.internal.deserializer.ResolveType.resolveOptionalType;
 
 /**
  * Deserialize JSON value.
@@ -34,8 +36,8 @@ public final class DeserializerValueOptionalObject extends Deserializer<Optional
 
     @Override
     public Optional<?> stringValue(ParserContext uCtx, Type type, Customization customization) {
-        final Type valueType = ResolveType.resolveOptionalType(type);
-        final Deserializer<?> deserializer = uCtx.getDeserializers().deserializer(valueType);
+        final Type valueType = resolveOptionalType(type);
+        final Deserializer<?> deserializer = uCtx.getDeserializers().deserializer(resolveGenericType(valueType));
         if (deserializer == null) {
             throw new JsonbException("Can't deserialize JSON string into: " + valueType);
         }
@@ -44,8 +46,8 @@ public final class DeserializerValueOptionalObject extends Deserializer<Optional
 
     @Override
     public Optional<?> numberValue(ParserContext uCtx, Type type, Customization customization) {
-        final Type valueType = ResolveType.resolveOptionalType(type);
-        final Deserializer<?> deserializer = uCtx.getDeserializers().deserializer(valueType);
+        final Type valueType = resolveOptionalType(type);
+        final Deserializer<?> deserializer = uCtx.getDeserializers().deserializer(resolveGenericType(valueType));
         if (deserializer == null) {
             throw new JsonbException("Can't deserialize JSON number into: " + valueType);
         }
@@ -54,8 +56,8 @@ public final class DeserializerValueOptionalObject extends Deserializer<Optional
 
     @Override
     public Optional<?> trueValue(ParserContext uCtx, Type type, Customization customization) {
-        final Type valueType = ResolveType.resolveOptionalType(type);
-        final Deserializer<?> deserializer = uCtx.getDeserializers().deserializer(valueType);
+        final Type valueType = resolveOptionalType(type);
+        final Deserializer<?> deserializer = uCtx.getDeserializers().deserializer(resolveGenericType(valueType));
         if (deserializer == null) {
             throw new JsonbException("Can't deserialize JSON true into: " + valueType);
         }
@@ -64,8 +66,8 @@ public final class DeserializerValueOptionalObject extends Deserializer<Optional
 
     @Override
     public Optional<?> falseValue(ParserContext uCtx, Type type, Customization customization) {
-        final Type valueType = ResolveType.resolveOptionalType(type);
-        final Deserializer<?> deserializer = uCtx.getDeserializers().deserializer(valueType);
+        final Type valueType = resolveOptionalType(type);
+        final Deserializer<?> deserializer = uCtx.getDeserializers().deserializer(resolveGenericType(valueType));
         if (deserializer == null) {
             throw new JsonbException("Can't deserialize JSON false into: " + valueType);
         }

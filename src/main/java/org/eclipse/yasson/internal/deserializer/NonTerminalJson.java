@@ -12,8 +12,6 @@
  ******************************************************************************/
 package org.eclipse.yasson.internal.deserializer;
 
-import java.math.BigDecimal;
-
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerSimple;
 import org.eclipse.yasson.internal.model.ClassModel;
 
@@ -122,7 +120,7 @@ final class NonTerminalJson extends SymbolNonTerminal {
         final ClassModel cm = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(rawType);
         parent.setContainer(new ContainerSimple(parent.getType(), cm));
         TerminalValueString.read(
-                uCtx, String.class, parent,
+                uCtx, parent.getContainer().valueType(), parent,
                 uCtx.getDeserializers().deserializer(rawType));
         uCtx.nextToken();
     }
@@ -142,7 +140,7 @@ final class NonTerminalJson extends SymbolNonTerminal {
         final ClassModel cm = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(rawType);
         parent.setContainer(new ContainerSimple(parent.getType(), cm));
         TerminalValueNumber.read(
-                uCtx, BigDecimal.class, parent,
+                uCtx, parent.getContainer().valueType(), parent,
                 uCtx.getDeserializers().deserializer(rawType));
         uCtx.nextToken();
     }
@@ -162,7 +160,7 @@ final class NonTerminalJson extends SymbolNonTerminal {
         final ClassModel cm = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(rawType);
         parent.setContainer(new ContainerSimple(parent.getType(), cm));
         TerminalValueTrue.read(
-                uCtx, Boolean.class, parent,
+                uCtx, parent.getContainer().valueType(), parent,
                 uCtx.getDeserializers().deserializer(rawType));
         uCtx.nextToken();
     }
@@ -182,7 +180,7 @@ final class NonTerminalJson extends SymbolNonTerminal {
         final ClassModel cm = uCtx.getJsonbContext().getMappingContext().getOrCreateClassModel(rawType);
         parent.setContainer(new ContainerSimple(parent.getType(), cm));
         TerminalValueFalse.read(
-                uCtx, Boolean.class, parent,
+                uCtx, parent.getContainer().valueType(), parent,
                 uCtx.getDeserializers().deserializer(rawType));
         uCtx.nextToken();
     }

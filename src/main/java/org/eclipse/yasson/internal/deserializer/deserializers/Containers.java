@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2020 Oracle and/or its affiliates. All rights reserved.
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
+ * which accompanies this distribution.
+ * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
+ * and the Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * Contributors:
+ * Tomas Kraus
+ ******************************************************************************/
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
 import java.lang.reflect.Type;
@@ -26,6 +38,10 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonValue;
 
 import org.eclipse.yasson.internal.JsonbContext;
 import org.eclipse.yasson.internal.deserializer.deserializers.ContainerGenericArrayFromArray.ComponentType;
@@ -120,6 +136,8 @@ public final class Containers {
         ARRAY_CONTAINERS.put(LinkedHashMap.class, ContainerMapFromArray.AsLinkedHashMap::newInstance);
         ARRAY_CONTAINERS.put(EnumMap.class, ContainerMapFromArray.AsEnumMap::newInstance);
         ARRAY_CONTAINERS.put(Optional.class, ContainerOptional::newArrayInstance);
+        ARRAY_CONTAINERS.put(JsonValue.class, ContainerJsonArray::newInstance);
+        ARRAY_CONTAINERS.put(JsonArray.class, ContainerJsonArray::newInstance);
         OBJECT_CONTAINERS.put(Object.class, ContainerMapFromObject.AsHashMap::newInstance);
         OBJECT_CONTAINERS.put(Map.class, ContainerMapFromObject.AsHashMap::newInstance);
         OBJECT_CONTAINERS.put(HashMap.class, ContainerMapFromObject.AsHashMap::newInstance);
@@ -130,6 +148,8 @@ public final class Containers {
         OBJECT_CONTAINERS.put(EnumMap.class, ContainerMapFromObject.AsEnumMap::newInstance);
         OBJECT_CONTAINERS.put(ContainerHashMapItemFromArray.class, ContainerHashMapItemFromArray::newInstance);
         OBJECT_CONTAINERS.put(Optional.class, ContainerOptional::newObjectInstance);
+        OBJECT_CONTAINERS.put(JsonValue.class, ContainerJsonObject::newInstance);
+        OBJECT_CONTAINERS.put(JsonObject.class, ContainerJsonObject::newInstance);
     }
 
     private final Map<Type, ArrayContainerBuilder> arrayContainers;

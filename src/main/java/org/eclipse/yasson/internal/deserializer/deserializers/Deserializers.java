@@ -11,7 +11,6 @@
  * Tomas Kraus
  * Thibault Vallin
  ******************************************************************************/
-
 package org.eclipse.yasson.internal.deserializer.deserializers;
 
 import java.lang.reflect.Type;
@@ -100,12 +99,13 @@ public final class Deserializers {
         DESERIALIZERS.put(OffsetTime.class, DeserializerValueOffsetTime.INSTANCE);
         DESERIALIZERS.put(SimpleTimeZone.class, DeserializerValueTimeZone.INSTANCE);
         DESERIALIZERS.put(TimeZone.class, DeserializerValueTimeZone.INSTANCE);
+        DESERIALIZERS.put(Enum.class, DeserializerValueEnum.INSTANCE);
     }
 
     private final Map<Type, Deserializer<?>> deserializers;
 
     /**
-     * Creates an instance of primitive types deserializers selectior.
+     * Creates an instance of primitive types deserializers lectior.
      *
      * @param jsonbContext current JSON-B context
      */
@@ -119,8 +119,15 @@ public final class Deserializers {
      * @param type type of value to be returned
      * @return deserializer of JSON {@code string} or {@code number} value
      */
-    public Deserializer<?> deserializer(Type type) {
-        return deserializers.get(type);
+    public Deserializer<?> deserializer(Class<?> type) {
+        Deserializer<?>  deserializer = deserializers.get(type);
+        if (deserializer != null) {
+            return deserializer;
+        } else if (type.isEnum()) {
+            return DeserializerValueEnum.INSTANCE;
+        } else {
+            return null;
+        }
     }
 
 }

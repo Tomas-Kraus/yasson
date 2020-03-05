@@ -22,7 +22,6 @@ public class EnumTest {
         assertEquals("{\"value\":\"Russian\"}", defaultJsonb.toJson(new ScalarValueWrapper<>(Language.Russian)));
         ScalarValueWrapper<Language> result = defaultJsonb.fromJson("{\"value\":\"Russian\"}", new TestTypeToken<ScalarValueWrapper<Language>>() {
         }.getType());
-
         assertEquals(result.getValue(), Language.Russian);
     }
 

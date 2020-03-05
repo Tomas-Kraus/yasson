@@ -213,7 +213,7 @@ public class ContainerMapFromArray extends ContainerObject<Object, Object, Map<O
          * @param valueType target Java value type of Map elements
          * @return new instance of JSON array to Java {@code HashMap} deserializer
          */
-        static final AsHashMap
+        static AsHashMap
         newInstance(final Class<Map<Object, Object>> containerClass, final Type valueType) {
             return new AsHashMap(containerClass, valueType);
         }
@@ -244,7 +244,7 @@ public class ContainerMapFromArray extends ContainerObject<Object, Object, Map<O
          * @param valueType target Java value type of Map elements
          * @return new instance of JSON array to Java {@code TreeMap} deserializer
          */
-        static final AsTreeMap
+        static AsTreeMap
         newInstance(final Class<Map<Object, Object>> containerClass, final Type valueType) {
             return new AsTreeMap(containerClass, valueType);
         }
@@ -275,7 +275,7 @@ public class ContainerMapFromArray extends ContainerObject<Object, Object, Map<O
          * @param valueType target Java value type of Map elements
          * @return new instance of JSON array to Java {@code LinkedHashMap} deserializer
          */
-        static final AsLinkedHashMap
+        static AsLinkedHashMap
         newInstance(final Class<Map<Object, Object>> containerClass, final Type valueType) {
             return new AsLinkedHashMap(containerClass, valueType);
         }
@@ -306,7 +306,7 @@ public class ContainerMapFromArray extends ContainerObject<Object, Object, Map<O
          * @param valueType target Java value type of Map elements
          * @return new instance of JSON array to Java {@code EnumMap} deserializer
          */
-        static final AsEnumMap
+        static AsEnumMap
         newInstance(final Class<Map<Object, Object>> containerClass, final Type valueType) {
             return new AsEnumMap(containerClass, valueType);
         }
@@ -319,7 +319,7 @@ public class ContainerMapFromArray extends ContainerObject<Object, Object, Map<O
          */
         AsEnumMap(final Class<Map<Object, Object>> containerClass, final Type valueType) {
             super(null, containerClass, valueType);
-            setMap(new EnumMap<>((Class)mapValueClass()));
+            setMap(new EnumMap<>((Class) mapValueClass()));
         }
 
     }

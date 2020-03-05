@@ -8,7 +8,6 @@ import java.lang.reflect.WildcardType;
 import java.util.Collection;
 import java.util.Optional;
 
-import javax.json.JsonValue;
 import javax.json.bind.JsonbException;
 
 import org.eclipse.yasson.internal.ReflectionUtils;
@@ -59,9 +58,6 @@ public final class ResolveType {
             final ObjectContainerBuilder cb = uCtx.getContainers().objectContainerBuilder(typeClass);
             if (cb != null) {
                 return cb.newInstance(typeClass, Object.class, Object.class);
-            }
-            if (JsonValue.class.isAssignableFrom(typeClass)) {
-                return null; // TODO Return JsonObjectDeserializer
             } else if (typeClass.isInterface()) {
                 Class<?> mappedType = getInterfaceMappedType(uCtx, typeClass, null);
                 if (mappedType == null) {
@@ -92,9 +88,6 @@ public final class ResolveType {
                     keyType = Object.class;
                 }
                 return cb.newInstance(typeClass, keyType, valueType);
-            }
-            if (JsonValue.class.isAssignableFrom(typeClass)) {
-                return null; // TODO Return JsonObjectDeserializer
             } else if (typeClass.isInterface()) {
                 Class<?> mappedType = getInterfaceMappedType(uCtx, typeClass, null);
                 if (mappedType == null) {
@@ -128,9 +121,6 @@ public final class ResolveType {
                     container.mapKey().setKeyType(Object.class);
                 }
                 return container;
-            }
-            if (JsonValue.class.isAssignableFrom((Class<?>) type)) {
-                return null; // TODO Return JsonArrayDeserializer
             } else {
                 return uCtx.getContainers().arrayContainer(
                         typeClass, typeClass.isArray() ? typeClass.getComponentType() : Object.class);
@@ -164,9 +154,6 @@ public final class ResolveType {
                     container.mapKey().setKeyType(keyType);
                 }
                 return container;
-            }
-            if (JsonValue.class.isAssignableFrom(typeClass)) {
-                return null; // TODO Return JsonObjectDeserializer
             } else {
                 final Type[] argsTypes = ((ParameterizedType) type).getActualTypeArguments();
                 final Type valueType = argsTypes.length > 0 ? argsTypes[0] : Object.class;
@@ -235,7 +222,13 @@ public final class ResolveType {
         throw new JsonbException(Messages.getMessage(MessageKeys.TYPE_RESOLUTION_ERROR, type));
     }
 
-    static Class<?> resolveSimpleType(Type type) {
+    /**
+     * Resolve simple container type.
+     *
+     * @param type property type
+     * @return resolved type
+     */
+    public static Class<?> resolveSimpleType(Type type) {
         if (type instanceof Class) {
             return (Class<?>) type;
         } else if (type instanceof ParameterizedType) {
