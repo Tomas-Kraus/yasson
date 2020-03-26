@@ -32,9 +32,7 @@ public class JsonbDateFormatter {
     private static final JsonbDateFormatter DEFAULT = new JsonbDateFormatter(JsonbDateFormat.DEFAULT_FORMAT,
                                                                              Locale.getDefault().toLanguageTag());
 
-    /**
-     * Default I-JSON date time formatter.
-     */
+    /** Default I-JSON date time formatter. */
     public static final DateTimeFormatter IJSON_DATE_FORMATTER = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
             .append(DateTimeFormatter.ISO_LOCAL_DATE)
@@ -47,6 +45,10 @@ public class JsonbDateFormatter {
             .appendLiteral('Z')
             .appendOffset("+HH:MM", "+00:00")
             .toFormatter();
+
+    /** Default I-JSON date time formatter wrapped ad {@link JsonbDateFormatter} instance. */
+    public static final JsonbDateFormatter IJSON_JSONB_DATE_FORMATTER
+              = new JsonbDateFormatter(IJSON_DATE_FORMATTER, null, null);
 
     private final DateTimeFormatter dateTimeFormatter;
 

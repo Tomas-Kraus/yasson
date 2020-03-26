@@ -32,6 +32,7 @@ import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonParser;
 
 import org.eclipse.yasson.YassonJsonb;
+import org.eclipse.yasson.internal.deserializer.JsonUnmarshaller;
 import org.eclipse.yasson.internal.jsonstructure.JsonGeneratorToStructureAdapter;
 import org.eclipse.yasson.internal.jsonstructure.JsonStructureToParserAdapter;
 import org.eclipse.yasson.internal.properties.MessageKeys;
@@ -43,9 +44,23 @@ import org.eclipse.yasson.internal.properties.Messages;
 public class JsonBinding implements YassonJsonb {
 
     private final JsonbContext jsonbContext;
+    private final boolean isExperimentalDeserializer;
 
     JsonBinding(JsonBindingBuilder builder) {
         this.jsonbContext = new JsonbContext(builder.getConfig(), builder.getProvider().orElseGet(JsonProvider::provider));
+        this.isExperimentalDeserializer = true;
+        //this.isExperimentalDeserializer = isExperimentalDeserializer(jsonbContext);
+    }
+
+    // Constructor helper to properly set isExperimentalDeserializer value.
+    private static boolean isExperimentalDeserializer(JsonbContext jsonbContext) {
+        Optional<Object> maybeProperty = jsonbContext.getConfig().getProperty("experimental.deserializer");
+        if (maybeProperty.isPresent()) {
+            if (maybeProperty.get() instanceof Boolean) {
+                return ((Boolean) maybeProperty.get()).booleanValue();
+            }
+        }
+        return false;
     }
 
     private <T> T deserialize(final Type type, final JsonParser parser, final Unmarshaller unmarshaller) {
@@ -55,15 +70,25 @@ public class JsonBinding implements YassonJsonb {
     @Override
     public <T> T fromJson(String str, Class<T> type) throws JsonbException {
         final JsonParser parser = new JsonbRiParser(jsonbContext.getJsonProvider().createParser(new StringReader(str)));
-        final Unmarshaller unmarshaller = new Unmarshaller(jsonbContext);
-        return deserialize(type, parser, unmarshaller);
+        if (isExperimentalDeserializer) {
+            final JsonUnmarshaller unmarshaller = new JsonUnmarshaller(jsonbContext);
+            return unmarshaller.deserialize(type, parser);
+        } else {
+            final Unmarshaller unmarshaller = new Unmarshaller(jsonbContext);
+            return deserialize(type, parser, unmarshaller);
+        }
     }
 
     @Override
     public <T> T fromJson(String str, Type type) throws JsonbException {
         JsonParser parser = new JsonbRiParser(jsonbContext.getJsonProvider().createParser(new StringReader(str)));
-        Unmarshaller unmarshaller = new Unmarshaller(jsonbContext);
-        return deserialize(type, parser, unmarshaller);
+        if (isExperimentalDeserializer) {
+            final JsonUnmarshaller unmarshaller = new JsonUnmarshaller(jsonbContext);
+            return unmarshaller.deserialize(type, parser);
+        } else {
+            final Unmarshaller unmarshaller = new Unmarshaller(jsonbContext);
+            return deserialize(type, parser, unmarshaller);
+        }
     }
 
     @Override
@@ -76,20 +101,35 @@ public class JsonBinding implements YassonJsonb {
     @Override
     public <T> T fromJson(Reader reader, Type type) throws JsonbException {
         JsonParser parser = new JsonbRiParser(jsonbContext.getJsonProvider().createParser(reader));
-        Unmarshaller unmarshaller = new Unmarshaller(jsonbContext);
-        return deserialize(type, parser, unmarshaller);
+        if (isExperimentalDeserializer) {
+            final JsonUnmarshaller unmarshaller = new JsonUnmarshaller(jsonbContext);
+            return unmarshaller.deserialize(type, parser);
+        } else {
+            final Unmarshaller unmarshaller = new Unmarshaller(jsonbContext);
+            return deserialize(type, parser, unmarshaller);
+        }
     }
 
     @Override
     public <T> T fromJson(InputStream stream, Class<T> clazz) throws JsonbException {
-        Unmarshaller unmarshaller = new Unmarshaller(jsonbContext);
-        return deserialize(clazz, inputStreamParser(stream), unmarshaller);
+        if (isExperimentalDeserializer) {
+            final JsonUnmarshaller unmarshaller = new JsonUnmarshaller(jsonbContext);
+            return unmarshaller.deserialize(clazz, inputStreamParser(stream));
+        } else {
+            final Unmarshaller unmarshaller = new Unmarshaller(jsonbContext);
+            return deserialize(clazz, inputStreamParser(stream), unmarshaller);
+        }
     }
 
     @Override
     public <T> T fromJson(InputStream stream, Type type) throws JsonbException {
-        Unmarshaller unmarshaller = new Unmarshaller(jsonbContext);
-        return deserialize(type, inputStreamParser(stream), unmarshaller);
+        if (isExperimentalDeserializer) {
+            final JsonUnmarshaller unmarshaller = new JsonUnmarshaller(jsonbContext);
+            return unmarshaller.deserialize(type, inputStreamParser(stream));
+        } else {
+            final Unmarshaller unmarshaller = new Unmarshaller(jsonbContext);
+            return deserialize(type, inputStreamParser(stream), unmarshaller);
+        }
     }
 
     @Override

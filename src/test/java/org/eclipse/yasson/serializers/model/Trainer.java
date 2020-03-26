@@ -49,4 +49,13 @@ public final class Trainer {
         return Objects.hash(age, name);
     }
 
+    public String toJson() {
+        StringBuilder sb = new StringBuilder();
+        sb.append('{');
+        sb.append('"').append("name").append('"').append(':').append('"').append(name).append('"').append(',');
+        sb.append('"').append("age").append('"').append(':').append(age);
+        sb.append('}');
+        return sb.toString();
+    }
+
 }

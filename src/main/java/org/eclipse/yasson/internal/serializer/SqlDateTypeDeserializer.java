@@ -10,7 +10,6 @@
  * Contributors:
  * Roman Grigoriadi
  ******************************************************************************/
-
 package org.eclipse.yasson.internal.serializer;
 
 import java.sql.Date;

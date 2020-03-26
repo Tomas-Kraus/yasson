@@ -80,7 +80,8 @@ public class CollectionsTest {
         
         final String expected = "[[\"first\",\"second\",\"third\"],[\"first\",\"second\",\"third\"],[\"first\",\"second\",\"third\"],[\"first\",\"second\",\"third\"],[\"first\",\"second\",\"third\"],[\"first\",\"second\",\"third\"],[\"first\",\"second\",\"third\"],[\"first\",\"second\",\"third\"],[\"first\",\"second\",\"third\"],[\"first\",\"second\",\"third\"]]";
         assertEquals(expected, nullableJsonb.toJson(listOfListsOfStrings));
-        assertEquals(listOfListsOfStrings, nullableJsonb.fromJson(expected, new ArrayList<List<String>>(){}.getClass().getGenericSuperclass()));
+        final List<List<String>> result = nullableJsonb.fromJson(expected, new ArrayList<List<String>>(){}.getClass().getGenericSuperclass());
+        assertEquals(listOfListsOfStrings, result);
     }
 
     @Test

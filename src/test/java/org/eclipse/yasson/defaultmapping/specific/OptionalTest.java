@@ -14,20 +14,25 @@
  ******************************************************************************/
 package org.eclipse.yasson.defaultmapping.specific;
 
-import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.eclipse.yasson.Jsonbs.*;
+import static org.eclipse.yasson.Jsonbs.bindingJsonb;
+import static org.eclipse.yasson.Jsonbs.defaultJsonb;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 
 import org.eclipse.yasson.TestTypeToken;
 import org.eclipse.yasson.defaultmapping.generics.model.ScalarValueWrapper;
-import org.eclipse.yasson.defaultmapping.specific.model.OptionalWrapper;
 import org.eclipse.yasson.defaultmapping.specific.model.NotMatchingGettersAndSetters;
+import org.eclipse.yasson.defaultmapping.specific.model.OptionalWrapper;
 import org.eclipse.yasson.defaultmapping.specific.model.Street;
-import org.eclipse.yasson.internal.JsonBindingBuilder;
-
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
-import java.util.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Default mapping Optional* tests.
